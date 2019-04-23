@@ -62,7 +62,7 @@
                 <entry>
                   <string>sourceUrl</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$txt/Original%20simulation%20Log%20Files.txt</urlString>
+                    <urlString>$relpath$../../../../SoSSec/txt/Original%20simulation%20Log%20Files.txt</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
@@ -81,69 +81,15 @@
               </entry>
             </localMap>
           </runtimeParams>
-          <resourceType>gate.creole.annotdelete.AnnotationDeletePR</resourceType>
-          <resourceName>Document Reset PR 00056</resourceName>
-          <initParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </initParams>
-          <features class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </features>
-        </gate.util.persistence.LanguageAnalyserPersistence>
-        <gate.util.persistence.LanguageAnalyserPersistence>
-          <runtimeParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </runtimeParams>
-          <resourceType>gate.creole.tokeniser.SimpleTokeniser</resourceType>
-          <resourceName>GATE Unicode Tokeniser 0001E</resourceName>
-          <initParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </initParams>
-          <features class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </features>
-        </gate.util.persistence.LanguageAnalyserPersistence>
-        <gate.util.persistence.LanguageAnalyserPersistence>
-          <document class="gate.util.persistence.LRPersistence" reference="../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
-          <runtimeParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap>
-              <entry>
-                <string>matchAtWordStartOnly</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>matchAtWordEndOnly</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>longestMatchOnly</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>document</string>
-                <gate.util.persistence.LRPersistence reference="../../../../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
-              </entry>
-            </localMap>
-          </runtimeParams>
-          <resourceType>com.jpetrak.gate.stringannotation.extendedgazetteer.ExtendedGazetteer</resourceType>
-          <resourceName>Extended Gazetteer 00035</resourceName>
+          <resourceType>gate.creole.Transducer</resourceType>
+          <resourceName>JAPE Transducer - Agent</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
-                <string>caseSensitive</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>configFileURL</string>
+                <string>grammarURL</string>
                 <gate.util.persistence.PersistenceManager-RRPersistence>
-                  <uriString>$relpath$gazetteer/sossec.def</uriString>
+                  <uriString>$relpath$../../../../SoSSec/jape/AgentRule.jape</uriString>
                 </gate.util.persistence.PersistenceManager-RRPersistence>
               </entry>
             </localMap>
@@ -164,11 +110,18 @@
               </entry>
             </localMap>
           </runtimeParams>
-          <resourceType>gate.creole.splitter.SentenceSplitter</resourceType>
-          <resourceName>ANNIE Sentence Splitter 00023</resourceName>
+          <resourceType>gate.creole.Transducer</resourceType>
+          <resourceName>JAPE Transducer - Behaviour</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
+            <localMap>
+              <entry>
+                <string>grammarURL</string>
+                <gate.util.persistence.PersistenceManager-RRPersistence>
+                  <uriString>$relpath$../../../../SoSSec/jape/BehaviourRule.jape</uriString>
+                </gate.util.persistence.PersistenceManager-RRPersistence>
+              </entry>
+            </localMap>
           </initParams>
           <features class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
@@ -187,14 +140,72 @@
             </localMap>
           </runtimeParams>
           <resourceType>gate.creole.Transducer</resourceType>
-          <resourceName>JAPE Transducer 00024</resourceName>
+          <resourceName>JAPE Transducer - Condition</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
                 <string>grammarURL</string>
                 <gate.util.persistence.PersistenceManager-RRPersistence>
-                  <uriString>$relpath$jape/rule1.jape</uriString>
+                  <uriString>$relpath$../../../../SoSSec/jape/ConditionRule.jape</uriString>
+                </gate.util.persistence.PersistenceManager-RRPersistence>
+              </entry>
+            </localMap>
+          </initParams>
+          <features class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap/>
+          </features>
+        </gate.util.persistence.LanguageAnalyserPersistence>
+        <gate.util.persistence.LanguageAnalyserPersistence>
+          <document class="gate.util.persistence.LRPersistence" reference="../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+          <runtimeParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>document</string>
+                <gate.util.persistence.LRPersistence reference="../../../../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+              </entry>
+            </localMap>
+          </runtimeParams>
+          <resourceType>gate.creole.Transducer</resourceType>
+          <resourceName>JAPE Transducer - Vulnerability</resourceName>
+          <initParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>grammarURL</string>
+                <gate.util.persistence.PersistenceManager-RRPersistence>
+                  <uriString>$relpath$../../../../SoSSec/jape/VulnerabilityRule.jape</uriString>
+                </gate.util.persistence.PersistenceManager-RRPersistence>
+              </entry>
+            </localMap>
+          </initParams>
+          <features class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap/>
+          </features>
+        </gate.util.persistence.LanguageAnalyserPersistence>
+        <gate.util.persistence.LanguageAnalyserPersistence>
+          <document class="gate.util.persistence.LRPersistence" reference="../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+          <runtimeParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>document</string>
+                <gate.util.persistence.LRPersistence reference="../../../../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+              </entry>
+            </localMap>
+          </runtimeParams>
+          <resourceType>gate.creole.Transducer</resourceType>
+          <resourceName>JAPE Transducer - Message</resourceName>
+          <initParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>grammarURL</string>
+                <gate.util.persistence.PersistenceManager-RRPersistence>
+                  <uriString>$relpath$../../../../SoSSec/jape/MessageRule.jape</uriString>
                 </gate.util.persistence.PersistenceManager-RRPersistence>
               </entry>
             </localMap>
