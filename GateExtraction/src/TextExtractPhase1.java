@@ -22,7 +22,7 @@ public class TextExtractPhase1 {
 		
 		// utilizing Gate to process Documents
 		System.out.println("\n----Processing Documents by Gate----");
-		String[] processingResources = {"gate.creole.tokeniser.Tokeniser00018","gate.creole.gazetteer.ExtendedGazetteer00014","gate.creole.splitter.SentenceSplitter00015","gate.prs.SoSSec"};
+		String[] processingResources = {"gate.creole.tokeniser.Tokeniser00018","gate.creole.gazetteer.ExtendedGazetteer00014","gate.creole.splitter.SentenceSplitter00015","phase1.prs.SoSSec"};
 		runProcessingResources(processingResources);
 		
 		System.out.println("\n----Displaying Document Features----");
