@@ -1,0 +1,36 @@
+Imports: {
+	import static gate.Utils.*;
+}
+Phase:firstpass
+Input:  Lookup Behaviour
+Options: control = brill
+
+Rule: MessageRule
+Priority: 20
+({Behaviour})
+: behaviour
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Message"}
+)
+: message
+-->
+{
+	gate.AnnotationSet message = (gate.AnnotationSet)bindings.get("message");
+	gate.Annotation messageAnn = (gate.Annotation)message.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	gate.AnnotationSet behaviour = (gate.AnnotationSet)bindings.get("behaviour");
+	gate.Annotation behaviourAnn = (gate.Annotation)behaviour.iterator().next();
+	
+	features.put("rule", "MessageRule");
+
+	if (messageAnn.getFeatures().get("_string").equals("MESSAGE SENT")) {
+		features.put("sender", stringFor(doc, behaviourAnn));
+	} else if (messageAnn.getFeatures().get("_string").equals("RECEIVE MESSAGE")) { 
+		features.put("receiver", stringFor(doc, behaviourAnn));
+	}
+
+	features.put("_string", stringFor(doc, messageAnn));
+
+	outputAS.add(message.firstNode(), message.lastNode(), "Message", features);
+}

@@ -1,0 +1,5 @@
+agent.lst:SoSSec:Agent:en
+behaviour.lst:SoSSec:Behaviour:en
+vulnerability.lst:SoSSec:Vulnerability:en
+condition.lst:SoSSec:Condition:en
+message.lst:SoSSec:Message:en
