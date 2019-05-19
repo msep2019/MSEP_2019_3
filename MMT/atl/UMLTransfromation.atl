@@ -35,18 +35,21 @@ rule Activity {
 	to 
 		c: CM!Activity(
 			name <- s.name,
-			ownedRule <- s.ownedRule,
 			edge <- s.edge,
 			node <- s.node,
-			ownedNode <- s.ownedNode
+			ownedNode <- s.ownedNode,
+			ownedRule <- Sequence{s.ownedRule->collect(e | thisModule.resolveTemp(e, 'constraint'))}
 		)
+	do {
+		
+	}
 }
 
 rule Constraint {
 	from 
-		s: UML!Constraint
+		s: UML!"uml::Constraint"
 	to 
-		c: CM!Constraint(
+		constraint: CM!"uml::Constraint"(
 			name <- s.name,
 			constrainedElement <- s.constrainedElement,
 			specification <- s.specification
