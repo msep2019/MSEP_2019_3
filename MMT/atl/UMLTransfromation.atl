@@ -1,0 +1,156 @@
+-- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI CM=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI REQUIREMENT=http://www.eclipse.org/papyrus/0.7.0/SysML/Requirements
+-- @nsURI CM=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+
+module UMLTransfromation;
+create OUT: CM from IN: UML, IN2: REQUIREMENT, IN3: ECORE;
+
+
+
+helper context UML!Element def: hasStereotype(stereotype : String) : Boolean =
+self.getAppliedStereotypes()->exists(e|e.name=stereotype);
+
+helper def : getStereotype(name : String) : UML!Stereotype =
+UML!Stereotype.allInstances()->any(p | p.name = name);
+
+helper def: getProfile(name: String): UML!Profile =
+UML!Profile.allInstances()->any(p | p.name = name);
+
+rule Model {
+	from 
+		s: UML!Model
+	to 
+		c: CM!Model(
+			name <- s.name,
+			packagedElement <- s.packagedElement,
+			profileApplication <- s.profileApplication
+		)		
+}
+
+rule Activity {
+	from 
+		s: UML!Activity
+	to 
+		c: CM!Activity(
+			name <- s.name,
+			ownedRule <- s.ownedRule,
+			edge <- s.edge,
+			node <- s.node,
+			ownedNode <- s.ownedNode
+		)
+}
+
+rule Constraint {
+	from 
+		s: UML!Constraint
+	to 
+		c: CM!Constraint(
+			name <- s.name,
+			constrainedElement <- s.constrainedElement,
+			specification <- s.specification
+		)
+}
+
+rule ControlFlow {
+	from 
+		s: UML!ControlFlow
+	to 
+		c: CM!ControlFlow(
+			name <- s.name,
+			target <- s.target,
+			source <- s.source
+		)
+}
+
+rule OpaqueAction {
+	from 
+		s: UML!OpaqueAction
+	to 
+		c: CM!OpaqueAction(
+			name <- s.name,
+			incoming <- s.incoming,
+			outgoing <- s.outgoing
+		)
+}
+
+rule DataStoreNode {
+	from 
+		s: UML!DataStoreNode(s.oclIsTypeOf(UML!DataStoreNode))
+	to 
+		c: CM!DataStoreNode(
+			name <- s.name,
+			incoming <- s.incoming,
+			outgoing <- s.outgoing,
+			upperBound <- s.upperBound
+		)
+}
+
+rule LiteralString {
+	from 
+		s: UML!LiteralString
+	to 
+		c: CM!LiteralString(
+			name <- s.name
+		)
+}
+
+rule LiteralInteger {
+	from 
+		s: UML!LiteralInteger
+	to 
+		c: CM!LiteralInteger(
+			value <- s.value
+		)
+}
+
+rule ProfileApplication {
+	from 
+		s: UML!ProfileApplication
+	to 
+		c: CM!ProfileApplication(
+			eAnnotations <- s.eAnnotations,
+			appliedProfile <- s.appliedProfile,
+			applyingPackage <- s.applyingPackage
+		)
+}
+
+rule EAnnotation {
+	from 
+		s: ECORE!EAnnotation
+	to 
+		c: CM!EAnnotation(
+			references <- s.references,
+			details <- s.details,
+			source <- s.source
+		)
+}
+
+rule EPackage {
+	from 
+		s: ECORE!EPackage
+	to 
+		c: CM!EPackage(
+			
+		)
+}
+
+rule EStringToStringMapEntry {
+	from 
+		s: ECORE!EStringToStringMapEntry
+	to 
+		c: CM!EStringToStringMapEntry(
+			key <- s.key,
+			value <- s.value
+		)
+}
+
+rule Profile {
+	from 
+		s: UML!Profile
+	to 
+		c: CM!Profile(
+			
+		)
+}

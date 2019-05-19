@@ -1,0 +1,250 @@
+-- @path SN=/ModelTransformation/metamodels/PapyrusUMLNotation.ecore
+-- @path DN=/ModelTransformation/metamodels/PapyrusUMLNotation.ecore
+-- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI STYLE=http://www.eclipse.org/papyrus/infra/viewpoints/policy/style
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+
+module NotationTransfromation;
+create OUT: DN from IN: SN, IN2: UML, IN3: STYLE, IN4: ECORE;
+
+
+rule Diagram {
+	from 
+		s: SN!Diagram
+	to 
+		c: DN!Diagram(
+			name <- s.name,
+			type <- s.type,
+			measurementUnit <- s.measurementUnit,
+			children <- s.children,
+			edges <- s.edges,
+			styles <- s.styles,
+			element <- s.element
+		)
+}
+
+rule Shape {
+	from 
+		s: SN!Shape
+	to 
+		c: DN!Shape(
+			type <- s.type,
+			children <- s.children,
+			styles <- s.styles,
+			layoutConstraint <- s.layoutConstraint,
+			element <- s.element,
+			fillColor <- s.fillColor
+		)
+}
+
+rule Connector {
+	from 
+		s: SN!Connector
+	to 
+		c: DN!Connector(
+			type <- s.type,
+			source <- s.source,
+			children <- s.children,
+			styles <- s.styles,
+			bendpoints <- s.bendpoints,
+			sourceAnchor <- s.sourceAnchor,
+			targetAnchor <- s.targetAnchor,
+			element <- s.element,
+			eAnnotations <- s.eAnnotations
+		)
+}
+
+--- oclIsTypeOf make sure the rule is applied for only DecorationNode
+rule DecorationNode {
+	from 
+		s: SN!DecorationNode(s.oclIsTypeOf(SN!DecorationNode))
+	to 
+		c: DN!DecorationNode(
+			type <- s.type,
+			styles <- s.styles,
+			layoutConstraint <- s.layoutConstraint,
+			children <- s.children
+		)
+}
+
+--- oclIsTypeOf make sure the rule is applied for only BasicCompartments
+rule BasicCompartment {
+	from 
+		s: SN!BasicCompartment(s.oclIsTypeOf(SN!BasicCompartment))
+	to 
+		c: DN!BasicCompartment(
+			type <- s.type,
+			styles <- s.styles,
+			layoutConstraint <- s.layoutConstraint,
+			element <- s.element
+		)
+}
+
+--- oclIsTypeOf make sure the rule is applied for only ListCompartment
+rule ListCompartment {
+	from 
+		s: SN!ListCompartment(s.oclIsTypeOf(SN!ListCompartment))
+	to 
+		c: DN!ListCompartment(
+			type <- s.type,
+			styles <- s.styles,
+			children <- s.children,
+			layoutConstraint <- s.layoutConstraint,
+			element <- s.element
+		)
+}
+
+rule Node {
+	from 
+		s: SN!Node(s.oclIsTypeOf(SN!Node))
+	to 
+		c: DN!Node(
+			type <- s.type,
+			styles <- s.styles,
+			layoutConstraint <- s.layoutConstraint,
+			element <- s.element
+		)
+}
+
+--- oclIsTypeOf make sure the rule is applied for only DrawerStyle
+rule DrawerStyle {
+	from 
+		s: SN!DrawerStyle(s.oclIsTypeOf(SN!DrawerStyle))
+	to 
+		c: DN!DrawerStyle
+}
+
+rule TitleStyle {
+	from 
+		s: SN!TitleStyle(s.oclIsTypeOf(SN!TitleStyle))
+	to 
+		c: DN!TitleStyle(
+			showTitle <- s.showTitle
+		)
+}
+
+rule SortingStyle {
+	from 
+		s: SN!SortingStyle(s.oclIsTypeOf(SN!SortingStyle))
+	to 
+		c: DN!SortingStyle
+}
+
+rule FilteringStyle {
+	from 
+		s: SN!FilteringStyle(s.oclIsTypeOf(SN!FilteringStyle))
+	to 
+		c: DN!FilteringStyle
+}
+
+rule StringValueStyle {
+	from 
+		s: SN!StringValueStyle(s.oclIsTypeOf(SN!StringValueStyle))
+	to 
+		c: DN!StringValueStyle(
+			name <- if not s.name.oclIsUndefined() then s.name else false endif,
+			stringValue <- if not s.stringValue.oclIsUndefined() then s.stringValue else false endif
+		)
+}
+
+rule DiagramStyle {
+	from 
+		s: SN!DiagramStyle(s.oclIsTypeOf(SN!DiagramStyle))
+	to 
+		c: DN!DiagramStyle
+}
+
+rule ShapeStyle {
+	from 
+		s: SN!ShapeStyle(s.oclIsTypeOf(SN!ShapeStyle))
+	to 
+		c: DN!ShapeStyle
+}
+
+rule EObjectValueStyle {
+	from 
+		s: SN!EObjectValueStyle(s.oclIsTypeOf(SN!EObjectValueStyle))
+	to 
+		c: DN!EObjectValueStyle(
+			eObjectValue <- s.eObjectValue
+		)
+}
+
+rule FontStyle {
+	from 
+		s: SN!FontStyle(s.oclIsTypeOf(SN!FontStyle))
+	to 
+		c: DN!FontStyle
+}
+
+rule HintedDiagramLinkStyle {
+	from 
+		s: SN!HintedDiagramLinkStyle(s.oclIsTypeOf(SN!HintedDiagramLinkStyle))
+	to 
+		c: DN!HintedDiagramLinkStyle
+}
+
+rule Location {
+	from 
+		s: SN!Location(s.oclIsTypeOf(SN!Location))
+	to 
+		c: DN!Location(
+			y <- s.y
+		)
+}
+
+rule Bounds {
+	from 
+		s: SN!Bounds(s.oclIsTypeOf(SN!Bounds))
+	to 
+		c: DN!Bounds(
+			x <- s.x,
+			y <- s.y
+		)
+}
+
+rule RelativeBendpoints {
+	from 
+		s: SN!RelativeBendpoints
+	to 
+		c: DN!RelativeBendpoints
+}
+
+rule IdentityAnchor {
+	from 
+		s: SN!IdentityAnchor
+	to 
+		c: DN!IdentityAnchor
+}
+
+rule EAnnotation {
+	from 
+		s: ECORE!EAnnotation
+	to 
+		c: DN!EAnnotation(
+			details <- s.details
+		)
+}
+
+rule EStringToStringMapEntry {
+	from 
+		s: ECORE!EStringToStringMapEntry
+	to 
+		c: DN!EStringToStringMapEntry
+}
+
+rule OpaqueAction {
+	from 
+		s: UML!OpaqueAction
+	to 
+		c: DN!OpaqueAction
+}
+
+
+
+rule Model {
+	from 
+		s: UML!Model
+	to 
+		c: DN!Model
+}
