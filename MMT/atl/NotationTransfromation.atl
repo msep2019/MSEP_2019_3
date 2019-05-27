@@ -1,0 +1,250 @@
+-- @path SN=/ModelTransformation/metamodels/PapyrusUMLNotation.ecore
+-- @path DN=/ModelTransformatison/metamodels/PapyrusUMLNotation.ecore
+-- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI STYLE=http://www.eclipse.org/papyrus/infra/viewpoints/policy/style
+-- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+
+module NotationTransfromation;
+create OUT: DN from IN: UML, IN2: SN, IN3: STYLE; 
+
+rule Diagram {
+	from 
+		uml: UML!Activity
+	to 
+		c: DN!Diagram(
+			name <- uml.name,
+			type <- 'PapyrusUMLActivityDiagram',
+			measurementUnit <- 'Pixel',
+			children <- Sequence {shape},
+			styles <- Sequence {styles_style1, styles_style2},
+			edges <- Sequence{uml.edge->collect(e | thisModule.resolveTemp(e, 'conn')), uml.node->collect(e | thisModule.resolveTemp(e, 'conn1'))}
+			),
+			shape: DN!Shape(
+				type <- '2001',
+				element <- uml,
+				children <- Sequence {dn1, dn2, dn3, dn4, dn5, dn6},
+				layoutConstraint <- Sequence {shape_bounds}		
+			),			
+			dn1: DN!DecorationNode(
+				type <-'5001'
+			),
+			dn2: DN!DecorationNode(
+				type <-'5002'
+			),
+			dn3: DN!DecorationNode(
+				type <-'7001',
+				styles <- Sequence {dn3_style1, dn3_style2},
+				layoutConstraint <- Sequence {dn3_bounds}
+			),
+			dn4: DN!DecorationNode(
+				type <-'7002',
+				styles <- Sequence {dn4_style1, dn4_style2},
+				layoutConstraint <- Sequence {dn4_bounds}
+			),
+			dn5: DN!DecorationNode(
+				type <-'7003',
+				styles <- Sequence {dn5_style1, dn5_style2},
+				layoutConstraint <- Sequence {dn5_bounds}
+			),
+			dn6: DN!DecorationNode(
+				type <-'7004',
+				
+				layoutConstraint <- Sequence {dn6_bounds}
+			),
+			shape_bounds: DN!Bounds(
+				width <- 600,
+				height <- 400
+			),
+			dn3_bounds: DN!Bounds,
+			dn4_bounds: DN!Bounds,
+			dn5_bounds: DN!Bounds,
+			dn6_bounds: DN!Bounds,
+			dn3_style1: DN!SortingStyle,
+			dn3_style2: DN!FilteringStyle,
+			dn4_style1: DN!SortingStyle,
+			dn4_style2: DN!FilteringStyle,
+			dn5_style1: DN!SortingStyle,
+			dn5_style2: DN!FilteringStyle,
+			styles_style1: DN!StringValueStyle(
+				name <- 'diagram_compatibility_version',
+				stringValue <- '1.1.0'
+			),
+			styles_style2: DN!DiagramStyle
+	do {
+		c.element <- uml;
+		c.children <- uml.node->collect(e | thisModule.resolveTemp(e, 'opaqueAction'));
+	}
+}
+
+--- Rule for OpaqueAction element
+rule OpaqueAction {
+	from 
+		uml_oa: UML!OpaqueAction
+	to 
+		opaqueAction: DN!Shape(
+			type <- '3007',
+			lineWidth <- 2,
+			styles <- Sequence {oa_style1},
+			children <- Sequence {adn1, adn2},
+			layoutConstraint <- Sequence {oa_bounds}
+		),
+		oa_bounds: DN!Bounds(
+			x <- 10,
+			y <- 60
+		),
+		adn1: DN!DecorationNode(
+			type <-'5003'
+		),
+		adn2: DN!DecorationNode(
+			type <-'6028',
+			layoutConstraint <- Sequence {adn2_location}
+		),
+		oa_style1: DN!HintedDiagramLinkStyle,
+		adn2_location: DN!Location
+	do {
+		opaqueAction.element <- uml_oa;
+	}
+}
+
+rule Constraint {
+	from 
+		uml_cons: UML!Constraint
+	to 
+		constraint: DN!Shape(
+			type <- '3078',
+			lineColor <- 255,
+			lineWidth <- 2,
+			styles <- Sequence {cons_style1},
+			children <- Sequence {consdn1, consdn2},
+			layoutConstraint <- Sequence {cons_bounds}
+		),
+		cons_bounds: DN!Bounds(
+			x <- 10,
+			y <- 60
+		),
+		consdn1: DN!DecorationNode(
+			type <-'5127'
+		),
+		consdn2: DN!DecorationNode(
+			type <-'5128',
+			layoutConstraint <- Sequence {consdn2_location}
+		),
+		cons_style1: DN!HintedDiagramLinkStyle,
+		consdn2_location: DN!Location
+	do {
+		constraint.element <- uml_cons;
+	}
+}
+
+rule DataStoreNode {
+	from 
+		uml_dsn: UML!DataStoreNode
+	to 
+		dsn: DN!Shape(
+			type <- '3078',
+			lineColor <- 0,
+			lineWidth <- 1,
+			styles <- Sequence {dsn_style1},
+			children <- Sequence {dsndn1, dsndn2, dsndn3},
+			layoutConstraint <- Sequence {dsn_bounds}
+		),
+		dsn_bounds: DN!Bounds(
+			x <- 10,
+			y <- 60
+		),
+		dsndn1: DN!DecorationNode(
+			type <-'5127'
+		),
+		dsndn2: DN!DecorationNode(
+			type <-'5128',
+			layoutConstraint <- Sequence {dsndn2_location}
+		),
+		dsndn3: DN!DecorationNode(
+			type <-'6031',
+			layoutConstraint <- Sequence {dsndn3_location}
+		),
+		dsn_style1: DN!HintedDiagramLinkStyle,
+		dsndn2_location: DN!Location,
+		dsndn3_location: DN!Location
+	do {
+		dsn.element <- uml_dsn;
+	}
+}
+
+rule InitialNode {
+	from 
+		uml_init: UML!InitialNode
+	to 
+		initnode: DN!Shape(
+			type <- '3004',
+			lineColor <- 255,
+			lineWidth <- 2,
+			styles <- Sequence {init_style1},
+			children <- Sequence {initdn1, initdn2},
+			layoutConstraint <- Sequence {init_bounds}
+		),
+		init_bounds: DN!Bounds(
+			x <- 10,
+			y <- 60
+		),
+		initdn1: DN!DecorationNode(
+			type <-'6034',
+			layoutConstraint <- Sequence {initdn1_location}
+		),
+		initdn2: DN!DecorationNode(
+			type <-'5080',
+			layoutConstraint <- Sequence {initdn2_location}
+		),
+		init_style1: DN!HintedDiagramLinkStyle,
+		initdn1_location: DN!Location,
+		initdn2_location: DN!Location
+	do {
+		initnode.element <- uml_init;
+	}
+}
+
+--- Rule for ControlFlow element
+rule ControlFlow {
+	from 
+		c_uml: UML!ControlFlow
+	to 
+		conn: DN!Connector(
+			type <- '4004',
+			source <- c_uml.source,
+			target <- c_uml.target,
+			lineWidth <- if c_uml.name <> '' then 3 else false endif,
+			children <- Sequence {cdn1, cdn2, cdn3, cdn4},
+			styles <- Sequence {c_style1},
+			bendpoints <- Sequence {c_bendpoints},
+			sourceAnchor <- Sequence {c_sourceAnchor},
+			targetAnchor <- Sequence {c_targetAnchor}
+		),
+		cdn1: DN!DecorationNode(
+			type <-'6003',
+			layoutConstraint <- Sequence {cdn1_Location}
+		),
+		cdn2: DN!DecorationNode(
+			type <-'6004',
+			layoutConstraint <- Sequence {cdn2_Location}
+		),
+		cdn3: DN!DecorationNode(
+			type <-'6009',
+			layoutConstraint <- Sequence {cdn3_Location}
+		),
+		cdn4: DN!DecorationNode(
+			type <-'6011',
+			layoutConstraint <-Sequence {cdn4_Location}
+		),
+		c_style1: DN!FontStyle,
+		c_bendpoints: DN!RelativeBendpoints,
+		c_sourceAnchor: DN!IdentityAnchor,
+		c_targetAnchor: DN!IdentityAnchor,
+		cdn1_Location: DN!Location,
+		cdn2_Location: DN!Location,
+		cdn3_Location: DN!Location,
+		cdn4_Location: DN!Location
+	do {
+		conn.element <- c_uml;
+	}
+}
+
