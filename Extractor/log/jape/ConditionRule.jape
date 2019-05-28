@@ -1,5 +1,5 @@
 Phase:firstpass
-Input:  Lookup  
+Input:  Lookup  Sentence Token Split
 Options: control = brill
 
 Rule: ConditionRule
