@@ -7,30 +7,35 @@ Options: control = brill
 
 Rule: MessageRule
 Priority: 20
-({Behaviour})
-: behaviour
 (
-	{Lookup.majorType == "SoSSec", Lookup.minorType == "Message"}
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Behaviour"}
+)
+: receiver
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Message", Lookup._string == "ContentMessage"}
 )
 : message
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Behaviour"}
+)
+: sender
 -->
 {
 	gate.AnnotationSet message = (gate.AnnotationSet)bindings.get("message");
 	gate.Annotation messageAnn = (gate.Annotation)message.iterator().next();
 	gate.FeatureMap features = Factory.newFeatureMap();
 
-	gate.AnnotationSet behaviour = (gate.AnnotationSet)bindings.get("behaviour");
-	gate.Annotation behaviourAnn = (gate.Annotation)behaviour.iterator().next();
+	gate.AnnotationSet receiver = (gate.AnnotationSet)bindings.get("receiver");
+	gate.Annotation receiverAnn = (gate.Annotation)receiver.iterator().next();
+
+	gate.AnnotationSet sender = (gate.AnnotationSet)bindings.get("sender");
+	gate.Annotation senderAnn = (gate.Annotation)sender.iterator().next();
 	
 	features.put("rule", "MessageRule");
 
-	if (messageAnn.getFeatures().get("_string").equals("MESSAGE SENT")) {
-		features.put("sender", stringFor(doc, behaviourAnn));
-	} else if (messageAnn.getFeatures().get("_string").equals("RECEIVE MESSAGE")) { 
-		features.put("receiver", stringFor(doc, behaviourAnn));
-	}
-
-	features.put("_string", stringFor(doc, messageAnn));
-
+	features.put("sender", stringFor(doc, senderAnn));
+	features.put("receiver", stringFor(doc, receiverAnn));
+	
+	
 	outputAS.add(message.firstNode(), message.lastNode(), "Message", features);
 }

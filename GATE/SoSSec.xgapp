@@ -93,15 +93,9 @@
           </features>
         </gate.util.persistence.LanguageAnalyserPersistence>
         <gate.util.persistence.LanguageAnalyserPersistence>
-          <document class="gate.util.persistence.LRPersistence" reference="../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
           <runtimeParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap>
-              <entry>
-                <string>document</string>
-                <gate.util.persistence.LRPersistence reference="../../../../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
-              </entry>
-            </localMap>
+            <localMap/>
           </runtimeParams>
           <resourceType>gate.creole.tokeniser.SimpleTokeniser</resourceType>
           <resourceName>GATE Unicode Tokeniser 00018</resourceName>
@@ -142,11 +136,11 @@
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
-                <string>matchAtWordStartOnly</string>
+                <string>matchAtWordEndOnly</string>
                 <boolean>false</boolean>
               </entry>
               <entry>
-                <string>matchAtWordEndOnly</string>
+                <string>matchAtWordStartOnly</string>
                 <boolean>false</boolean>
               </entry>
               <entry>
@@ -247,14 +241,14 @@
             </localMap>
           </runtimeParams>
           <resourceType>gate.creole.Transducer</resourceType>
-          <resourceName>JAPE Transducer - Condition</resourceName>
+          <resourceName>JAPE Transducer - Vulnerability</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
                 <string>grammarURL</string>
                 <gate.util.persistence.PersistenceManager-RRPersistence>
-                  <uriString>$relpath$jape/ConditionRule.jape</uriString>
+                  <uriString>$relpath$jape/VulnerabilityRule.jape</uriString>
                 </gate.util.persistence.PersistenceManager-RRPersistence>
               </entry>
             </localMap>
@@ -276,14 +270,43 @@
             </localMap>
           </runtimeParams>
           <resourceType>gate.creole.Transducer</resourceType>
-          <resourceName>JAPE Transducer - Vulnerability</resourceName>
+          <resourceName>JAPE Transducer - PreCondition</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
                 <string>grammarURL</string>
                 <gate.util.persistence.PersistenceManager-RRPersistence>
-                  <uriString>$relpath$jape/VulnerabilityRule.jape</uriString>
+                  <uriString>$relpath$jape/PreConditionRule.jape</uriString>
+                </gate.util.persistence.PersistenceManager-RRPersistence>
+              </entry>
+            </localMap>
+          </initParams>
+          <features class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap/>
+          </features>
+        </gate.util.persistence.LanguageAnalyserPersistence>
+        <gate.util.persistence.LanguageAnalyserPersistence>
+          <document class="gate.util.persistence.LRPersistence" reference="../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+          <runtimeParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>document</string>
+                <gate.util.persistence.LRPersistence reference="../../../../../gate.util.persistence.LanguageAnalyserPersistence/document"/>
+              </entry>
+            </localMap>
+          </runtimeParams>
+          <resourceType>gate.creole.Transducer</resourceType>
+          <resourceName>JAPE Transducer - PostCondition</resourceName>
+          <initParams class="gate.util.persistence.MapPersistence">
+            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+            <localMap>
+              <entry>
+                <string>grammarURL</string>
+                <gate.util.persistence.PersistenceManager-RRPersistence>
+                  <uriString>$relpath$jape/PostConditionRule.jape</uriString>
                 </gate.util.persistence.PersistenceManager-RRPersistence>
               </entry>
             </localMap>

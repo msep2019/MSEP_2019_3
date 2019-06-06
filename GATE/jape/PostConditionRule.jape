@@ -1,0 +1,45 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase:		getpostcondition
+Input:  	Lookup
+Options: 	control = brill
+
+Rule: ConditionRule
+Priority: 40
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Condition"}
+): postcondition
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Agent"}
+)
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Behaviour"}
+)
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Behaviour"}
+)
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "ConnectWord", Lookup._string == "-Vul-"}
+)
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Vulnerability"}
+): postvul
+
+-->
+{
+	gate.AnnotationSet postcondition = (gate.AnnotationSet)bindings.get("postcondition");
+	gate.Annotation postconditionAnn = (gate.Annotation)postcondition.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	features.put("rule", "ConditionRule");
+	features.put("type", "PostCondition");
+
+	gate.AnnotationSet postvul = (gate.AnnotationSet)bindings.get("postvul");
+	gate.Annotation postvulAnn = (gate.Annotation)postvul.iterator().next();
+	
+	features.put("Vulnerability" ,stringFor(doc, postvulAnn));
+
+	outputAS.add(postcondition.firstNode(), postcondition.lastNode(), "Condition", features);
+}

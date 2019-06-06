@@ -1,0 +1,35 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase:		getPreCondition
+Input:  	Lookup
+Options: 	control = brill
+
+Rule: ConditionRule
+Priority: 40
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Vulnerability"}
+): prevul
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Behaviour"}
+)
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Condition"}
+): precondition
+-->
+{
+	gate.AnnotationSet precondition = (gate.AnnotationSet)bindings.get("precondition");
+	gate.Annotation preconditionAnn = (gate.Annotation)precondition.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	features.put("rule", "ConditionRule");
+	features.put("type", "PreCondition");
+
+	gate.AnnotationSet prevul = (gate.AnnotationSet)bindings.get("prevul");
+	gate.Annotation prevulAnn = (gate.Annotation)prevul.iterator().next();
+	
+	features.put("Vulnerability" ,stringFor(doc, prevulAnn));
+
+	outputAS.add(precondition.firstNode(), precondition.lastNode(), "Condition", features);
+}
