@@ -27,7 +27,7 @@ public class ResourcesLoader {
 	public static SerialAnalyserController getResources() throws GateException, IOException, URISyntaxException{
 		
 		Gate.init();
-		//MainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().setVisible(true);
 		//Load the ANNIE plugin
 		Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", gate.Main.version); 
 		Gate.getCreoleRegister().registerPlugin(anniePlugin); 
@@ -58,41 +58,51 @@ public class ResourcesLoader {
 		eg.setLongestMatchOnly(true);	
 		eg.setMatchAtWordStartOnly(false);
 		eg.setMatchAtWordEndOnly(false);
+		//eg.setSpaceAnnotationType(SpaceToken);
+		//eg.setSplitAnnotationType(Split);
+		//eg.setWordAnnotationType(Token);
 		
 		//specifying location of jape files
 		FeatureMap agentFeature = Factory.newFeatureMap();
 		agentFeature.put("grammarURL", new File("log/jape/AgentRule.jape").toURI().toURL());
 		FeatureMap behaviourFeature = Factory.newFeatureMap();
 		behaviourFeature.put("grammarURL", new File("log/jape/BehaviourRule.jape").toURI().toURL());
-		FeatureMap conditionFeature = Factory.newFeatureMap();
-		conditionFeature.put("grammarURL", new File("log/jape/ConditionRule.jape").toURI().toURL());
+		//FeatureMap conditionFeature = Factory.newFeatureMap();
+		//conditionFeature.put("grammarURL", new File("log/jape/ConditionRule.jape").toURI().toURL());
 		FeatureMap messageFeature = Factory.newFeatureMap();
 		messageFeature.put("grammarURL", new File("log/jape/MessageRule.jape").toURI().toURL());
-		FeatureMap transmissionFeature = Factory.newFeatureMap();
-		transmissionFeature.put("grammarURL", new File("log/jape/TransmissionRule.jape").toURI().toURL());
+		FeatureMap postconditionFeature = Factory.newFeatureMap();
+		postconditionFeature.put("grammarURL", new File("log/jape/PostConditionRule.jape").toURI().toURL());
+		FeatureMap preconditionFeature = Factory.newFeatureMap();
+		preconditionFeature.put("grammarURL", new File("log/jape/PreConditionRule.jape").toURI().toURL());
+		//FeatureMap transmissionFeature = Factory.newFeatureMap();
+		//transmissionFeature.put("grammarURL", new File("log/jape/TransmissionRule.jape").toURI().toURL());
 		FeatureMap vulnerabilityFeature = Factory.newFeatureMap();
 		vulnerabilityFeature.put("grammarURL", new File("log/jape/VulnerabilityRule.jape").toURI().toURL());
 		
 		//loading JAPE language resources with specified features
 		LanguageAnalyser agentTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", agentFeature,parms,"JAPE Transducer - Agent");
 		LanguageAnalyser behaviourTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", behaviourFeature,parms,"JAPE Transducer - Behaviour");
-		LanguageAnalyser conditionTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", conditionFeature,parms,"JAPE Transducer - Condition");
+		//LanguageAnalyser conditionTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", conditionFeature,parms,"JAPE Transducer - Condition");
 		LanguageAnalyser messageTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", messageFeature,parms,"JAPE Transducer - Message");
+		LanguageAnalyser postconTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", postconditionFeature,parms,"JAPE Transducer - PostCondition");
+		LanguageAnalyser preconTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", preconditionFeature,parms,"JAPE Transducer - PreCondition");
 		//LanguageAnalyser transTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", transmissionFeature,parms,"JAPE Transducer - Transmission");
 		LanguageAnalyser vulTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", vulnerabilityFeature,parms,"JAPE Transducer - Vulnerability");
-		
 		
 		sac.add(documentReset);
 		sac.add(defaultTokeniser);
 		sac.add(sentenceSplitter);
 		sac.add(eg);
+
 		sac.add(agentTagJape);
 		sac.add(behaviourTagJape);	
-		sac.add(conditionTagJape);
+		//sac.add(conditionTagJape);
 		sac.add(vulTagJape);
+		sac.add(preconTagJape);
+		sac.add(postconTagJape);
 		sac.add(messageTagJape);
 		//sac.add(transTagJape);
-		
 		
 		return sac;
 	}

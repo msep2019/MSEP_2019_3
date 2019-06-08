@@ -1,9 +1,9 @@
-Phase:firstpass
-Input:  Lookup  
-Options: control = brill
+Phase:		getAgent
+Input:  	Lookup  
+Options: 	control = brill
 
-Rule: AgentRule
-Priority: 20
+Rule: 		AgentRule
+Priority: 	10
 (
 	{Lookup.majorType == "SoSSec", Lookup.minorType == "Agent"}
 ): agent

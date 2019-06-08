@@ -1,7 +1,7 @@
 Imports: {
 	import static gate.Utils.*;
 }
-Phase:		firstpass
+Phase:		getBehaviour
 Input:  	Lookup Sentence Token Split
 Options: 	control = brill
 
