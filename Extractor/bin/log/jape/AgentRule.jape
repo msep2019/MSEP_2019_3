@@ -1,0 +1,19 @@
+Phase:		getAgent
+Input:  	Lookup  
+Options: 	control = brill
+
+Rule: 		AgentRule
+Priority: 	10
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Agent"}
+): agent
+-->
+{
+	gate.AnnotationSet agent = (gate.AnnotationSet)bindings.get("agent");
+	gate.Annotation agentAnn = (gate.Annotation)agent.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	features.put("rule", "AgentRule");
+
+	outputAS.add(agent.firstNode(), agent.lastNode(), "Agent", features);
+}

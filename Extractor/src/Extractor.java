@@ -1,138 +1,40 @@
 import java.io.File;
-import java.net.URL;
-
-import gate.Gate;
-import gate.LanguageAnalyser;
-
-import gate.Document;
-
-import gate.Factory;
-import gate.FeatureMap;
-import gate.creole.Plugin;
-import gate.creole.SerialAnalyserController;
-import com.jpetrak.gate.stringannotation.extendedgazetteer.ExtendedGazetteer;
-
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.apache.log4j.BasicConfigurator;
 
+import gate.creole.SerialAnalyserController;
+import gate.util.GateException;
+
 
 public class Extractor {
-	
-	private static gate.Corpus corpus;
-	
-	//text extraction method
-	public static SerialAnalyserController Extractor(String[] files) throws Exception {
+	public static void main(String[] args) throws GateException, IOException, URISyntaxException{
+		
+		long startTime = System.currentTimeMillis();
+		
 		BasicConfigurator.configure();
-		System.out.println("\n----Initializing----");
-		//prepare the library
-		Gate.init();
-		//show the main window
-		//MainFrame.getInstance().setVisible(true);
-		System.out.println("\n--Completed");
 		
-		System.out.println("\n----Loading Plugins----");
-		//Load the ANNIE plugin
-		Plugin anniePlugin = new Plugin.Maven("uk.ac.gate.plugins", "annie", gate.Main.version); 
-		Gate.getCreoleRegister().registerPlugin(anniePlugin); 
+		//get location of all resources
+		File log = new File("log/txt/Original simulation Log Files.txt");
+		System.out.println("Number of processing files:"+1);
 		
-		Plugin GzPlugin = new Plugin.Maven("uk.ac.gate.plugins", "stringannotation", "4.0"); 
-		Gate.getCreoleRegister().registerPlugin(GzPlugin); 
-		System.out.println("\n--Completed");
+		//load processing resources
+		SerialAnalyserController sac = ResourcesLoader.getResources();
 		
-		// add files to a corpus
-		System.out.println("\n----Setting  Documents----");
-		//load saved state;
-		File doc = new File("log/SoSSec.log");
-		//File log = new File("log/SoSSec.xgapp");
-	    File gz = new File("log/gazetteer/sossec.def");
-	    System.out.println("\n"+files);
-	    System.out.println("\n--Completed");
-	    
-		// setting corpus to process Documents
-		System.out.println("\n----Initializing Controller and Corpus----");
-		corpus = Factory.newCorpus("Processing Corpus");
-		SerialAnalyserController sac = (SerialAnalyserController)Factory.createResource("gate.creole.SerialAnalyserController");
+		//arraylist to contain annotation types
+		ArrayList<String> anntTypes = new ArrayList<String>();
+		//map to check if anntType list is already present
+		ArrayList<String> checkColumn = new ArrayList<String>();
 		
-		//String[] processingResources = {"gate.creole.tokeniser.DefaultTokeniser",
-				//"gate.creole.splitter.SentenceSplitter","gate.creole.gazetteer.DefaultGazetteer"};
-		//runProcessingResources(processingResources);
-		// featuremaps for .jape files, specifying location of .jape files 
-		System.out.println("\n--Completed");
+		//call document analysing
+		DocumentAnalyser.processDocs(sac,log,anntTypes,checkColumn,1);
 		
-		System.out.println("\n----Loading Jape files----");
-		FeatureMap agentFeature = Factory.newFeatureMap();
-		agentFeature.put("grammarURL", new File("log/jape/AgentRule.jape").toURI().toURL());
-		FeatureMap behaviourFeature = Factory.newFeatureMap();
-		behaviourFeature.put("grammarURL", new File("log/jape/BehaviourRule.jape").toURI().toURL());
-		FeatureMap conditionFeature = Factory.newFeatureMap();
-		conditionFeature.put("grammarURL", new File("log/jape/ConditionRule.jape").toURI().toURL());
-		FeatureMap messageFeature = Factory.newFeatureMap();
-		messageFeature.put("grammarURL", new File("log/jape/MessageRule.jape").toURI().toURL());
-		FeatureMap transmissionFeature = Factory.newFeatureMap();
-		transmissionFeature.put("grammarURL", new File("log/jape/TransmissionRule.jape").toURI().toURL());
-		FeatureMap vulnerabilityFeature = Factory.newFeatureMap();
-		vulnerabilityFeature.put("grammarURL", new File("log/jape/VulnerabilityRule.jape").toURI().toURL());
+		//call file writer to write the XML file
+		FileOutput.atWriter(anntTypes,checkColumn);
 		
-		// load JAPE language resources with specified features 
-		LanguageAnalyser agentTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", agentFeature);
-		LanguageAnalyser behaviourTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", behaviourFeature);
-		LanguageAnalyser conditionTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", conditionFeature);
-		LanguageAnalyser messageTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", messageFeature);
-		LanguageAnalyser transTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", transmissionFeature);
-		LanguageAnalyser vulTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer", vulnerabilityFeature);
-		System.out.println("\n--Completed");
-		
-		//Loading Gazetteer;
-		System.out.println("\n----Loading ExtendedGazetteer----");
-		FeatureMap parms = Factory.newFeatureMap();
-		URL gazURL = gz.toURI().toURL();
-		parms.put("configFileURL", gazURL);
-		ExtendedGazetteer eg = (ExtendedGazetteer)Factory.createResource(
-            "com.jpetrak.gate.stringannotation.extendedgazetteer.ExtendedGazetteer", parms);
-			  
-		FeatureMap localtxt = Factory.newFeatureMap();
-		URL docURL = doc.toURI().toURL();
-		localtxt.put("sourceUrl",docURL);
-		Document Fdoc = (Document) Factory.createResource("gate.corpora.DocumentImpl", localtxt);
-		//Controller controller = (Controller)PersistenceManager.loadObjectFromFile(log);
-		System.out.println("\n--Completed");
-		
-		System.out.println("\n----Processing documents----");
-		sac.setCorpus(corpus);
-		sac.setDocument(Fdoc);
-		//eg.setDocument(Fdoc);
-		sac.add(agentTagJape);
-		sac.add(behaviourTagJape);
-		sac.add(conditionTagJape);
-		sac.add(messageTagJape);
-		sac.add(transTagJape);
-		sac.add(vulTagJape);
-		sac.add(eg);
-		//sac.setDocument(Fdoc);
-		sac.execute();
-		System.out.println("\n--Completed");
-		//controller.setCorpus(corpus);
-		//controller.execute();
-		//eg.execute();
-		
-
-		//System.out.println("\n----Displaying Document Features----");
-		//displayDocumentFeatures();
-		
-		System.out.println("\n--Session Finished");
-		return sac;
-		
-	}
-	
-	public static void main(String[] args) {
-
-		if(args.length == 0)
-			System.err.println("Usage: java OriginalLogFiles...");
-		else try {
-			Extractor(args);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total time in processing"+" sossec is"+(endTime-startTime)+"ms.");
 	}
 }

@@ -48,7 +48,7 @@ rule Diagram {
 			),
 			dn6: DN!DecorationNode(
 				type <-'7004',
-				
+				children <- Sequence{uml.node->collect(e | thisModule.resolveTemp(e, 'opaqueAction'))},
 				layoutConstraint <- Sequence {dn6_bounds}
 			),
 			shape_bounds: DN!Bounds(
@@ -72,7 +72,6 @@ rule Diagram {
 			styles_style2: DN!DiagramStyle
 	do {
 		c.element <- uml;
-		c.children <- uml.node->collect(e | thisModule.resolveTemp(e, 'opaqueAction'));
 	}
 }
 

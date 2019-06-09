@@ -1,0 +1,45 @@
+Imports: {
+	import static gate.Utils.*;
+}
+Phase:firstpass
+Input:  Message
+Options: control = brill
+
+Rule: TransmissionRule
+Priority: 20
+(
+	{Message, Message._string == "Message Sent"}
+)*
+: sender
+(
+	{Message, Message._string == "Receive Message"}
+)
+: receiver
+(
+	{Message, Message._string == "ContentMessage"}
+)
+: message
+-->
+{
+	gate.AnnotationSet message = (gate.AnnotationSet)bindings.get("message");
+	gate.Annotation messageAnn = (gate.Annotation)message.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	features.put("rule", "TransmissionRule");
+
+	gate.AnnotationSet sender = (gate.AnnotationSet)bindings.get("sender");
+	gate.Annotation senderAnn = (gate.Annotation)sender.iterator().next();
+
+	gate.AnnotationSet receiver = (gate.AnnotationSet)bindings.get("receiver");
+	gate.Annotation receiverAnn = (gate.Annotation)receiver.iterator().next();
+
+	if (sender != null) {
+		features.put("Sender", senderAnn.getFeatures().get("sender"));
+	}
+
+	if (receiver != null) {
+		features.put("Receiver", receiverAnn.getFeatures().get("receiver"));
+	}
+	
+	outputAS.add(message.firstNode(), message.lastNode(), "Transmission", features);
+}
