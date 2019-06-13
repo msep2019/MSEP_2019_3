@@ -7,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileOutput {
-	public static void atWriter(SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, SoSSecBehaviour[] behaviourRules, SoSSexAgent[] agentRules) throws IOException{
+	public static void atWriter(SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, SoSSecBehaviour[] behaviourRules, SoSSecAgent[] agentRules) throws IOException{
 		System.out.println("Writing output file...");
 		
 		FileOutputStream xlsFileStream = new FileOutputStream(new File("log/output.xlsx"));

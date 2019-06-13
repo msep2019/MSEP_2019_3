@@ -1,25 +1,26 @@
+import java.util.ArrayList;
+
 class SoSSecCondition {
-	private String vulnerability ;
-	private String type ;
+	private String name;
+	private String type;
+	
 	public SoSSecCondition() {
-		super() ;
+		super();
 	}
 	
-	//set vulnerability
-	public String getVulnerability() {
-		return vulnerability ;
+	public String getName() {
+		return this.name;
 	}
 	
-	public void setVulnerability(String vulnerability) {
-		this.vulnerability = vulnerability ;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
-	//set type
 	public String getType() {
-		return type ;
+		return this.type;
 	}
 	
 	public void setType(String type) {
-		this.type = type ;
+		this.type = type;
 	}
 }

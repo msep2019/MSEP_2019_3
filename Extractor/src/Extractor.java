@@ -25,7 +25,7 @@ public class Extractor {
 		SoSSecCondition[] conditionRules = new SoSSecCondition[352];
 		SoSSecMessage[] messageRules = new SoSSecMessage[348];
 		SoSSecBehaviour[] behaviourRules = new SoSSecBehaviour[874];
-		SoSSexAgent[] agentRules = new SoSSexAgent[1402];
+		SoSSecAgent[] agentRules = new SoSSecAgent[1402];
 		
 		//call document analysing
 		DocumentAnalyser.processDocs(sac,log,conditionRules,messageRules,behaviourRules,agentRules,1);

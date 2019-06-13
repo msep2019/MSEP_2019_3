@@ -1,26 +1,45 @@
+import java.util.ArrayList;
+
 class SoSSecBehaviour {
-	private String behaviour ;
-	private String vulnerability ;
+	private String name;
+	private ArrayList<SoSSecVulnerability> vulnerability;
 	
 	public SoSSecBehaviour() {
-		super() ;
-	}
-
-	//set behaviour
-	public String getBehaviour() {
-		return behaviour ;
+		super();
 	}
 	
-	public void setBehaviour(String behaviour) {
-		this.behaviour = behaviour ;
+	public String getName() {
+		return this.name;
 	}
 	
-	//set vulnerability
-	public String getVulnerability() {
-		return vulnerability ;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
-	public void setVulnerability(String vulnerability) {
-		this.vulnerability = vulnerability ;
+	public ArrayList<SoSSecVulnerability> getVulnerabilities() {
+		return this.vulnerability;
+	}
+	
+	public SoSSecVulnerability getBehaviour(String name) {
+		
+		for (SoSSecVulnerability el : this.vulnerability){
+	        if (el.getName().equals(name)) {
+	        	return el;
+	        }
+	           
+	    }
+		return null;
+	}
+	
+	public void setVulnerability(ArrayList<SoSSecVulnerability> vulnerability) {
+		this.vulnerability = vulnerability;
+	}
+	
+	public void setVulnerability(SoSSecVulnerability vulnerability) {
+			  
+		if (!this.vulnerability.contains(vulnerability)) { 
+			this.vulnerability.add(vulnerability); 
+		} 
+       
 	}
 }

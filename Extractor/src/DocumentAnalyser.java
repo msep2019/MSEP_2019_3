@@ -21,7 +21,7 @@ import gate.creole.SerialAnalyserController;
 
 
 public class DocumentAnalyser {
-	public static void processDocs(SerialAnalyserController sac, File log, SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, 	SoSSecBehaviour[] behaviourRules, SoSSexAgent[] agentRules, int fileClusterLength) throws ResourceInstantiationException, ExecutionException, MalformedURLException{
+	public static void processDocs(SerialAnalyserController sac, File log, SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, 	SoSSecBehaviour[] behaviourRules, SoSSecAgent[] agentRules, int fileClusterLength) throws ResourceInstantiationException, ExecutionException, MalformedURLException{
 		
 		//File log = new File("log/SoSSec.xgapp");
 		//Controller controller = (Controller)PersistenceManager.loadObjectFromFile(log);
@@ -185,7 +185,7 @@ public class DocumentAnalyser {
 			//get BehaviourRule
 			for(Annotation colAnnotation : behaviourType){
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				agentRules[rowCount] = new SoSSexAgent();
+				agentRules[rowCount] = new SoSSecAgent();
 				//String colNamesString = colFeatureMap.toString();
 				if (colFeatureMap.containsKey("Agent")){
 					colFeature = colFeatureMap.get("Agent").toString();
