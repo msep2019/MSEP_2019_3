@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-
 import org.apache.log4j.BasicConfigurator;
 
 import gate.creole.SerialAnalyserController;
@@ -23,18 +21,20 @@ public class Extractor {
 		//load processing resources
 		SerialAnalyserController sac = ResourcesLoader.getResources();
 		
-		//arraylist to contain annotation types
-		ArrayList<String> anntTypes = new ArrayList<String>();
-		//map to check if anntType list is already present
-		ArrayList<String> checkColumn = new ArrayList<String>();
+		//identify structs for annotation types
+		ConditionRule[] conditionRules = new ConditionRule[352];
+		MessageRule[] messageRules = new MessageRule[348];
+		BehaviourRule[] behaviourRules = new BehaviourRule[874];
+		AgentRule[] agentRules = new AgentRule[1402];
 		
 		//call document analysing
-		DocumentAnalyser.processDocs(sac,log,anntTypes,checkColumn,1);
+		DocumentAnalyser.processDocs(sac,log,conditionRules,messageRules,behaviourRules,agentRules,1);
 		
 		//call file writer to write the XML file
-		FileOutput.atWriter(anntTypes,checkColumn);
+		FileOutput.atWriter(conditionRules,messageRules,behaviourRules,agentRules);
+		ExcelReaderXmlWriter.writeXml();
 		
 		long endTime = System.currentTimeMillis();
-		System.out.println("Total time in processing"+" sossec is"+(endTime-startTime)+"ms.");
+		System.out.println("Total time in processing"+" SoSSec is"+(endTime-startTime)+"ms.");
 	}
 }
