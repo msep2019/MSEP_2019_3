@@ -1,8 +1,8 @@
-class BehaviourRule {
+class SoSSecBehaviour {
 	private String behaviour ;
 	private String vulnerability ;
 	
-	public BehaviourRule() {
+	public SoSSecBehaviour() {
 		super() ;
 	}
 

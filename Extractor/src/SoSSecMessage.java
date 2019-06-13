@@ -1,7 +1,7 @@
-class MessageRule {
+class SoSSecMessage {
 	private String receiver ;
 	private String sender ;
-	public MessageRule() {
+	public SoSSecMessage() {
 		super() ;
 	}
 	

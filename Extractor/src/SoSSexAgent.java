@@ -1,7 +1,7 @@
-class AgentRule {
+class SoSSexAgent {
 	private String agent ;
 	private String behaviour ;
-	public AgentRule() {
+	public SoSSexAgent() {
 		super() ;
 	}
 	

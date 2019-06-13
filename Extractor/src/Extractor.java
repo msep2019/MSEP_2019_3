@@ -22,10 +22,10 @@ public class Extractor {
 		SerialAnalyserController sac = ResourcesLoader.getResources();
 		
 		//identify structs for annotation types
-		ConditionRule[] conditionRules = new ConditionRule[352];
-		MessageRule[] messageRules = new MessageRule[348];
-		BehaviourRule[] behaviourRules = new BehaviourRule[874];
-		AgentRule[] agentRules = new AgentRule[1402];
+		SoSSecCondition[] conditionRules = new SoSSecCondition[352];
+		SoSSecMessage[] messageRules = new SoSSecMessage[348];
+		SoSSecBehaviour[] behaviourRules = new SoSSecBehaviour[874];
+		SoSSexAgent[] agentRules = new SoSSexAgent[1402];
 		
 		//call document analysing
 		DocumentAnalyser.processDocs(sac,log,conditionRules,messageRules,behaviourRules,agentRules,1);

@@ -1,7 +1,7 @@
-class ConditionRule {
+class SoSSecCondition {
 	private String vulnerability ;
 	private String type ;
-	public ConditionRule() {
+	public SoSSecCondition() {
 		super() ;
 	}
 	

@@ -21,7 +21,7 @@ import gate.creole.SerialAnalyserController;
 
 
 public class DocumentAnalyser {
-	public static void processDocs(SerialAnalyserController sac, File log, ConditionRule[] conditionRules, MessageRule[] messageRules, 	BehaviourRule[] behaviourRules, AgentRule[] agentRules, int fileClusterLength) throws ResourceInstantiationException, ExecutionException, MalformedURLException{
+	public static void processDocs(SerialAnalyserController sac, File log, SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, 	SoSSecBehaviour[] behaviourRules, SoSSexAgent[] agentRules, int fileClusterLength) throws ResourceInstantiationException, ExecutionException, MalformedURLException{
 		
 		//File log = new File("log/SoSSec.xgapp");
 		//Controller controller = (Controller)PersistenceManager.loadObjectFromFile(log);
@@ -87,7 +87,7 @@ public class DocumentAnalyser {
 			for(Annotation colAnnotation : conditionType){
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
 				//String colNamesString = colFeatureMap.toString();
-				conditionRules[rowCount] = new ConditionRule();
+				conditionRules[rowCount] = new SoSSecCondition();
 				if (colFeatureMap.containsKey("Vulnerability")){
 					colFeature = colFeatureMap.get("Vulnerability").toString();
 					//decodedcolFeature = colFeature ;
@@ -120,7 +120,7 @@ public class DocumentAnalyser {
 			for(Annotation colAnnotation : messageType){
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
 				//String colNamesString = colFeatureMap.toString();
-				messageRules[rowCount] = new MessageRule();
+				messageRules[rowCount] = new SoSSecMessage();
 				if (colFeatureMap.containsKey("receiver")){
 					colFeature = colFeatureMap.get("receiver").toString();
 					//decodedcolFeature = colFeature ;
@@ -153,7 +153,7 @@ public class DocumentAnalyser {
 			for(Annotation colAnnotation : vulnerabilityType){
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
 				//String colNamesString = colFeatureMap.toString();
-				behaviourRules[rowCount] = new BehaviourRule();
+				behaviourRules[rowCount] = new SoSSecBehaviour();
 				if (colFeatureMap.containsKey("Behaviour")){
 					colFeature = colFeatureMap.get("Behaviour").toString();
 					//decodedcolFeature = colFeature ;
@@ -185,7 +185,7 @@ public class DocumentAnalyser {
 			//get BehaviourRule
 			for(Annotation colAnnotation : behaviourType){
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				agentRules[rowCount] = new AgentRule();
+				agentRules[rowCount] = new SoSSexAgent();
 				//String colNamesString = colFeatureMap.toString();
 				if (colFeatureMap.containsKey("Agent")){
 					colFeature = colFeatureMap.get("Agent").toString();
