@@ -19,212 +19,209 @@ import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 
-
 public class DocumentAnalyser {
-	public static void processDocs(SerialAnalyserController sac, File log, SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, 	SoSSecBehaviour[] behaviourRules, SoSSecAgent[] agentRules, int fileClusterLength) throws ResourceInstantiationException, ExecutionException, MalformedURLException{
+	public static ArrayList<SoSSecAgent> processDocs(File log) throws ResourceInstantiationException, ExecutionException, MalformedURLException {
+		ArrayList<SoSSecAgent> agents = new ArrayList<SoSSecAgent>();
 		
-		//File log = new File("log/SoSSec.xgapp");
-		//Controller controller = (Controller)PersistenceManager.loadObjectFromFile(log);
-		
-		//creating corpus
+		// load processing resources
+		SerialAnalyserController sac = ResourcesLoader.getResources();
+
+		// creating corpus
 		Corpus corpus = Factory.newCorpus("LOGText Corpus");
-		
-		//Arraylist to store files resources
+
+		// Arraylist to store files resources
 		ArrayList<Document> documentResList = new ArrayList<Document>();
-		
+
 		int name = 0;
 		int rowCount = 0;
-		
-		//strings for temp arrangement
+
+		// strings for temp arrangement
 		String colFeature = "";
 		String colTag = "";
 		String decodedcolFeature = "";
-		
-		URL sourceUrl = log.toURI().toURL();
+
 		// feature map for creating documents
 		FeatureMap params = Factory.newFeatureMap();
-		params.put(Document.DOCUMENT_URL_PARAMETER_NAME, sourceUrl);
+		params.put(Document.DOCUMENT_URL_PARAMETER_NAME, log.toURI().toURL());
 		params.put(Document.DOCUMENT_ENCODING_PARAMETER_NAME, "UTF-8");
-		
+
 		FeatureMap features = Factory.newFeatureMap();
 		features.put("createdOn", new Date());
 		name++;// to mark each doc and corpus
+
+		// creating document
+		Document doc = (Document) Factory.createResource("gate.corpora.DocumentImpl", params, features, log.getName() + name);
 		
-		//creating document
-		Document doc=(Document) Factory.createResource("gate.corpora.DocumentImpl", params, features, log.getName()+"-TestDoc"+name);
-		//add document in corpus
+		// add document in corpus
 		corpus.add(doc);
 		// add corpus to sac
+		
 		sac.setCorpus(corpus);
 		// execute sac on corpus
-		sac.execute();
 		
-		for(Iterator<Document> cIterator = corpus.iterator(); cIterator.hasNext();) {
+		sac.execute();
+
+		for (Iterator<Document> cIterator = corpus.iterator(); cIterator.hasNext();) {
 
 			// get document from corpus
 			Document corpDoc = cIterator.next();
 			// get default set of annotations
 			AnnotationSet defaultSet = corpDoc.getAnnotations();
 			// get annotations of different types
-			AnnotationSet conditionType = defaultSet.get("Condition");
-			AnnotationSet messageType = defaultSet.get("Message");
-			AnnotationSet vulnerabilityType = defaultSet.get("Vulnerability");
-			AnnotationSet behaviourType = defaultSet.get("Behaviour");
+			AnnotationSet annotAgent = defaultSet.get("Agent");
+			AnnotationSet annotBehaviour = defaultSet.get("Behaviour");
+			AnnotationSet annotCondition = defaultSet.get("Condition");
+			AnnotationSet annotVulnerability = defaultSet.get("Vulnerability");
+			AnnotationSet annotMessage = defaultSet.get("Message");
 			
+			
+
 			Set<String> set1 = defaultSet.getAllTypes();
-			Iterator<String> it1 = set1.iterator(); 
-			//Set<String> set2 = conditionType.getAllTypes();
-			//Iterator<String> it2 = set2.iterator(); 
-			
+			Iterator<String> it1 = set1.iterator();
+			// Set<String> set2 = conditionType.getAllTypes();
+			// Iterator<String> it2 = set2.iterator();
+
 			System.out.println(set1.size());
-			while (it1.hasNext()) {  
-				  String str = it1.next();  
-				  System.out.println(str);  
-			}		
-			//System.out.println(set2.size());
-			
-			//get ConditionRule
-			for(Annotation colAnnotation : conditionType){
-				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				//String colNamesString = colFeatureMap.toString();
-				conditionRules[rowCount] = new SoSSecCondition();
-				if (colFeatureMap.containsKey("Vulnerability")){
-					colFeature = colFeatureMap.get("Vulnerability").toString();
-					//decodedcolFeature = colFeature ;
+			while (it1.hasNext()) {
+				String str = it1.next();
+				System.out.println(str);
+			}
+			// System.out.println(set2.size());
+
+			// Get Agents
+			rowCount = 0;
+			for (Annotation annot : annotAgent) {
+				FeatureMap colFeatureMap = annot.getFeatures();
+				
+				SoSSecAgent agent = new SoSSecAgent(annot.toString());
+				
+				if ()
+				// String colNamesString = colFeatureMap.toString();
+				if (colFeatureMap.containsKey("Agent")) {
+					colFeature = colFeatureMap.get("Agent").toString();
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colFeature, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colFeature  = decodedcolFeature;
+					colFeature = decodedcolFeature;
+					
+				}
+			}
+			
+			/*
+			// get ConditionRule
+			for (Annotation colAnnotation : conditionType) {
+				FeatureMap colFeatureMap = colAnnotation.getFeatures();
+				// String colNamesString = colFeatureMap.toString();
+				conditionRules[rowCount] = new SoSSecCondition();
+				if (colFeatureMap.containsKey("Vulnerability")) {
+					colFeature = colFeatureMap.get("Vulnerability").toString();
+					// decodedcolFeature = colFeature ;
+					try {
+						decodedcolFeature = URLDecoder.decode(colFeature, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					colFeature = decodedcolFeature;
 					conditionRules[rowCount].setVulnerability(colFeature);
 				}
-				if (colFeatureMap.containsKey("type")){
+				if (colFeatureMap.containsKey("type")) {
 					colTag = colFeatureMap.get("type").toString();
-					//decodedcolFeature = colFeature ;
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colTag,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colTag, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colTag  = decodedcolFeature;
+					colTag = decodedcolFeature;
 					conditionRules[rowCount].setType(colTag);
 				}
 				rowCount++;
 			}
-			
+
 			rowCount = 0;
-			//get MessageRule
-			for(Annotation colAnnotation : messageType){
+			// get MessageRule
+			for (Annotation colAnnotation : messageType) {
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				//String colNamesString = colFeatureMap.toString();
+				// String colNamesString = colFeatureMap.toString();
 				messageRules[rowCount] = new SoSSecMessage();
-				if (colFeatureMap.containsKey("receiver")){
+				if (colFeatureMap.containsKey("receiver")) {
 					colFeature = colFeatureMap.get("receiver").toString();
-					//decodedcolFeature = colFeature ;
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colFeature, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colFeature  = decodedcolFeature;
+					colFeature = decodedcolFeature;
 					messageRules[rowCount].setReceiver(colFeature);
 				}
-				if (colFeatureMap.containsKey("sender")){
+				if (colFeatureMap.containsKey("sender")) {
 					colTag = colFeatureMap.get("sender").toString();
-					//decodedcolFeature = colFeature ;
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colTag,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colTag, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colTag  = decodedcolFeature;
+					colTag = decodedcolFeature;
 					messageRules[rowCount].setSender(colTag);
 				}
 				rowCount++;
 			}
-			
+
 			rowCount = 0;
-			//get BehaviourRule
-			for(Annotation colAnnotation : vulnerabilityType){
+			// get BehaviourRule
+			for (Annotation colAnnotation : vulnerabilityType) {
 				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				//String colNamesString = colFeatureMap.toString();
+				// String colNamesString = colFeatureMap.toString();
 				behaviourRules[rowCount] = new SoSSecBehaviour();
-				if (colFeatureMap.containsKey("Behaviour")){
+				if (colFeatureMap.containsKey("Behaviour")) {
 					colFeature = colFeatureMap.get("Behaviour").toString();
-					//decodedcolFeature = colFeature ;
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colFeature, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colFeature  = decodedcolFeature;
+					colFeature = decodedcolFeature;
 					behaviourRules[rowCount].setBehaviour(colFeature);
 				}
-				if (colFeatureMap.containsKey("Vulnerability")){
+				if (colFeatureMap.containsKey("Vulnerability")) {
 					colFeature = colFeatureMap.get("Vulnerability").toString();
-					//decodedcolFeature = colFeature ;
+					// decodedcolFeature = colFeature ;
 					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
+						decodedcolFeature = URLDecoder.decode(colFeature, "UTF-8");
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					colFeature  = decodedcolFeature;
+					colFeature = decodedcolFeature;
 					behaviourRules[rowCount].setVulnerability(colFeature);
 				}
 				rowCount++;
 			}
-			
-			rowCount = 0;
-			//get BehaviourRule
-			for(Annotation colAnnotation : behaviourType){
-				FeatureMap colFeatureMap = colAnnotation.getFeatures();
-				agentRules[rowCount] = new SoSSecAgent();
-				//String colNamesString = colFeatureMap.toString();
-				if (colFeatureMap.containsKey("Agent")){
-					colFeature = colFeatureMap.get("Agent").toString();
-					//decodedcolFeature = colFeature ;
-					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					colFeature  = decodedcolFeature;
-					agentRules[rowCount].setAgent(colFeature);
-				}
-				if (colFeatureMap.containsKey("Behaviour")){
-					colFeature = colFeatureMap.get("Behaviour").toString();
-					//decodedcolFeature = colFeature ;
-					try {
-						decodedcolFeature = URLDecoder.decode(colFeature,  "UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					colFeature  = decodedcolFeature;
-					agentRules[rowCount].setBehaviour(colFeature);
-				}
-				rowCount++;
-			}
+
+			*/
 		}
-		
-		System.out.println(fileClusterLength+" processed docs analysed!");
+
 		corpus.clear();
-				
-		//delete each document resource
-		for(Iterator<Document> docResIterator = documentResList.iterator(); docResIterator.hasNext();){
+
+		// delete each document resource
+		for (Iterator<Document> docResIterator = documentResList.iterator(); docResIterator.hasNext();) {
 			Factory.deleteResource((Resource) docResIterator.next());
 		}
 		System.out.println("All docs are removed from LR and corpus is cleared!");
-		
-		//clear list of document resources
+
+		// clear list of document resources
 		documentResList.clear();
 		System.out.println("Document resource list cleared!");
 		System.gc();

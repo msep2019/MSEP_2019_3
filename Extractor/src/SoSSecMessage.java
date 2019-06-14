@@ -2,34 +2,34 @@ class SoSSecMessage {
 	private String name;
 	private SoSSecBehaviour receiver;
 	private SoSSecBehaviour sender;
-	
+
 	public SoSSecMessage() {
-		super() ;
+		super();
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	//set receiver
+
+	// set receiver
 	public SoSSecBehaviour getReceiver() {
-		return receiver ;
+		return receiver;
 	}
-	
+
 	public void setReceiver(SoSSecBehaviour receiver) {
-		this.receiver = receiver ;
+		this.receiver = receiver;
 	}
-	
-	//set sender
+
+	// set sender
 	public SoSSecBehaviour getSender() {
-		return sender ;
+		return sender;
 	}
-	
+
 	public void setSender(SoSSecBehaviour sender) {
-		this.sender = sender ;
+		this.sender = sender;
 	}
 }

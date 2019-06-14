@@ -6,7 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class FileOutput {
+public class Exporter {
 	public static void atWriter(SoSSecCondition[] conditionRules, SoSSecMessage[] messageRules, SoSSecBehaviour[] behaviourRules, SoSSecAgent[] agentRules) throws IOException{
 		System.out.println("Writing output file...");
 		
@@ -25,7 +25,7 @@ public class FileOutput {
 		sheet.getRow(0).createCell(5).setCellValue("Sender");
 		sheet.getRow(0).createCell(6).setCellValue("Vulnerability");
 		sheet.getRow(0).createCell(7).setCellValue("vType");
-		
+		/*
 		for(int x = 0; x < agentRules.length; x++){
 			XSSFRow row = sheet.createRow(x+1);
 			row.createCell(0).setCellValue(agentRules[x].getAgent());
@@ -53,6 +53,7 @@ public class FileOutput {
 		// write sheet in file
 		workbook.write(xlsFileStream);
 		xlsFileStream.close();
+		*/
 	}
 }
 
