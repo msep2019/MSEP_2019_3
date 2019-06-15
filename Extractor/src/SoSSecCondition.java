@@ -1,17 +1,15 @@
-class SoSSecCondition {
-	private String name;
-	private String type;
+import java.util.HashMap;
 
+class SoSSecCondition extends SoSSecObject implements SoSSecElement{
+	private String type;
+	
 	public SoSSecCondition() {
 		super();
 	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	public SoSSecCondition(String name) {
+		super();
+		this.setName(name);
 	}
 
 	public String getType() {

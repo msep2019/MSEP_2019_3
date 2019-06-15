@@ -1,7 +1,7 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
-class SoSSecAgent extends SoSSecObject {
-	private ArrayList<SoSSecBehaviour> behaviour;
+class SoSSecAgent extends SoSSecObject implements SoSSecElement{
+	private HashMap<String, SoSSecBehaviour> behaviour = new HashMap<String, SoSSecBehaviour>();
 	
 	public SoSSecAgent() {
 		super();
@@ -12,29 +12,22 @@ class SoSSecAgent extends SoSSecObject {
 		this.setName(name);
 	}
 
-	public ArrayList<SoSSecBehaviour> getBehaviours() {
+	public HashMap<String, SoSSecBehaviour> getBehaviours() {
 		return this.behaviour;
 	}
 
 	public SoSSecBehaviour getBehaviour(String name) {
-
-		for (SoSSecBehaviour el : this.behaviour) {
-			if (el.getName().equals(name)) {
-				return el;
-			}
-
-		}
-		return null;
+		return this.behaviour.get(name);
 	}
 
-	public void setBehaviour(ArrayList<SoSSecBehaviour> behaviour) {
+	public void addBehaviour(HashMap<String, SoSSecBehaviour> behaviour) {
 		this.behaviour = behaviour;
 	}
 
-	public void setBehaviour(SoSSecBehaviour behaviour) {
+	public void addBehaviour(SoSSecBehaviour behaviour) {
 
-		if (!this.behaviour.contains(behaviour)) {
-			this.behaviour.add(behaviour);
+		if (this.behaviour == null || !this.behaviour.containsKey(behaviour.getName())) {
+			this.behaviour.put(behaviour.getName(), behaviour);
 		}
 
 	}

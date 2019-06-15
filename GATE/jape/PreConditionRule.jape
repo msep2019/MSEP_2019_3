@@ -25,11 +25,12 @@ Priority: 40
 
 	features.put("rule", "ConditionRule");
 	features.put("type", "PreCondition");
+	features.put("string", stringFor(doc, preconditionAnn));
 
 	gate.AnnotationSet prevul = (gate.AnnotationSet)bindings.get("prevul");
 	gate.Annotation prevulAnn = (gate.Annotation)prevul.iterator().next();
 	
-	features.put("Vulnerability" ,stringFor(doc, prevulAnn));
+	features.put("Vulnerability", stringFor(doc, prevulAnn));
 
 	outputAS.add(precondition.firstNode(), precondition.lastNode(), "Condition", features);
 }

@@ -35,11 +35,12 @@ Priority: 40
 
 	features.put("rule", "ConditionRule");
 	features.put("type", "PostCondition");
+	features.put("string", stringFor(doc, postconditionAnn));
 
 	gate.AnnotationSet postvul = (gate.AnnotationSet)bindings.get("postvul");
 	gate.Annotation postvulAnn = (gate.Annotation)postvul.iterator().next();
 	
-	features.put("Vulnerability" ,stringFor(doc, postvulAnn));
+	features.put("Vulnerability", stringFor(doc, postvulAnn));
 
 	outputAS.add(postcondition.firstNode(), postcondition.lastNode(), "Condition", features);
 }

@@ -1,44 +1,54 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
-class SoSSecBehaviour {
-	private String name;
-	private ArrayList<SoSSecVulnerability> vulnerability;
-
+class SoSSecBehaviour extends SoSSecObject implements SoSSecElement{
+	private HashMap<String, SoSSecVulnerability> vulnerability = new HashMap<String, SoSSecVulnerability>();
+	private HashMap<String, SoSSecBehaviour> receiver = new HashMap<String, SoSSecBehaviour>();
+	
 	public SoSSecBehaviour() {
 		super();
 	}
-
-	public String getName() {
-		return this.name;
+	
+	public SoSSecBehaviour(String name) {
+		super();
+		this.setName(name);
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ArrayList<SoSSecVulnerability> getVulnerabilities() {
+	public HashMap<String, SoSSecVulnerability> getVulnerabilities() {
 		return this.vulnerability;
 	}
 
-	public SoSSecVulnerability getBehaviour(String name) {
-
-		for (SoSSecVulnerability el : this.vulnerability) {
-			if (el.getName().equals(name)) {
-				return el;
-			}
-
-		}
-		return null;
+	public SoSSecVulnerability getVulnerability(String name) {
+		return this.vulnerability.get(name);
 	}
 
-	public void setVulnerability(ArrayList<SoSSecVulnerability> vulnerability) {
+	public void addVulnerability(HashMap<String, SoSSecVulnerability> vulnerability) {
 		this.vulnerability = vulnerability;
 	}
 
-	public void setVulnerability(SoSSecVulnerability vulnerability) {
+	public void addVulnerability(SoSSecVulnerability vulnerability) {
 
-		if (!this.vulnerability.contains(vulnerability)) {
-			this.vulnerability.add(vulnerability);
+		if (this.vulnerability == null || !this.vulnerability.containsKey(vulnerability.getName())) {
+			this.vulnerability.put(vulnerability.getName(), vulnerability);
+		}
+
+	}
+	
+	public HashMap<String, SoSSecBehaviour> getReceivers() {
+		return this.receiver;
+	}
+
+	public SoSSecBehaviour getReceiver(String name) {
+		return this.receiver.get(name);
+	}
+
+	public void addReceiver(HashMap<String, SoSSecBehaviour> behaviour) {
+		this.receiver = behaviour;
+	}
+
+	public void addReceiver(SoSSecBehaviour receiver) {
+
+		if (this.receiver == null || !this.receiver.containsKey(receiver.getName())) {
+			this.receiver.put(receiver.getName(), receiver);
 		}
 
 	}
