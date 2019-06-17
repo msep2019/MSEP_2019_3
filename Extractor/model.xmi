@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="ASCII"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:soSSec="http://www.example.org/soSSecProfileEcoreRepresentation">
   <soSSec:ActivityDiagram name="Cascading Diagram"/>
-  <soSSec:Action xmi:id="_LKntQI9FEemEXfg43zGoeA" name="automaticControlLights"/>
-  <soSSec:Vulnerability xmi:id="_LKqwlo9FEemEXfg43zGoeA" name="CrossSiteScripting"/>
-  <soSSec:ObjectlFlow xmi:id="_LRXOcI9FEemEXfg43zGoeA" target="_LKntQI9FEemEXfg43zGoeA" source="_LKqwlo9FEemEXfg43zGoeA"/>
-  <soSSec:PreCondition xmi:id="_LKtz4I9FEemEXfg43zGoeA" name="ByPassAuthentication" vulnerability="_LKqwlo9FEemEXfg43zGoeA"/>
-  <soSSec:ObjectlFlow xmi:id="_LKntQo9FEemEXfg43zGoeA" target="_LKntQo9FEemEXfg43zGoeA" source="_LKntQI9FEemEXfg43zGoeA"/>
-  <soSSec:Action xmi:id="_LKo7-49FEemEXfg43zGoeA" name="manageEnergy"/>
-  <soSSec:Vulnerability xmi:id="_LKqwkI9FEemEXfg43zGoeA" name="WeakAuthentication"/>
-  <soSSec:ObjectlFlow xmi:id="_LRX1gI9FEemEXfg43zGoeA" target="_LKo7-49FEemEXfg43zGoeA" source="_LKqwkI9FEemEXfg43zGoeA"/>
-  <soSSec:PostCondition xmi:id="_LKubMY9FEemEXfg43zGoeA" name="AccessPasswordInformation" vulnerability="_LKqwkI9FEemEXfg43zGoeA"/>
-  <soSSec:PostCondition xmi:id="_LKubMI9FEemEXfg43zGoeA" name="RemoteAccess" vulnerability="_LKqwkI9FEemEXfg43zGoeA"/>
-  <soSSec:ObjectlFlow xmi:id="_LKntQo9FEemEXfg43zGoeA" target="_LKntQo9FEemEXfg43zGoeA" source="_LKo7-49FEemEXfg43zGoeA"/>
-  <soSSec:Action xmi:id="_LKntQo9FEemEXfg43zGoeA" name="automaticControlHVAC"/>
-  <soSSec:Vulnerability xmi:id="_LKqwlI9FEemEXfg43zGoeA" name="DirectoryTraversal"/>
-  <soSSec:ObjectlFlow xmi:id="_LRX1gY9FEemEXfg43zGoeA" target="_LKntQo9FEemEXfg43zGoeA" source="_LKqwlI9FEemEXfg43zGoeA"/>
-  <soSSec:PreCondition xmi:id="_LKvCQ49FEemEXfg43zGoeA" name="AccessPasswordInformation" vulnerability="_LKqwlI9FEemEXfg43zGoeA"/>
-  <soSSec:Vulnerability xmi:id="_LKqwko9FEemEXfg43zGoeA" name="PrivilageEscalation"/>
-  <soSSec:ObjectlFlow xmi:id="_LRX1go9FEemEXfg43zGoeA" target="_LKntQo9FEemEXfg43zGoeA" source="_LKqwko9FEemEXfg43zGoeA"/>
-  <soSSec:PreCondition xmi:id="_LKvCQo9FEemEXfg43zGoeA" name="RemoteAccess" vulnerability="_LKqwko9FEemEXfg43zGoeA"/>
-  <soSSec:PostCondition xmi:id="_LKubL49FEemEXfg43zGoeA" name="ByPassAuthentication" vulnerability="_LKqwko9FEemEXfg43zGoeA"/>
-  <soSSec:ObjectlFlow xmi:id="_LKntQI9FEemEXfg43zGoeA" target="_LKntQI9FEemEXfg43zGoeA" source="_LKntQo9FEemEXfg43zGoeA"/>
+  <soSSec:Action xmi:id="_Q9lqYJBWEeme-b8APB98Xw" name="automaticControlLights"/>
+  <soSSec:Vulnerability xmi:id="_Q9ottpBWEeme-b8APB98Xw" name="CrossSiteScripting"/>
+  <soSSec:ObjectFlow xmi:id="_RFIc0JBWEeme-b8APB98Xw" target="_Q9lqYJBWEeme-b8APB98Xw" source="_Q9ottpBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9rxAJBWEeme-b8APB98Xw" name="ByPassAuthentication" activates="_Q9ottpBWEeme-b8APB98Xw"/>
+  <soSSec:Action xmi:id="_Q9m4o5BWEeme-b8APB98Xw" name="manageEnergy"/>
+  <soSSec:Vulnerability xmi:id="_Q9otsJBWEeme-b8APB98Xw" name="WeakAuthentication"/>
+  <soSSec:ObjectFlow xmi:id="_RFJD4JBWEeme-b8APB98Xw" target="_Q9m4o5BWEeme-b8APB98Xw" source="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSAJBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9m4o5BWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYR5BWEeme-b8APB98Xw" name="AccessPasswordInformation" vulnerability="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYRpBWEeme-b8APB98Xw" name="RemoteAccess" vulnerability="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:Action xmi:id="_Q9lqYpBWEeme-b8APB98Xw" name="automaticControlHVAC"/>
+  <soSSec:Vulnerability xmi:id="_Q9ottJBWEeme-b8APB98Xw" name="DirectoryTraversal"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSAZBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9ottJBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9s_VJBWEeme-b8APB98Xw" name="AccessPasswordInformation" activates="_Q9ottJBWEeme-b8APB98Xw"/>
+  <soSSec:Vulnerability xmi:id="_Q9otspBWEeme-b8APB98Xw" name="PrivilageEscalation"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSApBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9otspBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9s_U5BWEeme-b8APB98Xw" name="RemoteAccess" activates="_Q9otspBWEeme-b8APB98Xw"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSA5BWEeme-b8APB98Xw" target="_Q9lqYJBWEeme-b8APB98Xw" source="_Q9lqYpBWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYRZBWEeme-b8APB98Xw" name="ByPassAuthentication" vulnerability="_Q9otspBWEeme-b8APB98Xw"/>
 </xmi:XMI>

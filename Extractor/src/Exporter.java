@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.emf.common.util.URI;
@@ -32,6 +33,8 @@ public class Exporter {
 	EReference _vulner_Actions, _vulner_PostConditions;
 	EReference _preCondition_Vulner;
 	//EObject _diagramEObject, _actionEObject, _vulnerEObject, _preConditionEObject, _postConditionEObject;
+	
+	private ArrayList<String> receivers = new ArrayList<>();
 	
 	public Exporter() {
 		// Instantiate EcoreFactory and EcorePackage
@@ -92,9 +95,9 @@ public class Exporter {
 		_postConditionEClass = _coreFactory.createEClass();
 		_postConditionEClass.setName("PostCondition");
 		
-		// Create EClass instance to model ObjectlFlow class
+		// Create EClass instance to model ObjectFlow class
 		_objFlowEClass = _coreFactory.createEClass();
-		_objFlowEClass.setName("ObjectlFlow");
+		_objFlowEClass.setName("ObjectFlow");
 		_objFlowEClass.getESuperTypes().add(_edgeEClass);
 	}
 	
@@ -172,7 +175,7 @@ public class Exporter {
 		_preConditionEClass.getEStructuralFeatures().add(_preCondition_Vulner);
 		
 		_preConditionVulner = _coreFactory.createEAttribute();
-		_preConditionVulner.setName("vulnerability");
+		_preConditionVulner.setName("activates");
 		_preConditionVulner.setEType(_corePackage.getEString());
 		_preConditionEClass.getEStructuralFeatures().add(_preConditionVulner);
 		
@@ -263,6 +266,25 @@ public class Exporter {
 							_conditionEObject = diagramFactoryInstance.create(_postConditionEClass);
 							_conditionEObject.eSet(_postConditionName, condition.getName());
 							_conditionEObject.eSet(_postConditionVulner, vulner.getUUID());
+							
+							behaviour.getReceivers().forEach((receiverName, receiver) -> {
+								
+								if (!receivers.contains(receiver.getName())) {
+									receiver.getVulnerabilities().forEach((receiverVulnerName, receiverVulner) -> {
+										receiverVulner.getConditions().forEach((receiverConditionName, receiverCondition) -> {
+											if (receiverCondition.getType() == "PreCondition" && condition.getName().equals(receiverCondition.getName())) {
+												EObject _objFlowEObjectAction = diagramFactoryInstance.create(_objFlowEClass);
+												_objFlowEObjectAction.eSet(_objFlowSource, behaviour.getUUID());
+												_objFlowEObjectAction.eSet(_objFlowTarget, receiver.getUUID());
+												resource.getContents().add(_objFlowEObjectAction);
+												resource.setID(_objFlowEObjectAction, EcoreUtil.generateUUID());
+												
+												receivers.add(receiver.getName());
+											}
+										});
+									});
+								}
+							});
 						}
 						
 						if (_conditionEObject != null) {
@@ -271,14 +293,6 @@ public class Exporter {
 						}
 						
 					});
-				});
-
-				behaviour.getReceivers().forEach((receiverName, receiver) -> {
-					EObject _objFlowEObject = diagramFactoryInstance.create(_objFlowEClass);
-					_objFlowEObject.eSet(_objFlowSource, behaviour.getUUID());
-					_objFlowEObject.eSet(_objFlowTarget, receiver.getUUID());
-					resource.getContents().add(_objFlowEObject);
-					resource.setID(_objFlowEObject, receiver.getUUID());
 				});
 			});
 		});
