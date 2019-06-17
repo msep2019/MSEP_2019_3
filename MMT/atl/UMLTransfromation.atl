@@ -1,159 +1,147 @@
--- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
--- @nsURI CM=http://www.eclipse.org/uml2/5.0.0/UML
--- @nsURI REQUIREMENT=http://www.eclipse.org/papyrus/0.7.0/SysML/Requirements
--- @nsURI CM=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI UMLOUT=http://www.eclipse.org/uml2/5.0.0/UML
+-- @nsURI UMLIN=http://www.eclipse.org/uml2/5.0.0/UML
 -- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+-- @path XMI=/ModelTransformation/metamodels/soSSecProfileEcoreRepresentation.ecore
 
-module UMLTransfromation;
-create OUT: CM from IN: UML, IN2: REQUIREMENT, IN3: ECORE;
+module XMITransfromation;
+create OUT: UMLOUT from IN: XMI, IN2: UMLIN, IN3: ECORE;
 
+-- Helpers
 
+-- End Helpers
 
-helper context UML!Element def: hasStereotype(stereotype : String) : Boolean =
-self.getAppliedStereotypes()->exists(e|e.name=stereotype);
+-- Rules
 
-helper def : getStereotype(name : String) : UML!Stereotype =
-UML!Stereotype.allInstances()->any(p | p.name = name);
-
-helper def: getProfile(name: String): UML!Profile =
-UML!Profile.allInstances()->any(p | p.name = name);
 
 rule Model {
 	from 
-		s: UML!Model
+		x: XMI!ActivityDiagram,
+		s: UMLIN!Model
 	to 
-		c: CM!Model(
-			name <- s.name,
-			packagedElement <- s.packagedElement,
-			profileApplication <- s.profileApplication
-		)		
-}
-
-rule Activity {
-	from 
-		s: UML!Activity
-	to 
-		c: CM!Activity(
-			name <- s.name,
-			edge <- s.edge,
-			node <- s.node,
-			ownedNode <- s.ownedNode,
-			ownedRule <- Sequence{s.ownedRule->collect(e | thisModule.resolveTemp(e, 'constraint'))}
+		u: UMLOUT!Model(
+			name <- 'RootElement',
+			profileApplication <- UMLOUT!ProfileApplication.allInstances(),
+			packagedElement <- activity			
+		),
+		activity: UMLOUT!Activity(
+			name <- x.name,
+			edge <- Sequence{UMLOUT!ControlFlow.allInstances()},
+			node <- Sequence{UMLOUT!OpaqueAction.allInstances()},
+			ownedNode <- Sequence{UMLOUT!OpaqueAction.allInstances(), UMLOUT!DataStoreNode.allInstances()},
+			ownedRule <- Sequence{UMLOUT!Constraint.allInstances()}
 		)
 	do {
 		
 	}
 }
 
-rule Constraint {
-	from 
-		s: UML!"uml::Constraint"
-	to 
-		constraint: CM!"uml::Constraint"(
-			name <- s.name,
-			constrainedElement <- s.constrainedElement,
-			specification <- s.specification
+rule ObjectFlow {
+	from
+		x: XMI!ObjectFlow
+	to
+		vulner: UMLOUT!ControlFlow(
+			target <- x.target,
+			source <- x.source
 		)
 }
 
-rule ControlFlow {
-	from 
-		s: UML!ControlFlow
-	to 
-		c: CM!ControlFlow(
-			name <- s.name,
-			target <- s.target,
-			source <- s.source
+
+rule Action {
+	from
+		x: XMI!Action
+	to
+		action: UMLOUT!OpaqueAction(
+			name <- x.name
 		)
 }
 
-rule OpaqueAction {
-	from 
-		s: UML!OpaqueAction
-	to 
-		c: CM!OpaqueAction(
-			name <- s.name,
-			incoming <- s.incoming,
-			outgoing <- s.outgoing
+rule Vulnerability {
+	from
+		x: XMI!Vulnerability
+	to
+		vulner: UMLOUT!DataStoreNode(
+			name <- x.name,
+			upperBound <- vulUpperBound
+		),
+		vulUpperBound: UMLOUT!LiteralInteger(
+			value <- 1
 		)
 }
 
-rule DataStoreNode {
-	from 
-		s: UML!DataStoreNode(s.oclIsTypeOf(UML!DataStoreNode))
-	to 
-		c: CM!DataStoreNode(
-			name <- s.name,
-			incoming <- s.incoming,
-			outgoing <- s.outgoing,
-			upperBound <- s.upperBound
+rule PreCondition {
+	from
+		x: XMI!PreCondition
+	to
+		vulner: UMLOUT!Constraint(
+			name <- x.name,
+			specification <- spec,
+			constrainedElement <- x.activates
+		),
+		spec: UMLOUT!LiteralString(
+			name <- 'constraintSpec'
 		)
 }
 
-rule LiteralString {
-	from 
-		s: UML!LiteralString
-	to 
-		c: CM!LiteralString(
-			name <- s.name
-		)
-}
-
-rule LiteralInteger {
-	from 
-		s: UML!LiteralInteger
-	to 
-		c: CM!LiteralInteger(
-			value <- s.value
+rule PostCondition {
+	from
+		x: XMI!PostCondition
+	to
+		vulner: UMLOUT!Constraint(
+			name <- x.name,
+			specification <- spec,
+			constrainedElement <- x.vulnerability
+		),
+		spec: UMLOUT!LiteralString(
+			name <- 'constraintSpec'
 		)
 }
 
 rule ProfileApplication {
 	from 
-		s: UML!ProfileApplication
+		s: UMLIN!ProfileApplication
 	to 
-		c: CM!ProfileApplication(
+		profileApp: UMLOUT!ProfileApplication(
 			eAnnotations <- s.eAnnotations,
-			appliedProfile <- s.appliedProfile,
-			applyingPackage <- s.applyingPackage
+			appliedProfile <- s.appliedProfile
 		)
 }
 
 rule EAnnotation {
 	from 
-		s: ECORE!EAnnotation
+		s: UMLIN!EAnnotation
 	to 
-		c: CM!EAnnotation(
+		u: UMLOUT!EAnnotation(
 			references <- s.references,
 			details <- s.details,
-			source <- s.source
+			source <- s.source			
 		)
 }
 
 rule EPackage {
 	from 
-		s: ECORE!EPackage
+		s: UMLIN!EPackage
 	to 
-		c: CM!EPackage(
+		u: UMLOUT!EPackage(
 			
 		)
 }
 
 rule EStringToStringMapEntry {
 	from 
-		s: ECORE!EStringToStringMapEntry
+		s: UMLIN!EStringToStringMapEntry
 	to 
-		c: CM!EStringToStringMapEntry(
+		u: UMLOUT!EStringToStringMapEntry(
 			key <- s.key,
-			value <- s.value
+			value <- s.value			
 		)
 }
 
 rule Profile {
 	from 
-		s: UML!Profile
+		s: UMLIN!Profile
 	to 
-		c: CM!Profile(
+		u: UMLOUT!Profile(
 			
 		)
 }
+-- End Rules

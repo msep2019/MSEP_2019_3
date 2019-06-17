@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:soSSec="http://www.example.org/soSSecProfileEcoreRepresentation">
+  <soSSec:ActivityDiagram name="Cascading Diagram"/>
+  <soSSec:Action xmi:id="_Q9lqYJBWEeme-b8APB98Xw" name="automaticControlLights"/>
+  <soSSec:Vulnerability xmi:id="_Q9ottpBWEeme-b8APB98Xw" name="CrossSiteScripting"/>
+  <soSSec:ObjectFlow xmi:id="_RFIc0JBWEeme-b8APB98Xw" target="_Q9lqYJBWEeme-b8APB98Xw" source="_Q9ottpBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9rxAJBWEeme-b8APB98Xw" name="ByPassAuthentication" activates="_Q9ottpBWEeme-b8APB98Xw"/>
+  <soSSec:Action xmi:id="_Q9m4o5BWEeme-b8APB98Xw" name="manageEnergy"/>
+  <soSSec:Vulnerability xmi:id="_Q9otsJBWEeme-b8APB98Xw" name="WeakAuthentication"/>
+  <soSSec:ObjectFlow xmi:id="_RFJD4JBWEeme-b8APB98Xw" target="_Q9m4o5BWEeme-b8APB98Xw" source="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSAJBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9m4o5BWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYR5BWEeme-b8APB98Xw" name="AccessPasswordInformation" vulnerability="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYRpBWEeme-b8APB98Xw" name="RemoteAccess" vulnerability="_Q9otsJBWEeme-b8APB98Xw"/>
+  <soSSec:Action xmi:id="_Q9lqYpBWEeme-b8APB98Xw" name="automaticControlHVAC"/>
+  <soSSec:Vulnerability xmi:id="_Q9ottJBWEeme-b8APB98Xw" name="DirectoryTraversal"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSAZBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9ottJBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9s_VJBWEeme-b8APB98Xw" name="AccessPasswordInformation" activates="_Q9ottJBWEeme-b8APB98Xw"/>
+  <soSSec:Vulnerability xmi:id="_Q9otspBWEeme-b8APB98Xw" name="PrivilageEscalation"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSApBWEeme-b8APB98Xw" target="_Q9lqYpBWEeme-b8APB98Xw" source="_Q9otspBWEeme-b8APB98Xw"/>
+  <soSSec:PreCondition xmi:id="_Q9s_U5BWEeme-b8APB98Xw" name="RemoteAccess" activates="_Q9otspBWEeme-b8APB98Xw"/>
+  <soSSec:ObjectFlow xmi:id="_RFKSA5BWEeme-b8APB98Xw" target="_Q9lqYJBWEeme-b8APB98Xw" source="_Q9lqYpBWEeme-b8APB98Xw"/>
+  <soSSec:PostCondition xmi:id="_Q9sYRZBWEeme-b8APB98Xw" name="ByPassAuthentication" vulnerability="_Q9otspBWEeme-b8APB98Xw"/>
+</xmi:XMI>
