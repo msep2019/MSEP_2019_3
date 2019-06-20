@@ -3,7 +3,7 @@
 -- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
 -- @nsURI STYLE=http://www.eclipse.org/papyrus/infra/viewpoints/policy/style
 -- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
----trans metamodel to papyrus notation 
+
 module NotationTransfromation;
 create OUT: DN from IN: UML, IN2: SN, IN3: STYLE; 
 
@@ -123,7 +123,7 @@ rule OpaqueAction {
 	}
 }
 
---- Rule for DataStoreNode
+
 rule DataStoreNode {
 	from 
 		uml_dsn: UML!DataStoreNode
