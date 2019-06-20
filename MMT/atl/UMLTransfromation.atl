@@ -12,7 +12,7 @@ create OUT: UMLOUT from IN: XMI, IN2: UMLIN, IN3: ECORE;
 
 -- Rules
 
-
+---rule for UML to UML(cascading attack)
 rule Model {
 	from 
 		x: XMI!ActivityDiagram,
@@ -54,7 +54,7 @@ rule Action {
 			name <- x.name
 		)
 }
-
+--rule for Vulnerability
 rule Vulnerability {
 	from
 		x: XMI!Vulnerability
