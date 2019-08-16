@@ -1,37 +1,33 @@
--- @nsURI UMLOUT=http://www.eclipse.org/uml2/5.0.0/UML
--- @nsURI UMLIN=http://www.eclipse.org/uml2/5.0.0/UML
--- @nsURI ECORE=http://www.eclipse.org/emf/2002/Ecore
+-- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
 -- @path XMI=/ModelTransformation/metamodels/soSSecProfileEcoreRepresentation.ecore
 
 module XMITransfromation;
-create OUT: UMLOUT from IN: XMI, IN2: UMLIN, IN3: ECORE;
+create OUT: UML from IN: XMI, PRO: UML;
 
 -- Helpers
-
+helper def: getStereotype(name: String): UML!Stereotype =
+	UML!Stereotype.allInstancesFrom('PRO') -> select(p | p.name = name) -> first();
 -- End Helpers
 
 -- Rules
-
-
 rule Model {
-	from 
-		x: XMI!ActivityDiagram,
-		s: UMLIN!Model
-	to 
-		u: UMLOUT!Model(
+	from
+		x: XMI!ActivityDiagram
+	to
+		u: UML!Model (
 			name <- 'RootElement',
-			profileApplication <- UMLOUT!ProfileApplication.allInstances(),
-			packagedElement <- activity			
+			packagedElement <- activity
 		),
-		activity: UMLOUT!Activity(
+		activity: UML!Activity (
 			name <- x.name,
-			edge <- Sequence{UMLOUT!ControlFlow.allInstances()},
-			node <- Sequence{UMLOUT!OpaqueAction.allInstances()},
-			ownedNode <- Sequence{UMLOUT!OpaqueAction.allInstances(), UMLOUT!DataStoreNode.allInstances()},
-			ownedRule <- Sequence{UMLOUT!Constraint.allInstances()}
+			edge <- Sequence{UML!ControlFlow.allInstances()},
+			node <- Sequence{UML!OpaqueAction.allInstances()},
+			ownedNode <- Sequence{UML!OpaqueAction.allInstances(),
+						UML!DataStoreNode.allInstances()},
+			ownedRule <- Sequence{UML!Constraint.allInstances()}
 		)
 	do {
-		
+		u.applyProfile(UML!Profile.allInstancesFrom('PRO') -> select(p | p.name = 'RootElement') -> first());
 	}
 }
 
@@ -39,18 +35,17 @@ rule ObjectFlow {
 	from
 		x: XMI!ObjectFlow
 	to
-		vulner: UMLOUT!ControlFlow(
+		vulner: UML!ControlFlow (
 			target <- x.target,
 			source <- x.source
 		)
 }
 
-
 rule Action {
 	from
 		x: XMI!Action
 	to
-		action: UMLOUT!OpaqueAction(
+		action: UML!OpaqueAction (
 			name <- x.name
 		)
 }
@@ -59,89 +54,49 @@ rule Vulnerability {
 	from
 		x: XMI!Vulnerability
 	to
-		vulner: UMLOUT!DataStoreNode(
+		vulner: UML!DataStoreNode (
 			name <- x.name,
 			upperBound <- vulUpperBound
 		),
-		vulUpperBound: UMLOUT!LiteralInteger(
+		vulUpperBound: UML!LiteralInteger (
 			value <- 1
-		)
+		)		
+	do {
+		vulner.applyStereotype(thisModule.getStereotype('Vulnerability')); 
+	}
 }
 
 rule PreCondition {
 	from
 		x: XMI!PreCondition
 	to
-		vulner: UMLOUT!Constraint(
+		vulner: UML!Constraint (
 			name <- x.name,
 			specification <- spec,
 			constrainedElement <- x.activates
 		),
-		spec: UMLOUT!LiteralString(
+		spec: UML!LiteralString (
 			name <- 'constraintSpec'
 		)
+	do {
+		vulner.applyStereotype(thisModule.getStereotype('PreCondition'));
+	}
 }
 
 rule PostCondition {
 	from
 		x: XMI!PostCondition
 	to
-		vulner: UMLOUT!Constraint(
+		vulner: UML!Constraint (
 			name <- x.name,
 			specification <- spec,
 			constrainedElement <- x.vulnerability
 		),
-		spec: UMLOUT!LiteralString(
+		spec: UML!LiteralString (
 			name <- 'constraintSpec'
 		)
-}
-
-rule ProfileApplication {
-	from 
-		s: UMLIN!ProfileApplication
-	to 
-		profileApp: UMLOUT!ProfileApplication(
-			eAnnotations <- s.eAnnotations,
-			appliedProfile <- s.appliedProfile
-		)
-}
-
-rule EAnnotation {
-	from 
-		s: UMLIN!EAnnotation
-	to 
-		u: UMLOUT!EAnnotation(
-			references <- s.references,
-			details <- s.details,
-			source <- s.source			
-		)
-}
-
-rule EPackage {
-	from 
-		s: UMLIN!EPackage
-	to 
-		u: UMLOUT!EPackage(
-			
-		)
-}
-
-rule EStringToStringMapEntry {
-	from 
-		s: UMLIN!EStringToStringMapEntry
-	to 
-		u: UMLOUT!EStringToStringMapEntry(
-			key <- s.key,
-			value <- s.value			
-		)
-}
-
-rule Profile {
-	from 
-		s: UMLIN!Profile
-	to 
-		u: UMLOUT!Profile(
-			
-		)
+	do {
+		vulner.applyStereotype(thisModule.getStereotype('PostCondition'));
+	}
 }
 -- End Rules
