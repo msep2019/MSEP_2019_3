@@ -28,15 +28,15 @@ public class CveTest {
         	Element root = document.getRootElement();
         	List<Element> childList = root.getChildren();
         	
-        	//storage of founded and repeated CAPEC id
+        	//storage of founded and repeated CVE id
         	List<String> idCvestorage = new ArrayList<>();
         	List<String> idCverepeated = new ArrayList<>();
         	HashSet<String> setCve = new HashSet<>();
         	
-        	//number of the cwe id containing capec id
+        	//number of the CWE id containing CAPEC id
         	int cveIncwe = 0 ;
         	
-        	//Search and retrieve CAPEC id
+        	//Search and retrieve CVE id
         	for(Element child : childList) {
         		//List<org.jdom2.Attribute> attrList = child.getAttributes();
         		System.out.println("executed");
@@ -45,7 +45,7 @@ public class CveTest {
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
             				System.out.println("<--Start reading info : Weakness number " + (wknsList.indexOf(wkns) + 1 ) + "-->");
-            				System.out.println("Weakness Node: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
+            				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
             				
             				for(Element wkn : wknList) {
@@ -71,6 +71,7 @@ public class CveTest {
             		}
     			}
         	}
+        	
         	//filter the repeated element
         	for(String id : idCvestorage) {
         		boolean add = setCve.add(id);
@@ -78,8 +79,10 @@ public class CveTest {
         			idCverepeated.add(id);
         		}
         	}
+        	
         	System.out.println("Total number of founded CVE id: "+ idCvestorage.size()+" Total number of Cwe id linked to CVE: "+cveIncwe);
         	System.out.println("Number of repeated CVE id: "+ idCverepeated.size() + " Number of unique CVE id: " +setCve.size());
+        	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();
         }catch(JDOMException e) {

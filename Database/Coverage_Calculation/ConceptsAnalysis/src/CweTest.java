@@ -22,16 +22,19 @@ public class CweTest {
         InputStream in;
         try {
         	
-        	in = new FileInputStream("xml/Development(699).xml");
+        	in = new FileInputStream("xml/Research(1000).xml");
         	Document document = saxBuilder.build(in);
         	
         	Element root = document.getRootElement();
         	List<Element> childList = root.getChildren();
         	
         	//storage of founded and repeated CAPEC id
-        	List<String> idStorage = new ArrayList<>();
-        	List<String> idRepeated = new ArrayList<>();
-        	HashSet<String> set = new HashSet<>();
+        	List<String> idCapstorage = new ArrayList<>();
+        	List<String> idCaprepeated = new ArrayList<>();
+        	HashSet<String> setCap = new HashSet<>();
+        	
+        	//number of the cwe id containing capec id
+        	int capIncwe = 0 ;
         	
         	//Search and retrieve CAPEC id
         	for(Element child : childList) {
@@ -42,17 +45,18 @@ public class CweTest {
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
             				System.out.println("<--Start reading info : Weakness number " + (wknsList.indexOf(wkns) + 1 ) + "-->");
-            				System.out.println("Weakness Node: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
+            				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
             				
             				for(Element wkn : wknList) {
             					if(wkn.getName().equals("Related_Attack_Patterns")) {
             						List<Element> atkList = wkn.getChildren();
+            						capIncwe++;
             	            		for(Element atkpattern : atkList) {
             	            			List<org.jdom2.Attribute> atkAttr = atkpattern.getAttributes();
             	            			for(org.jdom2.Attribute attr :atkAttr) {
             	            				System.out.println("CAPEC Id: " + attr.getName() + " --> " + attr.getValue());
-            	            				idStorage.add(attr.getValue());
+            	            				idCapstorage.add(attr.getValue());
             	            			}         			
             	            		}
             					}
@@ -63,15 +67,18 @@ public class CweTest {
             		}
     			}
         	}
+        	
         	//filter the repeated element
-        	for(String id : idStorage) {
-        		boolean add = set.add(id);
+        	for(String id : idCapstorage) {
+        		boolean add = setCap.add(id);
         		if(!add) {
-        			idRepeated.add(id);
+        			idCaprepeated.add(id);
         		}
         	}
-        	System.out.println("Total number of fouded CAPEC id: "+ idStorage.size());
-        	System.out.println("Number of Repeated ones: "+ idRepeated.size() + " Number of Unique id: " +set.size());
+        	
+        	System.out.println("Total number of founded CAPEC id: "+ idCapstorage.size()+" Total number of Cwe id linked to CAPEC: "+capIncwe);
+        	System.out.println("Number of repeated CAPEC id: "+ idCaprepeated.size() + " Number of unique CAPEC id: " +setCap.size());
+        	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();
         }catch(JDOMException e) {
