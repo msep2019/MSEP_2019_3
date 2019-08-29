@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="soSSecProfileEcoreRepresentation" nsURI="http://www.example.org/soSSecProfileEcoreRepresentation"
+    nsPrefix="soSSecProfileEcoreRepresentation">
+  <eClassifiers xsi:type="ecore:EClass" name="SoSSec Profile" eSuperTypes="#//SysML%20Profile">
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1" eType="#//ActivityDiagram"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" upperBound="-1" eType="#//BlockDefinitionDiagram"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BlockDefinitionDiagram">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="block" upperBound="-1"
+        eType="#//Block" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ActivityDiagram" eSuperTypes="http://www.eclipse.org/uml2/5.0.0/UML#//Activity">
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1"
+        eType="#//ActivityNode" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" lowerBound="1" upperBound="-1"
+        eType="#//ActivityEdge" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SysML Profile" eSuperTypes="#//UML"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Block">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constituted_of" upperBound="-1"
+        eType="#//Block" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConstituentSystem" eSuperTypes="#//Block">
+    <eOperations name="operation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="works_in" lowerBound="1"
+        eType="#//Organization"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="action" upperBound="-1"
+        eType="#//Action"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Organization" eSuperTypes="#//Block"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ActivityNode" eSuperTypes="http://www.eclipse.org/uml2/5.0.0/UML#//Node"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UML"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ActivityEdge">
+  	<eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false"
+        lowerBound="1" eType="#//ActivityNode">
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false"
+        lowerBound="1" eType="#//ActivityNode">
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Action" eSuperTypes="#//ActivityNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Vulnerability" eSuperTypes="#//ObjectNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="menaces" lowerBound="1"
+        upperBound="-1" eType="#//Action"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="results_in" lowerBound="1"
+        upperBound="-1" eType="#//PostCondition"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectNode" eSuperTypes="#//ActivityNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PreCondition" eSuperTypes="#//Constraint">
+  	<eStructuralFeatures xsi:type="ecore:EAttribute" name="name">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="activates" lowerBound="1"
+        upperBound="-1" eType="#//Vulnerability"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PostCondition" eSuperTypes="#//Constraint">
+  	<eStructuralFeatures xsi:type="ecore:EAttribute" name="name">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="vulnerability" lowerBound="1"
+        upperBound="-1" eType="#//Vulnerability"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SecurityMechanism" eSuperTypes="#//ActivityNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="prevents" upperBound="-1"
+        eType="#//Vulnerability"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectFlow" eSuperTypes="#//ActivityEdge"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Constraint"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElement" eSuperTypes="#//UML">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" upperBound="-1"
+        eType="#//Constraint"/>
+  </eClassifiers>
+</ecore:EPackage>

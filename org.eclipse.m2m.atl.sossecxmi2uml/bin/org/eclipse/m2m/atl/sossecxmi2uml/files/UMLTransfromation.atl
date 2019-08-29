@@ -1,0 +1,102 @@
+-- @nsURI UML=http://www.eclipse.org/uml2/5.0.0/UML
+-- @path XMI=/ModelTransformation/metamodels/soSSecProfileEcoreRepresentation.ecore
+
+module XMITransfromation;
+create OUT: UML from IN: XMI, PRO: UML;
+
+-- Helpers
+helper def: getStereotype(name: String): UML!Stereotype =
+	UML!Stereotype.allInstancesFrom('PRO') -> select(p | p.name = name) -> first();
+-- End Helpers
+
+-- Rules
+rule Model {
+	from
+		x: XMI!ActivityDiagram
+	to
+		u: UML!Model (
+			name <- 'RootElement',
+			packagedElement <- activity
+		),
+		activity: UML!Activity (
+			name <- x.name,
+			edge <- Sequence{UML!ControlFlow.allInstances()},
+			node <- Sequence{UML!OpaqueAction.allInstances()},
+			ownedNode <- Sequence{UML!OpaqueAction.allInstances(),
+						UML!DataStoreNode.allInstances()},
+			ownedRule <- Sequence{UML!Constraint.allInstances()}
+		)
+	do {
+		u.applyProfile(UML!Profile.allInstancesFrom('PRO') -> select(p | p.name = 'RootElement') -> first());
+	}
+}
+
+rule ObjectFlow {
+	from
+		x: XMI!ObjectFlow
+	to
+		vulner: UML!ControlFlow (
+			target <- x.target,
+			source <- x.source
+		)
+}
+
+rule Action {
+	from
+		x: XMI!Action
+	to
+		action: UML!OpaqueAction (
+			name <- x.name
+		)
+}
+
+rule Vulnerability {
+	from
+		x: XMI!Vulnerability
+	to
+		vulner: UML!DataStoreNode (
+			name <- x.name,
+			upperBound <- vulUpperBound
+		),
+		vulUpperBound: UML!LiteralInteger (
+			value <- 1
+		)		
+	do {
+		--vulner.applyStereotype(thisModule.getStereotype('Vulnerability')); 
+	}
+}
+
+rule PreCondition {
+	from
+		x: XMI!PreCondition
+	to
+		vulner: UML!Constraint (
+			name <- x.name,
+			specification <- spec,
+			constrainedElement <- x.activates
+		),
+		spec: UML!LiteralString (
+			name <- 'constraintSpec'
+		)
+	do {
+		--vulner.applyStereotype(thisModule.getStereotype('PreCondition'));
+	}
+}
+
+rule PostCondition {
+	from
+		x: XMI!PostCondition
+	to
+		vulner: UML!Constraint (
+			name <- x.name,
+			specification <- spec,
+			constrainedElement <- x.vulnerability
+		),
+		spec: UML!LiteralString (
+			name <- 'constraintSpec'
+		)
+	do {
+		--vulner.applyStereotype(thisModule.getStereotype('PostCondition'));
+	}
+}
+-- End Rules

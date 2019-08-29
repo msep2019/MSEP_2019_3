@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<uml:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" name="RootElement">
+  <packagedElement xsi:type="uml:Activity" name="Cascading Diagram">
+    <ownedRule name="ByPassAuthentication" constrainedElement="//Cascading%20Diagram/CrossSiteScripting">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <ownedRule name="AccessPasswordInformation" constrainedElement="//Cascading%20Diagram/DirectoryTraversal">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <ownedRule name="RemoteAccess" constrainedElement="//Cascading%20Diagram/PrivilageEscalation">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <ownedRule name="AccessPasswordInformation" constrainedElement="//Cascading%20Diagram/WeakAuthentication">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <ownedRule name="RemoteAccess" constrainedElement="//Cascading%20Diagram/WeakAuthentication">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <ownedRule name="ByPassAuthentication" constrainedElement="//Cascading%20Diagram/PrivilageEscalation">
+      <specification xsi:type="uml:LiteralString" name="constraintSpec"/>
+    </ownedRule>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/automaticControlLights" source="//Cascading%20Diagram/CrossSiteScripting"/>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/manageEnergy" source="//Cascading%20Diagram/WeakAuthentication"/>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/automaticControlHVAC" source="//Cascading%20Diagram/manageEnergy"/>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/automaticControlHVAC" source="//Cascading%20Diagram/DirectoryTraversal"/>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/automaticControlHVAC" source="//Cascading%20Diagram/PrivilageEscalation"/>
+    <edge xsi:type="uml:ControlFlow" target="//Cascading%20Diagram/automaticControlLights" source="//Cascading%20Diagram/automaticControlHVAC"/>
+    <ownedNode xsi:type="uml:OpaqueAction" name="automaticControlLights" incoming="//Cascading%20Diagram/@edge.0 //Cascading%20Diagram/@edge.5"/>
+    <ownedNode xsi:type="uml:OpaqueAction" name="manageEnergy" incoming="//Cascading%20Diagram/@edge.1" outgoing="//Cascading%20Diagram/@edge.2"/>
+    <ownedNode xsi:type="uml:OpaqueAction" name="automaticControlHVAC" incoming="//Cascading%20Diagram/@edge.2 //Cascading%20Diagram/@edge.3 //Cascading%20Diagram/@edge.4" outgoing="//Cascading%20Diagram/@edge.5"/>
+    <ownedNode xsi:type="uml:DataStoreNode" name="CrossSiteScripting" outgoing="//Cascading%20Diagram/@edge.0">
+      <upperBound xsi:type="uml:LiteralInteger" value="1"/>
+    </ownedNode>
+    <ownedNode xsi:type="uml:DataStoreNode" name="WeakAuthentication" outgoing="//Cascading%20Diagram/@edge.1">
+      <upperBound xsi:type="uml:LiteralInteger" value="1"/>
+    </ownedNode>
+    <ownedNode xsi:type="uml:DataStoreNode" name="DirectoryTraversal" outgoing="//Cascading%20Diagram/@edge.3">
+      <upperBound xsi:type="uml:LiteralInteger" value="1"/>
+    </ownedNode>
+    <ownedNode xsi:type="uml:DataStoreNode" name="PrivilageEscalation" outgoing="//Cascading%20Diagram/@edge.4">
+      <upperBound xsi:type="uml:LiteralInteger" value="1"/>
+    </ownedNode>
+  </packagedElement>
+  <profileApplication>
+    <eAnnotations source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references href="file://C:/Users/dev/git/energy/papyrus/model.profile.uml#_u-FDIIptEeeu3I3Ux8sNCA"/>
+    </eAnnotations>
+    <appliedProfile href="file://C:/Users/dev/git/energy/papyrus/model.profile.uml#_1l53oHuuEeaCbZfBuAtPqA"/>
+  </profileApplication>
+</uml:Model>
