@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,13 +15,12 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import com.sun.org.apache.bcel.internal.classfile.Attribute;
-
 public class SearchDirectlinks {
 
-    public static void directLinks(String cveid, InputStream input){
+    public void directLinks(String cveid, InputStream input){
        
     	SAXBuilder saxBuilder = new SAXBuilder();
+     	
         try {
         	//build SAX parser
         	Document document = saxBuilder.build(input);
@@ -37,13 +35,16 @@ public class SearchDirectlinks {
         	//storage of founded and repeated CAPEC id     	
         	HashMap<String,ArrayList<String>> pattern = new HashMap<String,ArrayList<String>>();
         	
-        	//number of the cwe id containing capec id
-        	int cveIncwe = 0 ;
-        	//number of the cwe id containing capec id
-        	int capIncwe = 0 ;
+        	//the returned HashMap and ArrayList containing direct link ids
+         	HashMap<ArrayList<String>,ArrayList<String>> vpLink = new HashMap<ArrayList<String>,ArrayList<String>>();
+        	ArrayList<String> dcveId = new ArrayList<String>();
+        	ArrayList<String> dcapecId = new ArrayList<String>();
         	
-        	//the returned HashMap
-        	HashMap<ArrayList<String>,ArrayList<String>> vpLink = new HashMap<ArrayList<String>,ArrayList<String>>();
+        	//filter storage of cve and capec id
+        	List<String> rcveId = new ArrayList<>();
+        	List<String> rcapecId = new ArrayList<>();
+        	HashSet<String> setCve = new HashSet<>();
+        	HashSet<String> setCapec = new HashSet<>();
         	
         	//Search and retrieve CVE id
         	for(Element child : childList) {
@@ -55,7 +56,6 @@ public class SearchDirectlinks {
             				for(Element wkn : wknList) {
             					if(wkn.getName().equals("Observed_Examples")) {
             						List<Element> egList = wkn.getChildren();
-            						cveIncwe++;
             						for(Element subList : egList) {
             							if(subList.getName().equals("Observed_Example")) {
             								List<Element> cveList = subList.getChildren();
@@ -91,7 +91,6 @@ public class SearchDirectlinks {
             				for(Element wkn : wknList) {
             					if(wkn.getName().equals("Related_Attack_Patterns")) {
             						List<Element> atkList = wkn.getChildren();
-            						capIncwe++;
             	            		for(Element atkpattern : atkList) {
             	            			if(atkpattern.getName().equals("Related_Attack_Pattern")) {
                 	            			List<org.jdom2.Attribute> atkAttr = atkpattern.getAttributes();
@@ -117,42 +116,77 @@ public class SearchDirectlinks {
     			}
         	}     	
         	
-        	/*for(java.util.Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
-        		System.out.println("Cwe_ID:" + entryVul.getKey() + " --> Cve_ID:"+ entryVul.getValue());
-        	}*/
-        	       	
+        	/*System.out.println("<--Direct links between CWE_ID and CVE_ID-->");
+        	for(java.util.Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
+        		System.out.println("CWE_ID:" + entryVul.getKey() + " --> CVE_ID(Group):"+ entryVul.getValue());
+        	}
+        	System.out.println("<--End of Print-->");
+        	
+        	System.out.println("<--Direct links between CWE_ID and CAPEC_ID-->");
+        	for(java.util.Map.Entry<String,ArrayList<String>> entryVul : pattern.entrySet()) {
+        		System.out.println("CWE_ID:" + entryVul.getKey() + " --> CAPEC_ID(Group):"+ entryVul.getValue());
+        	}
+        	System.out.println("<--End of Print-->");*/
+        	
         	// output the CVE_ID and CAPEC_ID which have direct links
-        	System.out.println("<--Direct links between CVE_ID and CAPEC_ID-->");
+        	//System.out.println("<--Print of direct links between CVE_ID and CAPEC_ID-->");
         	for(Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
             	for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()) {	
             		if( entryVul.getKey().equals(entryCap.getKey())) {
-            			System.out.println("CVE_ID:" + entryVul.getValue() + " --> CAPEC_ID:"+ entryCap.getValue());
+            			//System.out.println("CVE_ID:" + entryVul.getValue() + " --> CAPEC_ID:"+ entryCap.getValue());
             			vpLink.put(entryVul.getValue(), entryCap.getValue());
             		}
             	}
         	}   
         	
-        	System.out.println("<--End of Print-->");
-        	System.out.println("<--The results of marching-->");
+        	//System.out.println("<--End of Print-->");
+        	System.out.println("<--The results of matching-->");
         	
-        	// search for the provided cveid
+        	// search for the provided cveid and calculate the coverage of direct links
     		Set<Entry<ArrayList<String>, ArrayList<String>>> entrySet = vpLink.entrySet();
     		Iterator<Map.Entry<ArrayList<String>, ArrayList<String>>> iterator = entrySet.iterator();
         	
         	while(iterator.hasNext()) {
         		ArrayList<String> match = new ArrayList<String>();
         		Map.Entry<ArrayList<String>, ArrayList<String>> entryMatch = iterator.next();
+        		match = entryMatch.getValue();
+        		for(int i = 0; i < match.size(); i++) {
+        			dcapecId.add(match.get(i));
+        		}
+        		match = new ArrayList<String>();
         		match = entryMatch.getKey();
         		for(int i = 0; i < match.size(); i++) {
-            		if( cveid.equals(match.get(i)) ) {
-            			System.out.println( "CVE_ID:" + cveid + " --> CAPEC_ID(Group):"+ entryMatch.getValue() );
+        			dcveId.add(match.get(i));
+        			if( cveid.equals(match.get(i)) ) {
+            			System.out.println( "└─CVE_ID:" + cveid + " --> CAPEC_ID(Group):"+ entryMatch.getValue() );
             		}
         		}
-
         	}
         	
-        	System.out.println("<--End of Search-->");
-
+        	//filter the repeated cve and capec ID
+        	for(String id : dcveId) {
+        		boolean add = setCve.add(id);
+        		if(!add) {
+        			rcveId.add(id);
+        		}
+        	}
+        	for(String id : dcapecId) {
+        		boolean add = setCapec.add(id);
+        		if(!add) {
+        			rcapecId.add(id);
+        		}
+        	}
+        	
+        	FilteredCveCapec setCvecapec = new FilteredCveCapec();
+        	setCvecapec.setFilteredcve(setCve);
+        	setCvecapec.setFilteredcapec(setCapec);
+        	
+        	System.out.println("	└─Number of direct matches between groups(CVE-CAPEC): " + vpLink.size());
+        	//System.out.println(" Coverage of direct links in CVE: "+ setCve.size()+ "/153347");
+        	//System.out.println(" Coverage of direct links in CAPEC: "+ setCapec.size()+ "/577");
+        	System.out.println("<--End of Match-->");
+        	
+        	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();
         }catch(JDOMException e) {

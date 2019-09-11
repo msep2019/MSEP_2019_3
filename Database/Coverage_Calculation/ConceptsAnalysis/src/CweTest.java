@@ -11,7 +11,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import com.sun.org.apache.bcel.internal.classfile.Attribute;
+//import com.sun.org.apache.bcel.internal.classfile.Attribute;
 
 public class CweTest {
 
@@ -22,7 +22,7 @@ public class CweTest {
         InputStream in;
         try {
         	
-        	in = new FileInputStream("xml/Research(1000).xml");
+        	in = new FileInputStream("xml/Architectural(1008).xml");
         	Document document = saxBuilder.build(in);
         	
         	Element root = document.getRootElement();
@@ -44,7 +44,7 @@ public class CweTest {
     				List<Element> wknsList = child.getChildren();
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
-            				System.out.println("<--Start reading info : Weakness number " + (wknsList.indexOf(wkns) + 1 ) + "-->");
+            				System.out.println("<--Start reading info : number of Weakness " + (wknsList.indexOf(wkns) + 1 ) + "-->");
             				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
             				
