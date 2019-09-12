@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,9 +140,17 @@ public class SearchDirectlinks {
             	}
         	}   
         	
-        	//System.out.println("<--End of Print-->");
+        	//System.out.println("<--End of Print-->");    		
+    		//match attack patterns by using capec id
+    		InputStream input4;
+    		InputStream input5;
+    		SearchAtkInfo sai;
+    		FilteredAtkCapec fi;
+    		HashMap<String,ArrayList<String>> idPatternstore = new HashMap<String,ArrayList<String>>();
+    		//HashMap<String,ArrayList<String>> idPatternstore = new HashMap<String,ArrayList<String>>();
+    		
         	System.out.println("<--The results of matching-->");
-        	
+        	System.out.println("└─Number of direct matches between groups(CVE-CAPEC): " + vpLink.size());
         	// search for the provided cveid and calculate the coverage of direct links
     		Set<Entry<ArrayList<String>, ArrayList<String>>> entrySet = vpLink.entrySet();
     		Iterator<Map.Entry<ArrayList<String>, ArrayList<String>>> iterator = entrySet.iterator();
@@ -158,7 +167,54 @@ public class SearchDirectlinks {
         		for(int i = 0; i < match.size(); i++) {
         			dcveId.add(match.get(i));
         			if( cveid.equals(match.get(i)) ) {
-            			System.out.println( "└─CVE_ID:" + cveid + " --> CAPEC_ID(Group):"+ entryMatch.getValue() );
+        				
+						System.out.println( "	└─>Matched CVE_ID: " + cveid + " --> CAPEC_ID(Group): "+ entryMatch.getValue() );						
+						//initialize related classes for input1 of capec datasets
+						input4 = new FileInputStream("xml/Domains of Attack(3000).xml");
+						sai = new SearchAtkInfo();
+        	    		sai.searchPattern(input4);
+        	    		fi = new FilteredAtkCapec();
+        	    		idPatternstore = fi.getIdPattern();
+        	    		
+        	    		//match capec id with attack patterns
+
+    	    			for(String eCapec : entryMatch.getValue()) {
+            	    		Set<Entry<String, ArrayList<String>>> entryPattern1 = idPatternstore.entrySet();
+            	    		Iterator<Map.Entry<String, ArrayList<String>>> iPattern1 = entryPattern1.iterator();
+    	    				while(iPattern1.hasNext()) {
+    	    					Map.Entry<String, ArrayList<String>> ePattern1 = iPattern1.next();
+    	    					ArrayList<String> capecPattern = new ArrayList<String>();
+    	    					capecPattern = ePattern1.getValue();
+        	    				for(String natureId : capecPattern) {
+        	    					if(natureId.replaceAll("[a-zA-Z]","").equals(eCapec)) {
+        	    						System.out.println( "		└─Related attack pattern ID: " + ePattern1.getKey() + " --" + natureId.replaceAll("\\d","") + "-- CAPEC_ID: " + eCapec);
+        	    					}
+        	    				}
+        	    			}
+        	    		}
+        	    		
+        	    		//initialize related classes for input2 of capec datasets
+        	    		input5 = new FileInputStream("xml/Mechanisms of Attack(1000).xml");
+        	    		sai = new SearchAtkInfo();
+        	    		sai.searchPattern(input5);
+        	    		fi = new FilteredAtkCapec();
+        	    		idPatternstore = fi.getIdPattern();	
+        	    		
+        	    		//match capec id with attack patterns
+        	    		for(String eCapec : entryMatch.getValue()) {
+            	    		Set<Entry<String, ArrayList<String>>> entryPattern2 = idPatternstore.entrySet();
+            	    		Iterator<Map.Entry<String, ArrayList<String>>> iPattern2 = entryPattern2.iterator();
+        	    			while(iPattern2.hasNext()) {
+        	    				Map.Entry<String, ArrayList<String>> ePattern2 = iPattern2.next();
+        	    				ArrayList<String> capecPattern = new ArrayList<String>();
+        	    				capecPattern = ePattern2.getValue();       	    			
+        	    				for(String natureId : capecPattern) {
+        	    					if(natureId.replaceAll("[a-zA-Z]","").equals(eCapec)) {
+        	    						System.out.println( "		└─Related attack pattern ID: " + ePattern2.getKey() + " --" + natureId.replaceAll("\\d","") + "-- CAPEC_ID: " + eCapec);
+        	    					}
+        	    				}
+        	    			}
+        	    		}
             		}
         		}
         	}
@@ -177,11 +233,11 @@ public class SearchDirectlinks {
         		}
         	}
         	
+        	//save the filtered CVE and CAPEC in hashsets
         	FilteredCveCapec setCvecapec = new FilteredCveCapec();
         	setCvecapec.setFilteredcve(setCve);
         	setCvecapec.setFilteredcapec(setCapec);
         	
-        	System.out.println("	└─Number of direct matches between groups(CVE-CAPEC): " + vpLink.size());
         	//System.out.println(" Coverage of direct links in CVE: "+ setCve.size()+ "/153347");
         	//System.out.println(" Coverage of direct links in CAPEC: "+ setCapec.size()+ "/577");
         	System.out.println("<--End of Match-->");
