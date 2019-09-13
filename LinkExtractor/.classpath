@@ -45,15 +45,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/org/jdom/jdom2/2.0.6/jdom2-2.0.6.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/khoa/.m2/repository/org/jdom/jdom2/2.0.6/jdom2-2.0.6-javadoc.jar!/"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.jdom"/>
-			<attribute name="maven.artifactId" value="jdom2"/>
-			<attribute name="maven.version" value="2.0.6"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
