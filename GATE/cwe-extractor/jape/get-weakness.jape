@@ -20,7 +20,7 @@ Priority: 	10
 	gate.Annotation keywordAnn = (gate.Annotation)keyword.iterator().next();
 	gate.FeatureMap features = Factory.newFeatureMap();
 
-	String exculdeWords = "be is are was were been issue";
+	String exculdeWords = "be is are was were beed";
 
     String word = stringFor(doc, keywordAnn);
     
