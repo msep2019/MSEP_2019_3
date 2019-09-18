@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class FilteredAtkCapec {
 	static private HashMap<String,ArrayList<String>> idPatternstore = new HashMap<String,ArrayList<String>>();
-	
+
 	public FilteredAtkCapec() {
 		super();
 	}
@@ -15,4 +15,5 @@ public class FilteredAtkCapec {
 	public void setIdPattern(HashMap<String,ArrayList<String>> idPatternstore){
 		FilteredAtkCapec.idPatternstore = idPatternstore;
 	}
+	
 }

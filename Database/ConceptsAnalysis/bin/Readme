@@ -1,0 +1,8 @@
+VulandCapec.java is the main entry of the matching program.
+
+The used source files in the process are:
+
+SearchDirectlinks.java
+SearchAtkInfo.java
+FilteredCveCapec.java
+FilteredAtkCapec.java

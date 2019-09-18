@@ -30,6 +30,10 @@ public class SearchDirectlinks {
         	Element root = document.getRootElement();
         	List<Element> childList = root.getChildren();
         	
+        	//storage of cwe id and description
+        	HashMap<String,String> cweDescription = new HashMap<String,String>();
+        	HashMap<String,String> cweIdDescription = new HashMap<String,String>();
+        	
         	//storage of founded and repeated CVE id
         	HashMap<String,ArrayList<String>> vul = new HashMap<String,ArrayList<String>>();
         	
@@ -47,7 +51,7 @@ public class SearchDirectlinks {
         	HashSet<String> setCve = new HashSet<>();
         	HashSet<String> setCapec = new HashSet<>();
         	
-        	//Search and retrieve CVE id
+        	//Search and retrieve CVE id AND CWE ID and description
         	for(Element child : childList) {
     			if(child.getName().equals("Weaknesses")) {
     				List<Element> wknsList = child.getChildren();
@@ -55,6 +59,9 @@ public class SearchDirectlinks {
             			if(wkns.getName().equals("Weakness")) {   
             				List<Element> wknList = wkns.getChildren();           				
             				for(Element wkn : wknList) {
+            					if(wkn.getName().equals("Description")){
+            						cweDescription.put(wkns.getAttributeValue("ID"),wkn.getText());
+            					}            					
             					if(wkn.getName().equals("Observed_Examples")) {
             						List<Element> egList = wkn.getChildren();
             						for(Element subList : egList) {
@@ -131,11 +138,17 @@ public class SearchDirectlinks {
         	
         	// output the CVE_ID and CAPEC_ID which have direct links
         	//System.out.println("<--Print of direct links between CVE_ID and CAPEC_ID-->");
+        	//Associate direct link groups with description
         	for(Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
             	for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()) {	
-            		if( entryVul.getKey().equals(entryCap.getKey())) {
+            		if(entryVul.getKey().equals(entryCap.getKey())) {
             			//System.out.println("CVE_ID:" + entryVul.getValue() + " --> CAPEC_ID:"+ entryCap.getValue());
             			vpLink.put(entryVul.getValue(), entryCap.getValue());
+            			for(Map.Entry<String, String> entryDes : cweDescription.entrySet()){
+            				if(entryDes.getKey().equals(entryVul.getKey())){
+            					cweIdDescription.put(entryDes.getKey(),entryDes.getValue());
+            				}
+            			}
             		}
             	}
         	}   
@@ -166,9 +179,18 @@ public class SearchDirectlinks {
         		match = entryMatch.getKey();
         		for(int i = 0; i < match.size(); i++) {
         			dcveId.add(match.get(i));
-        			if( cveid.equals(match.get(i)) ) {
-        				
-						System.out.println( "	└─>Matched CVE_ID: " + cveid + " --> CAPEC_ID(Group): "+ entryMatch.getValue() );						
+        			if( cveid.equals(match.get(i)) ) {  
+        				System.out.println( "	└─>Matched direct link: " + cveid + " --> CAPEC_ID(Group): "+ entryMatch.getValue() );	
+        				for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()){
+        					if(entryCap.getValue().equals(entryMatch.getValue())){
+        						for(Map.Entry<String, String> entryDes : cweIdDescription.entrySet()){
+        							if(entryDes.getKey().equals(entryCap.getKey())){
+        								System.out.println("	└─>Matched Weakness ID: " + entryDes.getKey() + " --Description-- " + entryDes.getValue());
+        							}
+        						}
+        					}
+        				}
+											
 						//initialize related classes for input1 of capec datasets
 						input4 = new FileInputStream("xml/Domains of Attack(3000).xml");
 						sai = new SearchAtkInfo();
@@ -237,7 +259,7 @@ public class SearchDirectlinks {
         	FilteredCveCapec setCvecapec = new FilteredCveCapec();
         	setCvecapec.setFilteredcve(setCve);
         	setCvecapec.setFilteredcapec(setCapec);
-        	
+
         	//System.out.println(" Coverage of direct links in CVE: "+ setCve.size()+ "/153347");
         	//System.out.println(" Coverage of direct links in CAPEC: "+ setCapec.size()+ "/577");
         	System.out.println("<--End of Match-->");

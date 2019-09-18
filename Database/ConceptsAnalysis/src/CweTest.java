@@ -33,8 +33,12 @@ public class CweTest {
         	List<String> idCaprepeated = new ArrayList<>();
         	HashSet<String> setCap = new HashSet<>();
         	
+        	//number of the cwe id
+        	int numOfcwe = 0 ;
         	//number of the cwe id containing capec id
         	int capIncwe = 0 ;
+        	//number of cwe id containing potential mitigations
+        	int mitIncwe = 0 ;
         	
         	//Search and retrieve CAPEC id
         	for(Element child : childList) {
@@ -44,6 +48,7 @@ public class CweTest {
     				List<Element> wknsList = child.getChildren();
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
+            				numOfcwe++;
             				System.out.println("<--Start reading info : number of Weakness " + (wknsList.indexOf(wkns) + 1 ) + "-->");
             				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
@@ -59,6 +64,9 @@ public class CweTest {
             	            				idCapstorage.add(attr.getValue());
             	            			}         			
             	            		}
+            					}
+            					if(wkn.getName().equals("Potential_Mitigations")){
+            						mitIncwe++;
             					}
             				}
             				System.out.println("<--End reading info-->");
@@ -78,6 +86,7 @@ public class CweTest {
         	
         	System.out.println("Total number of founded CAPEC id: "+ idCapstorage.size()+" Total number of Cwe id linked to CAPEC: "+capIncwe);
         	System.out.println("Number of repeated CAPEC id: "+ idCaprepeated.size() + " Number of unique CAPEC id: " +setCap.size());
+        	System.out.println("Coverage of cwe id containing mitigations: "+mitIncwe+"/"+numOfcwe);
         	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();
