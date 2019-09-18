@@ -84,9 +84,10 @@ public class CweTest {
         		}
         	}
         	
-        	System.out.println("Total number of founded CAPEC id: "+ idCapstorage.size()+" Total number of Cwe id linked to CAPEC: "+capIncwe);
-        	System.out.println("Number of repeated CAPEC id: "+ idCaprepeated.size() + " Number of unique CAPEC id: " +setCap.size());
-        	System.out.println("Coverage of cwe id containing mitigations: "+mitIncwe+"/"+numOfcwe);
+        	System.out.println("Total number of founded CAPEC id: "+ idCapstorage.size()+", Total number of CWE id linked to CAPEC: "+capIncwe);
+        	System.out.println("Number of repeated CAPEC id: "+ idCaprepeated.size() + ", Number of unique CAPEC id: " +setCap.size());
+        	System.out.println("Coverage of CWE id related to CAPEC id: "+capIncwe+"/"+numOfcwe);
+        	System.out.println("Coverage of CWE id containing mitigations: "+mitIncwe+"/"+numOfcwe);
         	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();

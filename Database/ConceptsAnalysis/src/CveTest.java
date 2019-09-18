@@ -22,7 +22,7 @@ public class CveTest {
         
         try {
         	
-        	in = new FileInputStream("xml/Research(1000).xml");
+        	in = new FileInputStream("xml/Architectural(1008).xml");
         	Document document = saxBuilder.build(in);
         	
         	Element root = document.getRootElement();
@@ -33,6 +33,8 @@ public class CveTest {
         	List<String> idCverepeated = new ArrayList<>();
         	HashSet<String> setCve = new HashSet<>();
         	
+        	//number of the cwe id
+        	int numOfcwe = 0 ;
         	//number of the CWE id containing CAPEC id
         	int cveIncwe = 0 ;
         	
@@ -44,6 +46,7 @@ public class CveTest {
     				List<Element> wknsList = child.getChildren();
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
+            				numOfcwe++;
             				System.out.println("<--Start reading info : number of Weakness " + (wknsList.indexOf(wkns) + 1 ) + "-->");
             				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
@@ -80,8 +83,9 @@ public class CveTest {
         		}
         	}
         	
-        	System.out.println("Total number of founded CVE id: "+ idCvestorage.size()+" Total number of Cwe id linked to CVE: "+cveIncwe);
-        	System.out.println("Number of repeated CVE id: "+ idCverepeated.size() + " Number of unique CVE id: " +setCve.size());
+        	System.out.println("Total number of founded CVE id: "+ idCvestorage.size()+", Total number of CWE id linked to CVE: "+cveIncwe);
+        	System.out.println("Number of repeated CVE id: "+ idCverepeated.size() + ", Number of unique CVE id: " +setCve.size());
+        	System.out.println("Coverage of CWE id related to CVE_ID: "+cveIncwe+"/"+numOfcwe);
         	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();
