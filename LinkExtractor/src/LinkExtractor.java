@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.log4j.BasicConfigurator;
@@ -11,18 +10,10 @@ import gate.util.GateException;
 public class LinkExtractor {
 	public static void main(String[] args) throws GateException, IOException, URISyntaxException {
 
-		CVEHelper helper = new CVEHelper();
-		
-		String result = helper.getCVEContent(args[0]);
-		
-		System.out.println(result);
-		
-		
-		BasicConfigurator.configure();
-		
-		ArrayList<String> agents = CVEKeywordDocumentAnalyser.processDocs(result);
+		long startTime = System.currentTimeMillis();
 
-		/*
+		BasicConfigurator.configure();
+
 		// get location of all resources
 		File log = new File("log/txt/Original simulation Log Files.txt");
 		System.out.println("Number of processing files: " + 1);
@@ -38,6 +29,8 @@ public class LinkExtractor {
 		//ExcelReaderXmlWriter.writeXml();
 		Exporter export = new Exporter();
 		export.exportXMI(agents);
-		*/
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total time in processing" + " SoSSec is" + (endTime - startTime) + "ms.");
 	}
 }

@@ -1,0 +1,19 @@
+Phase:firstpass
+Input:  Lookup  Sentence Token Split
+Options: control = brill
+
+Rule: ConditionRule
+Priority: 20
+(
+	{Lookup.majorType == "SoSSec", Lookup.minorType == "Condition"}
+): condition
+-->
+{
+	gate.AnnotationSet condition = (gate.AnnotationSet)bindings.get("condition");
+	gate.Annotation conditionAnn = (gate.Annotation)condition.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	features.put("rule", "ConditionRule");
+
+	outputAS.add(condition.firstNode(), condition.lastNode(), "Condition", features);
+}
