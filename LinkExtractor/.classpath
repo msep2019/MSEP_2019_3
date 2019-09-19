@@ -1,32 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/uk/ac/gate/gate-core/8.5/gate-core-8.5.jar">
+	<classpathentry kind="src" output="target/classes" path="src">
 		<attributes>
+			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="uk.ac.gate"/>
-			<attribute name="maven.artifactId" value="gate-core"/>
-			<attribute name="maven.version" value="8.5"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/uk/ac/gate/plugins/stringannotation/4.0/stringannotation-4.0.jar">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="uk.ac.gate.plugins"/>
-			<attribute name="maven.artifactId" value="stringannotation"/>
-			<attribute name="maven.version" value="4.0"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="log4j"/>
-			<attribute name="maven.artifactId" value="log4j"/>
-			<attribute name="maven.version" value="1.2.17"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/khoa/.p2/pool/plugins/org.eclipse.emf.common_2.15.0.v20180914-1817.jar" sourcepath="/Users/khoa/.p2/pool/plugins/org.eclipse.emf.common.source_2.15.0.v20180914-1817.jar">
@@ -58,32 +40,10 @@
 			<accessrule ignoreifbetter="true" kind="nonaccessible" pattern="**/*"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/org/eclipse/emf/org.eclipse.emf.ecore.xmi/2.15.0/org.eclipse.emf.ecore.xmi-2.15.0.jar">
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.eclipse.emf"/>
-			<attribute name="maven.artifactId" value="org.eclipse.emf.ecore.xmi"/>
-			<attribute name="maven.version" value="2.15.0"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/org/apache/poi/poi-ooxml/3.11/poi-ooxml-3.11.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.apache.poi"/>
-			<attribute name="maven.artifactId" value="poi-ooxml"/>
-			<attribute name="maven.version" value="3.11"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/Users/khoa/.m2/repository/org/jdom/jdom/1.1.3/jdom-1.1.3.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.jdom"/>
-			<attribute name="maven.artifactId" value="jdom"/>
-			<attribute name="maven.version" value="1.1.3"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

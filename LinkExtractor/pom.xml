@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>uk.ac.gate</groupId>
 			<artifactId>gate-core</artifactId>
-			<version>8.5</version>
+			<version>8.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
@@ -38,6 +38,16 @@
 			<groupId>uk.ac.gate.plugins</groupId>
 			<artifactId>stringannotation</artifactId>
 			<version>4.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.jdom</groupId>
+    		<artifactId>jdom2</artifactId>
+    		<version>2.0.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>jaxen</groupId>
+		    <artifactId>jaxen</artifactId>
+		    <version>1.1.6</version>
 		</dependency>
 	</dependencies>
 </project>
