@@ -13,13 +13,13 @@ import org.jdom2.input.SAXBuilder;
 
 //import com.sun.org.apache.bcel.internal.classfile.Attribute;
 
-public class CweTest {
+public class CveTest {
 
     public static void main(String[] args) throws JDOMException, IOException {
         
         SAXBuilder saxBuilder = new SAXBuilder();
-        //Document readDoc = saxBuilder.build("book.xml");
         InputStream in;
+        
         try {
         	
         	in = new FileInputStream("xml/Architectural(1008).xml");
@@ -28,15 +28,17 @@ public class CweTest {
         	Element root = document.getRootElement();
         	List<Element> childList = root.getChildren();
         	
-        	//storage of founded and repeated CAPEC id
-        	List<String> idCapstorage = new ArrayList<>();
-        	List<String> idCaprepeated = new ArrayList<>();
-        	HashSet<String> setCap = new HashSet<>();
+        	//storage of founded and repeated CVE id
+        	List<String> idCvestorage = new ArrayList<>();
+        	List<String> idCverepeated = new ArrayList<>();
+        	HashSet<String> setCve = new HashSet<>();
         	
-        	//number of the cwe id containing capec id
-        	int capIncwe = 0 ;
+        	//number of the cwe id
+        	int numOfcwe = 0 ;
+        	//number of the CWE id containing CAPEC id
+        	int cveIncwe = 0 ;
         	
-        	//Search and retrieve CAPEC id
+        	//Search and retrieve CVE id
         	for(Element child : childList) {
         		//List<org.jdom2.Attribute> attrList = child.getAttributes();
         		System.out.println("executed");
@@ -44,21 +46,26 @@ public class CweTest {
     				List<Element> wknsList = child.getChildren();
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {
+            				numOfcwe++;
             				System.out.println("<--Start reading info : number of Weakness " + (wknsList.indexOf(wkns) + 1 ) + "-->");
             				System.out.println("Weakness Node ID: " + wkns.getName() + " --> " + wkns.getAttributeValue("ID"));
             				List<Element> wknList = wkns.getChildren();
             				
             				for(Element wkn : wknList) {
-            					if(wkn.getName().equals("Related_Attack_Patterns")) {
-            						List<Element> atkList = wkn.getChildren();
-            						capIncwe++;
-            	            		for(Element atkpattern : atkList) {
-            	            			List<org.jdom2.Attribute> atkAttr = atkpattern.getAttributes();
-            	            			for(org.jdom2.Attribute attr :atkAttr) {
-            	            				System.out.println("CAPEC Id: " + attr.getName() + " --> " + attr.getValue());
-            	            				idCapstorage.add(attr.getValue());
-            	            			}         			
-            	            		}
+            					if(wkn.getName().equals("Observed_Examples")) {
+            						List<Element> egList = wkn.getChildren();
+            						cveIncwe++;
+            						for(Element subList : egList) {
+            							if(subList.getName().equals("Observed_Example")) {
+            								List<Element> cveList = subList.getChildren();
+            								for(Element cve : cveList) {
+            									if(cve.getName().equals("Reference")) {
+                        	            			System.out.println("CVE Id:  -->  " + cve.getText());
+                        	            			idCvestorage.add(cve.getText());
+            									}
+            								}
+            							}
+            						}
             					}
             				}
             				System.out.println("<--End reading info-->");
@@ -69,15 +76,16 @@ public class CweTest {
         	}
         	
         	//filter the repeated element
-        	for(String id : idCapstorage) {
-        		boolean add = setCap.add(id);
+        	for(String id : idCvestorage) {
+        		boolean add = setCve.add(id);
         		if(!add) {
-        			idCaprepeated.add(id);
+        			idCverepeated.add(id);
         		}
         	}
         	
-        	System.out.println("Total number of founded CAPEC id: "+ idCapstorage.size()+" Total number of Cwe id linked to CAPEC: "+capIncwe);
-        	System.out.println("Number of repeated CAPEC id: "+ idCaprepeated.size() + " Number of unique CAPEC id: " +setCap.size());
+        	System.out.println("Total number of founded CVE id: "+ idCvestorage.size()+", Total number of CWE id linked to CVE: "+cveIncwe);
+        	System.out.println("Number of repeated CVE id: "+ idCverepeated.size() + ", Number of unique CVE id: " +setCve.size());
+        	System.out.println("Coverage of CWE id related to CVE_ID: "+cveIncwe+"/"+numOfcwe);
         	
         }catch(FileNotFoundException e) {
         	e.printStackTrace();

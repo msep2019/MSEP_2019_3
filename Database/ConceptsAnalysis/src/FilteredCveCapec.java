@@ -10,12 +10,12 @@ class FilteredCveCapec {
 	}
 	
 	public HashSet<String> getFilteredcve(){
-		System.out.println("└─Filtered CVE: "+setCve.toString());
+		//System.out.println("└─Filtered CVE: "+setCve.toString());
 		return setCve;
 	}
 	
 	public HashSet<String> getFilteredcapec(){
-		System.out.println("└─Filtered CAPEC: "+setCapec.toString());
+		//System.out.println("└─Filtered CAPEC: "+setCapec.toString());
 		return setCapec;
 	}
 	

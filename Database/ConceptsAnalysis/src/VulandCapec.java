@@ -24,7 +24,7 @@ public class VulandCapec {
 		HashSet<String> setCve = new HashSet<>();
 		HashSet<String> setCapec = new HashSet<>();
 		
-		System.out.println("Please enter the CVE id to begin: ");
+		System.out.println("Please enter the CVE ID to begin: ");
 		
     	try {
     		Scanner scan = new Scanner(System.in);
@@ -41,6 +41,7 @@ public class VulandCapec {
     		HashSet<String> dCapec;
     		
 			//capture cve and capec ids which have direct links
+    		System.out.println("<--Results of matching Development(699) CWE dataset-->");
     		input1 = new FileInputStream("xml/Development(699).xml");
 			dl = new SearchDirectlinks();
 			dl.directLinks(cveid,input1);
@@ -57,6 +58,7 @@ public class VulandCapec {
 			}
 			
 			//capture cve and capec ids which have direct links
+			System.out.println("<--Results of matching Research(1000) CWE dataset-->");
 			input2 = new FileInputStream("xml/Research(1000).xml");
 			dl = new SearchDirectlinks();
 			dl.directLinks(cveid,input2);
@@ -73,6 +75,7 @@ public class VulandCapec {
 			}
 
 			//capture cve and capec ids which have direct links
+			System.out.println("<--Results of matching Architectural(1008) CWE dataset-->");
 			input3 = new FileInputStream("xml/Architectural(1008).xml");
 			dl = new SearchDirectlinks();
 			dl.directLinks(cveid,input3);
@@ -102,11 +105,11 @@ public class VulandCapec {
         		}
         	}
         	
-        	System.out.println("<--Print final results-->");
+        	/*System.out.println("<--Print the results of coverage calculation-->");
         	System.out.println("└─Final filtered CAPEC: " + setCapec.toString());
         	System.out.println("	└─Coverage of direct links in CVE: "+ setCve.size()+ "/153347");
-        	System.out.println("	└─Coverage of direct links in CAPEC: "+ setCapec.size()+ "/577");
-        	System.out.println("<--End of print-->");
+        	System.out.println("	└─Coverage of direct links in CAPEC: "+ setCapec.size()+ "/519");
+        	System.out.println("<--End of print-->");*/
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
