@@ -1,0 +1,44 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase:		getKeywords
+Input:  	Token
+Options: 	control = brill
+
+Rule: 		CombinedKeywordRules
+Priority: 	10
+(
+	(
+		{Token.category == "JJ"}
+		({Token.category == "NN"} | {Token.category == "NNS"} | {Token.category == "NNP"} | {Token.category == "NNPS"} | {Token.category == "NP"} | {Token.category == "NPs"})
+	)
+	|
+	(
+		({Token.category == "NN"} | {Token.category == "NNP"} | {Token.category == "NP"})
+		({Token.category == "NN"} | {Token.category == "NNS"} | {Token.category == "NNP"} | {Token.category == "NNPS"} | {Token.category == "NP"} | {Token.category == "NPs"})
+	)
+): keyword
+-->
+{	
+	AnnotationSet keyword = bindings.get("keyword");
+	FeatureMap features = Factory.newFeatureMap();
+
+	// Get the tokens
+	ArrayList tokens = new ArrayList(keyword);
+
+	// Define a comparator for annotations by start offset
+	Collections.sort(tokens, new OffsetComparator());
+  	String text = "";
+  	Iterator tokIter = tokens.iterator();
+  	while(tokIter.hasNext()) {
+    	text += " " + (String)((Annotation)tokIter.next()).getFeatures().get("string");
+  	}
+
+  	text = text.trim();
+
+	features = Factory.newFeatureMap();
+	features.put("string", text);
+
+  	outputAS.add(keyword.firstNode(), keyword.lastNode(), "Keyword", features);
+}
