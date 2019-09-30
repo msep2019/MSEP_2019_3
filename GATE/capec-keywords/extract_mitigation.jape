@@ -1,0 +1,34 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase:		eliminateIr
+Input:  	Token
+Options: 	control = brill
+
+Rule: 		KeywordRules
+Priority: 	10
+(
+	{Token.category == "NN"} | {Token.category == "NNS"} | {Token.category == "NNP"} | {Token.category == "NNPS"} | {Token.category == "NP"} | {Token.category == "NPs"} |
+	{Token.category == "VBD"} | {Token.category == "VBG"} | {Token.category == "VBN"} | {Token.category == "VBP"} | {Token.category == "VB"} | {Token.category == "VBZ"}
+
+): keyword
+-->
+{
+
+	gate.AnnotationSet keyword = (gate.AnnotationSet)bindings.get("keyword");
+	gate.Annotation keywordAnn = (gate.Annotation)keyword.iterator().next();
+	gate.FeatureMap features = Factory.newFeatureMap();
+
+	String exculdeWords = "be is are was were beed";
+
+    String word = stringFor(doc, keywordAnn);
+    
+   
+	if (!exculdeWords.contains(word)) {
+		features.put("rule", "KeywordRule");
+		features.put("string", word);
+
+		outputAS.add(keyword.firstNode(), keyword.lastNode(), "Keyword", features);
+	}
+}
