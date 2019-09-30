@@ -2,33 +2,47 @@ Imports: {
 	import static gate.Utils.*;
 }
 
-Phase:		getKeywords
-Input:  	Token
+Phase:		getWeaknesses
+Input:  	Weakness
 Options: 	control = brill
 
-Rule: 		KeywordRules
+Rule: 		WeaknessRules
 Priority: 	10
 (
-	{Token.category == "NN"} | {Token.category == "NNS"} | {Token.category == "NNP"} | {Token.category == "NNPS"} | {Token.category == "NP"} | {Token.category == "NPs"} |
-	{Token.category == "VBD"} | {Token.category == "VBG"} | {Token.category == "VBN"} | {Token.category == "VBP"} | {Token.category == "VB"} | {Token.category == "VBZ"}
+	{Weakness}
 
-): keyword
+): weakness
 -->
 {
 
-	gate.AnnotationSet keyword = (gate.AnnotationSet)bindings.get("keyword");
-	gate.Annotation keywordAnn = (gate.Annotation)keyword.iterator().next();
-	gate.FeatureMap features = Factory.newFeatureMap();
+	gate.AnnotationSet weaknessAS = (gate.AnnotationSet)bindings.get("weakness");
+	gate.Annotation weaknessAnn = (gate.Annotation)weaknessAS.iterator().next();
+	
 
-	String exculdeWords = "be is are was were beed";
-
-    String word = stringFor(doc, keywordAnn);
+	//String word = stringFor(doc, weaknessAnn);
     
    
-	if (!exculdeWords.contains(word)) {
-		features.put("rule", "KeywordRule");
-		features.put("string", word);
+	// get Xtag info from within Ytag annotation
+  	AnnotationSet lookupAS = inputAS.get("Lookup").getContained(weaknessAS.firstNode().getOffset(), weaknessAS.lastNode().getOffset());
 
-		outputAS.add(keyword.firstNode(), keyword.lastNode(), "Keyword", features);
-	}
+  	if (lookupAS != null){
+  		ArrayList<String> keywords = new ArrayList<>();
+
+
+	  	for(Annotation lookupAnn : lookupAS)
+		{
+			if (!keywords.contains(lookupAnn.getFeatures().get("_string").toString())) {
+				keywords.add(lookupAnn.getFeatures().get("_string").toString());
+			}
+		} 
+
+	  	gate.FeatureMap features = Factory.newFeatureMap();
+
+	  	if (keywords.size() >= 3) {
+	  		System.out.println(weaknessAnn.getFeatures().get("ID") + " " + weaknessAnn.getFeatures().get("Name"));
+	  		System.out.println("Keyword count: " + keywords.size());
+	  		System.out.println();
+	  		outputAS.add(weaknessAS.firstNode(), weaknessAS.lastNode(), "RelatedWeakness", features);
+	  	}
+  	}
 }
