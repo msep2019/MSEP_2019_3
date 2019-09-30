@@ -1,13 +1,16 @@
 package sossec;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.log4j.BasicConfigurator;
 
 import gate.util.GateException;
 import sossec.cve.CVEHelper;
+import sossec.elements.SoSSecAgent;
 import sossec.keyword.KeywordDocumentAnalyser;
 
 public class LinkExtractor {
@@ -16,7 +19,7 @@ public class LinkExtractor {
 		long startTime = System.currentTimeMillis();
 
 		BasicConfigurator.configure();
-		ArrayList<String> agents = KeywordDocumentAnalyser.processDocs(result);
+		ArrayList<String> keywords = KeywordDocumentAnalyser.processDocs(result);
 
 		// get location of all resources
 		File log = new File("log/txt/Original simulation Log Files.txt");
