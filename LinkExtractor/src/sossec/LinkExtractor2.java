@@ -11,12 +11,12 @@ import sossec.cwe.CWEHelper;
 import sossec.capec.CAPECHelper;
 import sossec.keyword.KeywordDocumentAnalyser;
 
-public class LinkExtractor {
+public class LinkExtractor2 {
 	public static void main(String[] args) throws GateException, IOException, URISyntaxException {
 
-		CVEHelper helperCVE = new CVEHelper();
+		CAPECHelper helperCWE = new CAPECHelper();
 
-		String result = helperCVE.getItemContent(args[0]);
+		String result = helperCWE.getItemContent(args[0]);
 
 		System.out.println(result);
 
