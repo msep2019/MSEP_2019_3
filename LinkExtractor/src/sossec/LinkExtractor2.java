@@ -9,7 +9,7 @@ import gate.util.GateException;
 import sossec.cve.CVEHelper;
 import sossec.cwe.CWEHelper;
 import sossec.capec.CAPECHelper;
-import sossec.keyword.KeywordDocumentAnalyser;
+import sossec.keyword.Keyword;
 
 public class LinkExtractor2 {
 	public static void main(String[] args) throws GateException, IOException, URISyntaxException {
@@ -23,7 +23,7 @@ public class LinkExtractor2 {
 		BasicConfigurator.configure();
 
 		if (!result.isEmpty()) {
-			ArrayList<String> keywords = KeywordDocumentAnalyser.processDocs(result);
+			ArrayList<String> keywords = Keyword.processDocs(result);
 		}
 	}
 }

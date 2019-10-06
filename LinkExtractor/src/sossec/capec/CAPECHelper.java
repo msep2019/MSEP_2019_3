@@ -12,7 +12,7 @@ import sossec.XMLHelper;
 
 public class CAPECHelper {
 
-	String[] xmlFiles = { "src/databases/CAPEC_desc_domains.xml", "src/databases/CAPEC_desc_mechanisms.xml" };
+	public String[] xmlFiles = { "src/databases/CAPEC_desc_domains.xml", "src/databases/CAPEC_desc_mechanisms.xml" };
 
 	public String getItemContent(String Id) {
 		String result = "";

@@ -3,7 +3,6 @@ package sossec.keyword;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 
 import gate.Annotation;
 import gate.AnnotationSet;
@@ -19,7 +18,7 @@ import gate.creole.SerialAnalyserController;
 public class Keyword {
 	public static ArrayList<String> processDocs(String desc)
 			throws ResourceInstantiationException, ExecutionException, MalformedURLException {
-		ArrayList<String> agents = new ArrayList<>();
+		ArrayList<String> keywords = new ArrayList<>();
 
 		SerialAnalyserController sac;
 
@@ -50,6 +49,7 @@ public class Keyword {
 		features.put("createdOn", new Date());
 		name++;// to mark each doc and corpus
 		*/
+
 		// creating document
 		Document doc = (Document) Factory.newDocument(desc);
 
@@ -71,33 +71,22 @@ public class Keyword {
 			// get annotations of different types
 			AnnotationSet annotAgent = defaultSet.get("Keyword");
 
-			Set<String> set1 = defaultSet.getAllTypes();
-			Iterator<String> it1 = set1.iterator();
-			// Set<String> set2 = conditionType.getAllTypes();
-			// Iterator<String> it2 = set2.iterator();
-
-			System.out.println(set1.size());
-			while (it1.hasNext()) {
-				String str = it1.next();
-				System.out.println(str);
-			}
-			
 			// Get Agents
 			for (Annotation annot : annotAgent) {
 				FeatureMap featureAgent = annot.getFeatures();
 				String agentName = featureAgent.get("string").toString();
 
-				if (!agents.contains(agentName)) {
-					agents.add(agentName);
+				if (!keywords.contains(agentName)) {
+					keywords.add(agentName);
 				}
 			}
 		}
 		
-		agents.forEach((agent) -> {
+		keywords.forEach((agent) -> {
 			System.out.println(agent);
+
 		});
 		
-
 		corpus.clear();
 
 		// Delete each document resource
@@ -111,6 +100,6 @@ public class Keyword {
 		System.out.println("Document resource list cleared!");
 		System.gc();
 
-		return agents;
+		return keywords;
 	}
 }

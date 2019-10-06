@@ -12,7 +12,6 @@ import gate.LanguageAnalyser;
 import gate.ProcessingResource;
 import gate.creole.Plugin;
 import gate.creole.SerialAnalyserController;
-//import gate.gui.MainFrame;
 import gate.util.GateException;
 
 public class ResourcesLoader {

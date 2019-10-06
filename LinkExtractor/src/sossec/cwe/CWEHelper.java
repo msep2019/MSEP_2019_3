@@ -1,5 +1,6 @@
 package sossec.cwe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -12,7 +13,7 @@ import sossec.XMLHelper;
 
 public class CWEHelper {
 
-	String[] xmlFiles = { "src/databases/CWE_desc_architectural.xml", "src/databases/CWE_desc_development.xml",
+	public String[] xmlFiles = { "src/databases/CWE_desc_architectural.xml", "src/databases/CWE_desc_development.xml",
 			"src/databases/CWE_desc_research.xml" };
 
 	public String getItemContent(String Id) {
@@ -38,5 +39,13 @@ public class CWEHelper {
 		}
 
 		return result;
+	}
+	
+	public List<CWEItem> findWeakness() {
+		List<CWEItem> list = new ArrayList<CWEItem>();
+		
+		
+		
+		return list;
 	}
 }
