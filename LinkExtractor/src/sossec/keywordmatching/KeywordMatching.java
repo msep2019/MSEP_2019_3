@@ -3,6 +3,7 @@ package sossec.keywordmatching;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import gate.Annotation;
@@ -17,14 +18,14 @@ import gate.creole.ResourceInstantiationException;
 import gate.creole.SerialAnalyserController;
 
 public class KeywordMatching {
-	public static ArrayList<String> processDocs(String[] docs, File fileKeywordsDef)
+	public static ArrayList<Item> processDocs(String[] docs, File fileKeywordsDef, String pathJape)
 			throws ResourceInstantiationException, ExecutionException, MalformedURLException {
-		ArrayList<String> keywords = new ArrayList<>();
+		ArrayList<Item> foundItems = new ArrayList<>();
 
 		SerialAnalyserController sac;
 
 		try {
-			sac = KeywordMatchingResourcesLoader.getResources(fileKeywordsDef);
+			sac = KeywordMatchingResourcesLoader.getResources(fileKeywordsDef, pathJape);
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
@@ -73,21 +74,33 @@ public class KeywordMatching {
 			// get default set of annotations
 			AnnotationSet defaultSet = corpDoc.getAnnotations();
 			// get annotations of different types
-			AnnotationSet annotAgent = defaultSet.get("Keyword");
+			AnnotationSet annotFoundItem = defaultSet.get("FoundItem");
 
 			// Get Agents
-			for (Annotation annot : annotAgent) {
+			for (Annotation annot : annotFoundItem) {
 				FeatureMap featureAgent = annot.getFeatures();
-				String agentName = featureAgent.get("string").toString();
+				String itemID = featureAgent.get("id").toString();
 
-				if (!keywords.contains(agentName)) {
-					keywords.add(agentName);
+				boolean isExist = false;
+				for (Item foundItem : foundItems) {      
+					if (foundItem.id.equals(itemID)) {
+						isExist = true;
+					} 		
+			    }
+				
+				if (!isExist) {
+					String itemName = featureAgent.get("name").toString();
+					int matchingCount = (int) featureAgent.get("matchingCount");
+					foundItems.add(new Item(itemID, itemName, matchingCount));
 				}
-			}
+			}	
+			
 		}
 		
-		keywords.forEach((agent) -> {
-			System.out.println(agent);
+		Collections.sort(foundItems, new SortByMatchingCount());
+		
+		foundItems.forEach((item) -> {
+			System.out.println("(" + item.matchingCount + ") " + item.id + " " + item.name);
 		});
 		
 		corpus.clear();
@@ -96,13 +109,12 @@ public class KeywordMatching {
 		for (Iterator<Document> docResIterator = documentResList.iterator(); docResIterator.hasNext();) {
 			Factory.deleteResource((Resource) docResIterator.next());
 		}
-		System.out.println("All docs are removed from LR and corpus is cleared!");
 
 		// Clear list of document resources
 		documentResList.clear();
-		System.out.println("Document resource list cleared!");
+		
 		System.gc();
 
-		return keywords;
+		return foundItems;
 	}
 }

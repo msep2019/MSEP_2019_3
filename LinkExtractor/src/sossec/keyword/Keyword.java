@@ -1,8 +1,12 @@
 package sossec.keyword;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 
 import gate.Annotation;
 import gate.AnnotationSet;
@@ -69,23 +73,18 @@ public class Keyword {
 			// get default set of annotations
 			AnnotationSet defaultSet = corpDoc.getAnnotations();
 			// get annotations of different types
-			AnnotationSet annotAgent = defaultSet.get("Keyword");
+			AnnotationSet annotKeyword = defaultSet.get("Keyword");
 
 			// Get Agents
-			for (Annotation annot : annotAgent) {
+			for (Annotation annot : annotKeyword) {
 				FeatureMap featureAgent = annot.getFeatures();
-				String agentName = featureAgent.get("string").toString();
+				String keywordName = featureAgent.get("string").toString();
 
-				if (!keywords.contains(agentName)) {
-					keywords.add(agentName);
+				if (!keywords.contains(keywordName)) {
+					keywords.add(keywordName);
 				}
 			}
 		}
-		
-		keywords.forEach((agent) -> {
-			System.out.println(agent);
-
-		});
 		
 		corpus.clear();
 
@@ -93,13 +92,57 @@ public class Keyword {
 		for (Iterator<Document> docResIterator = documentResList.iterator(); docResIterator.hasNext();) {
 			Factory.deleteResource((Resource) docResIterator.next());
 		}
-		System.out.println("All docs are removed from LR and corpus is cleared!");
-
+		
 		// Clear list of document resources
 		documentResList.clear();
-		System.out.println("Document resource list cleared!");
+		
 		System.gc();
 
 		return keywords;
+	}
+	
+	public static File generateGazetteer(String name, ArrayList<String> keywords) {
+
+		File tempDir = new File("tmp");
+		if (!tempDir.exists()) {
+			if (tempDir.mkdir()) {
+				System.out.println("Temp directory is created!");
+			} else {
+				System.out.println("Failed to create temp directory!");
+				System.exit(1);
+			}
+		}
+
+		File fileList = null;
+		File fileDef = null;
+
+		try {
+			String fileListName = name + "_keywords" + UUID.randomUUID().toString() + ".lst";
+			fileList = new File("tmp/" + fileListName);
+
+			PrintStream fileListStream = new PrintStream(fileList);
+			for (String keyword : keywords) {
+				fileListStream.println(keyword);
+			}
+
+			fileListStream.close();
+
+			String fileDefName = name + "_keywords" + UUID.randomUUID().toString() + ".def";
+			fileDef = new File("tmp/" + fileDefName);
+
+			PrintStream fileDefStream = new PrintStream(fileDef);
+
+			fileDefStream.print(fileListName + ":" + name  + ":Keyword:en");
+
+			fileDefStream.close();
+
+			// fileList.deleteOnExit();
+			// fileDef.deleteOnExit();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return fileDef;
 	}
 }

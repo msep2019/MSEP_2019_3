@@ -2,23 +2,22 @@ Imports: {
 	import static gate.Utils.*;
 }
 
-Phase:		getWeaknesses
-Input:  	Weakness
-Options: 	control = brill
+Phase:		getCAPEC
+Input:  	Attack_Pattern
+Options: 	control = brill debug = false
 
-Rule: 		WeaknessRules
+Rule: 		CAPECRules
 Priority: 	10
 (
-	{Weakness}
-
-): weakness
+	{Attack_Pattern}
+): pattern
 -->
 {
-	gate.AnnotationSet weaknessAS = (gate.AnnotationSet)bindings.get("weakness");
-	gate.Annotation weaknessAnn = (gate.Annotation)weaknessAS.iterator().next();
+	gate.AnnotationSet patternAS = (gate.AnnotationSet)bindings.get("pattern");
+	gate.Annotation patternAnn = (gate.Annotation)patternAS.iterator().next();
 	
 	// get Xtag info from within Ytag annotation
-  	AnnotationSet lookupAS = inputAS.get("Lookup").getContained(weaknessAS.firstNode().getOffset(), weaknessAS.lastNode().getOffset());
+  	AnnotationSet lookupAS = inputAS.get("Lookup").getContained(patternAS.firstNode().getOffset(), patternAS.lastNode().getOffset());
 
   	if (lookupAS != null){
   		ArrayList<String> keywords = new ArrayList<>();
@@ -36,14 +35,19 @@ Priority: 	10
 			}
 		} 
 
-	  	if (keywords.size() >= 3) {
-	  		System.out.println(weaknessAnn.getFeatures().get("ID") + " " + weaknessAnn.getFeatures().get("Name"));
+	  	if (keywords.size() > 3) {
+	  		/*
+	  		System.out.println(patternAnn.getFeatures().get("ID") + " " + patternAnn.getFeatures().get("Name"));
 	  		System.out.println("Keyword count: " + keywords.size());
 	  		System.out.println();
+	  		*/
 
 	  		gate.FeatureMap features = Factory.newFeatureMap();
 	  		features.put("matchingCount", keywords.size());
-	  		outputAS.add(weaknessAS.firstNode(), weaknessAS.lastNode(), "FoundWeakness", features);
+	  		features.put("id", patternAnn.getFeatures().get("ID"));
+	  		features.put("name", patternAnn.getFeatures().get("Name"));
+	  		
+	  		outputAS.add(patternAS.firstNode(), patternAS.lastNode(), "FoundItem", features);
 	  	}
   	}
 }

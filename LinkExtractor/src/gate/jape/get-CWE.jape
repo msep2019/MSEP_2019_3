@@ -2,9 +2,9 @@ Imports: {
 	import static gate.Utils.*;
 }
 
-Phase:		getWeaknesses
+Phase:		getCWE
 Input:  	Weakness
-Options: 	control = brill
+Options: 	control = brill debug = false
 
 Rule: 		WeaknessRules
 Priority: 	10
@@ -36,10 +36,12 @@ Priority: 	10
 			}
 		} 
 
-	  	if (keywords.size() >= 3) {
+	  	if (keywords.size() > 3) {
+	  		/*
 	  		System.out.println(weaknessAnn.getFeatures().get("ID") + " " + weaknessAnn.getFeatures().get("Name"));
 	  		System.out.println("Keyword count: " + keywords.size());
 	  		System.out.println();
+	  		*/
 
 	  		gate.FeatureMap features = Factory.newFeatureMap();
 	  		features.put("matchingCount", keywords.size());

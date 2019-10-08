@@ -1,7 +1,11 @@
 package sossec.cwe;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -26,9 +30,9 @@ public class CWEHelper {
 
 			String query = "/Weakness_Catalog/Weaknesses/Weakness[@ID= '" + Id + "']";
 			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
-			
+
 			List<Element> xPathResult = xpe.evaluate(document);
-	        
+
 			if (xPathResult.size() > 0) {
 				result = xPathResult.get(0).getChild("Description").getValue();
 			}
@@ -39,13 +43,5 @@ public class CWEHelper {
 		}
 
 		return result;
-	}
-	
-	public List<CWEItem> findWeakness() {
-		List<CWEItem> list = new ArrayList<CWEItem>();
-		
-		
-		
-		return list;
 	}
 }

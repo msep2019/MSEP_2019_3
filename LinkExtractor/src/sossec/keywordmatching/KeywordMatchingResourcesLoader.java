@@ -19,7 +19,7 @@ import gate.creole.SerialAnalyserController;
 import gate.util.GateException;
 
 public class KeywordMatchingResourcesLoader {
-	public static SerialAnalyserController getResources(File fileKeywordsDef)
+	public static SerialAnalyserController getResources(File fileKeywordsDef, String pathJape)
 			throws GateException, IOException, URISyntaxException {
 
 		Gate.init();
@@ -69,13 +69,13 @@ public class KeywordMatchingResourcesLoader {
 				.createResource("gate.creole.annotransfer.AnnotationSetTransfer", paramsASTransfer);
 
 		// Specifying location of JAPE files
-		FeatureMap weaknessFeature = Factory.newFeatureMap();
-		weaknessFeature.put("grammarURL", new File("src/gate/jape/get-weakness.jape").toURI().toURL());
-		weaknessFeature.put("inputASName", "Original markups");
+		FeatureMap japeFeature = Factory.newFeatureMap();
+		japeFeature.put("grammarURL", new File(pathJape).toURI().toURL());
+		japeFeature.put("inputASName", "Original markups");
 
 		// Loading JAPE language resources with specified features
-		LanguageAnalyser weaknessTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer",
-				weaknessFeature, parms, "JAPE Transducer - Get weakness");
+		LanguageAnalyser tagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer",
+				japeFeature, parms, "JAPE Transducer");
 
 		sac.add(documentReset);
 		sac.add(sentenceSplitter);
@@ -84,7 +84,7 @@ public class KeywordMatchingResourcesLoader {
 		sac.add(eg);
 		sac.add(annoTransfer);
 		
-		sac.add(weaknessTagJape);
+		sac.add(tagJape);
 
 		return sac;
 	}
