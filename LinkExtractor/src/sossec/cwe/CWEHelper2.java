@@ -1,0 +1,47 @@
+package sossec.cwe;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.filter.Filters;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
+
+import sossec.XMLHelper;
+//for cwe mitigation
+public class CWEHelper2 {
+
+	public String[] xmlFiles = { "src/databases/CWE_mitigation_architectural.xml", "src/databases/CWE_mitigation_development.xml",
+			"src/databases/CWE_mitigation_research.xml" };
+
+	public String getItemContent(String Id) {
+		String result = "";
+
+		for (String file : xmlFiles) {
+			Document document = XMLHelper.getSAXParsedDocument(file);
+
+			Element rootNode = document.getRootElement();
+
+			String query = "/Weakness_Catalog/Weaknesses/Weakness[@ID= '" + Id + "']";
+			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+
+			List<Element> xPathResult = xpe.evaluate(document);
+
+			if (xPathResult.size() > 0) {
+				result = xPathResult.get(0).getChild("Description").getValue();
+			}
+
+			if (!result.isEmpty()) {
+				break;
+			}
+		}
+
+		return result;
+	}
+}
