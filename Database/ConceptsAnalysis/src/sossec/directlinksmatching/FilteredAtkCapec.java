@@ -1,3 +1,4 @@
+package sossec.directlinksmatching;
 import java.util.ArrayList;
 import java.util.HashMap;
 
