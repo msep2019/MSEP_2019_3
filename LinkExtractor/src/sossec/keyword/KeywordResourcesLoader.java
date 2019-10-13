@@ -55,11 +55,11 @@ public class KeywordResourcesLoader {
 
 		// Specifying location of JAPE files
 		FeatureMap cveCombinedKeywordFeature = Factory.newFeatureMap();
-		cveKeywordFeature.put("grammarURL", new File("src/gate/jape/combined-keyword.jape").toURI().toURL());
+		cveCombinedKeywordFeature.put("grammarURL", new File("src/gate/jape/combined-keyword.jape").toURI().toURL());
 
 		// Loading JAPE language resources with specified features
 		LanguageAnalyser cveCombinedKeywordTagJape = (LanguageAnalyser) Factory.createResource("gate.creole.Transducer",
-				cveKeywordFeature, parms, "JAPE Transducer - CVE Combined Keywords");
+				cveCombinedKeywordFeature, parms, "JAPE Transducer - CVE Combined Keywords");
 
 		sac.add(documentReset);
 		sac.add(sentenceSplitter);
