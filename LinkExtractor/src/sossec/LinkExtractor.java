@@ -12,7 +12,9 @@ import sossec.cve.CVEItem;
 import sossec.cwe.CWEHelper;
 import sossec.cwe.CWEItem;
 import sossec.capec.CAPECHelper;
+import sossec.capec.CAPECHelper2;
 import sossec.capec.CAPECItem;
+import sossec.capec.CAPECMitigation;
 import sossec.keyword.Keyword;
 import sossec.keywordmatching.Item;
 import sossec.keywordmatching.KeywordMatching;
@@ -23,10 +25,14 @@ public class LinkExtractor {
 		File fileCWEKeywordDef = null;
 		ArrayList<Item> listCWE = new ArrayList<>();
 		ArrayList<Item> listCAPEC = new ArrayList<>();
+		//mitigation
+		ArrayList<Item> listCAPEC2 = new ArrayList<>();
 		
 		CVEHelper cveHelper = new CVEHelper();
 		CWEHelper cweHelper = new CWEHelper();
 		CAPECHelper capecHelper = new CAPECHelper();
+		//mitigation
+		CAPECHelper2 capecHelper2 = new CAPECHelper2();
 
 		String cveDesc = cveHelper.getItemContent(args[0]);
 
@@ -35,6 +41,7 @@ public class LinkExtractor {
 		}
 		
 		CVEItem cveItem = new CVEItem(args[0]);
+		
 
 		
 		BasicConfigurator.configure();
@@ -85,6 +92,9 @@ public class LinkExtractor {
 					for (Item itemCAPEC : listCAPEC) {
 						CAPECItem capecItem = new CAPECItem(itemCAPEC.id);
 						cweItem.listCAPEC.add(capecItem);
+						//mitigation
+						//CAPECMitigation capecMitigation = new CAPECMitigation(itemCAPEC.id);
+						//cweItem.listCAPEC.add(capecMitigation);
 					}
 				}
 		    }
@@ -92,10 +102,13 @@ public class LinkExtractor {
 		System.out.println("\n========FINAL RESULT========\n");
 		System.out.println("CVE: " + cveItem.id);
 		for (CWEItem cweItem : cveItem.listCWE) {
-			System.out.println("â”” CWE: " + cweItem.id);
+			System.out.println("©¸©¤CWE: " + cweItem.id);
 			
 			for (CAPECItem capecItem : cweItem.listCAPEC) {
-				System.out.println("  â”” CAPEC: " + capecItem.id);
+				System.out.println("  ©¸©¤CAPEC: " + capecItem.id);
+			}
+			for (CAPECMitigation capecMitigation : cweItem.listCAPEC) {
+				System.out.println("  ©¸©¤CAPEC: " + capecMitigation.id);
 			}
 		}
 	}
