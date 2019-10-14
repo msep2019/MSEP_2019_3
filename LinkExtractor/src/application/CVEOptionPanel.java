@@ -77,6 +77,8 @@ public class CVEOptionPanel extends Panel {
 			modelDisabledKeywords.addElement(item);
 		}
 		panelKeyword.listDisabledKeywords.setModel(modelDisabledKeywords);
+		panelKeyword.paneEnabledKeywords.revalidate();
+		panelKeyword.paneDisabledKeywords.revalidate();
 	}
 	
 	public void enableKeywords() {
