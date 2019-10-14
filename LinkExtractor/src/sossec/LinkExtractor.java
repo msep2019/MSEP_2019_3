@@ -12,9 +12,7 @@ import sossec.cve.CVEItem;
 import sossec.cwe.CWEHelper;
 import sossec.cwe.CWEItem;
 import sossec.capec.CAPECHelper;
-import sossec.capec.CAPECHelper2;
 import sossec.capec.CAPECItem;
-import sossec.capec.CAPECMitigation;
 import sossec.keyword.Keyword;
 import sossec.keywordmatching.Item;
 import sossec.keywordmatching.KeywordMatching;
@@ -23,16 +21,12 @@ public class LinkExtractor {
 	public static void main(String[] args) throws GateException, IOException, URISyntaxException {
 		File fileCVEKeywordDef = null;
 		File fileCWEKeywordDef = null;
-		ArrayList<Item> listCWE = new ArrayList<>();
-		ArrayList<Item> listCAPEC = new ArrayList<>();
-		//mitigation
-		ArrayList<Item> listCAPEC2 = new ArrayList<>();
+		ArrayList<Item> indirectCWE = new ArrayList<>();
+		ArrayList<Item> indirectCAPEC = new ArrayList<>();
 		
 		CVEHelper cveHelper = new CVEHelper();
 		CWEHelper cweHelper = new CWEHelper();
 		CAPECHelper capecHelper = new CAPECHelper();
-		//mitigation
-		CAPECHelper2 capecHelper2 = new CAPECHelper2();
 
 		String cveDesc = cveHelper.getItemContent(args[0]);
 
@@ -41,7 +35,6 @@ public class LinkExtractor {
 		}
 		
 		CVEItem cveItem = new CVEItem(args[0]);
-		
 
 		
 		BasicConfigurator.configure();
@@ -59,13 +52,13 @@ public class LinkExtractor {
 		}
 		
 		if (fileCVEKeywordDef != null) {
-			System.out.println("\n==Found CWE for CVE " + cveItem.id + " : ");
+			System.out.println("\n===Found CWE for CVE " + cveItem.id + " : ");
 			// Get weaknesses which have high matching
-			listCWE = KeywordMatching.processDocs(cweHelper.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
+			indirectCWE = KeywordMatching.processDocs(cweHelper.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
 			
-			for (Item itemCWE : listCWE) {
+			for (Item itemCWE : indirectCWE) {
 				CWEItem cweItem = new CWEItem(itemCWE.id);
-				cveItem.listCWE.add(cweItem);
+				cveItem.indirectCWE.add(cweItem);
 				
 				String cweDesc = cweHelper.getItemContent(cweItem.id);
 				
@@ -86,29 +79,23 @@ public class LinkExtractor {
 				if (fileCWEKeywordDef != null) {
 					System.out.println("\n==Found CAPEC for CWE " + cweItem.id + " : ");
 					// Get attack pattern which have high matching
-					listCAPEC = KeywordMatching.processDocs(capecHelper.xmlFiles, fileCWEKeywordDef, "src/gate/jape/get-CAPEC.jape");
+					indirectCAPEC = KeywordMatching.processDocs(capecHelper.xmlFiles, fileCWEKeywordDef, "src/gate/jape/get-CAPEC.jape");
 					
 					// Add found CAPEC to list
-					for (Item itemCAPEC : listCAPEC) {
+					for (Item itemCAPEC : indirectCAPEC) {
 						CAPECItem capecItem = new CAPECItem(itemCAPEC.id);
-						cweItem.listCAPEC.add(capecItem);
-						//mitigation
-						//CAPECMitigation capecMitigation = new CAPECMitigation(itemCAPEC.id);
-						//cweItem.listCAPEC.add(capecMitigation);
+						cweItem.indirectCAPEC.add(capecItem);
 					}
 				}
 		    }
 		}
 		System.out.println("\n========FINAL RESULT========\n");
 		System.out.println("CVE: " + cveItem.id);
-		for (CWEItem cweItem : cveItem.listCWE) {
-			System.out.println("©¸©¤CWE: " + cweItem.id);
+		for (CWEItem cweItem : cveItem.indirectCWE) {
+			System.out.println("â””â”€CWE: " + cweItem.id);
 			
-			for (CAPECItem capecItem : cweItem.listCAPEC) {
-				System.out.println("  ©¸©¤CAPEC: " + capecItem.id);
-			}
-			for (CAPECMitigation capecMitigation : cweItem.listCAPEC) {
-				System.out.println("  ©¸©¤CAPEC: " + capecMitigation.id);
+			for (CAPECItem capecItem : cweItem.indirectCAPEC) {
+				System.out.println("  â””â”€CAPEC: " + capecItem.id);
 			}
 		}
 	}
