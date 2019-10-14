@@ -1,4 +1,3 @@
-package sossec.directlinksmatching;
 import java.util.HashSet;
 
 class FilteredCveCapec {

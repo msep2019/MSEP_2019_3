@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -99,8 +97,6 @@ public class Keyword {
 		documentResList.clear();
 		
 		System.gc();
-		
-		Collections.sort(keywords, String.CASE_INSENSITIVE_ORDER); 
 
 		return keywords;
 	}
