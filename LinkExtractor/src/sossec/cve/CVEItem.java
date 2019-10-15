@@ -42,34 +42,37 @@ public class CVEItem {
 
 	public ArrayList<CWEItem> getIndirectCWEList() {
 		File fileCVEKeywordDef = null;
-		String cveDesc = cveHelper.getItemContent(this.id);
 		ArrayList<Item> listCWE = new ArrayList<>();
-
-		if (cveDesc.isEmpty()) {
-			return indirectCWE;
-		}
-
 		BasicConfigurator.configure();
-
-		// Get CVE keywords
-		if (!cveDesc.isEmpty()) {
-			try {
-				keywords = Keyword.processDocs(cveDesc);
-			} catch (ResourceInstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		
+		if (keywords.size() <= 0) {
+			String cveDesc = cveHelper.getItemContent(this.id);
+	
+			if (cveDesc.isEmpty()) {
+				return indirectCWE;
+			}
+			
+			// Get CVE keywords
+			if (!cveDesc.isEmpty()) {
+				System.out.println("CVE Desc: " + cveDesc);
+				try {
+					keywords = Keyword.processDocs(cveDesc);
+				} catch (ResourceInstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
 		// Generate CVE keywords Gazetteer list and definition
 		if (keywords.size() > 0) {
-			System.out.println("CVE Desc: " + cveDesc);
+			//System.out.println("CVE Desc: " + cveDesc);
 			System.out.println("CVE Keywords: " + keywords.toString());
 			fileCVEKeywordDef = Keyword.generateGazetteer("CVE", keywords);
 		}
