@@ -1,4 +1,3 @@
-package sossec.directlinksmatching;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -139,7 +138,6 @@ public class SearchDirectlinks {
         	
         	// output the CVE_ID and CAPEC_ID which have direct links
         	//System.out.println("<--Print of direct links between CVE_ID and CAPEC_ID-->");
-        	
         	//Associate direct link groups with description
         	for(Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
             	for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()) {	
@@ -182,7 +180,7 @@ public class SearchDirectlinks {
         		for(int i = 0; i < match.size(); i++) {
         			dcveId.add(match.get(i));
         			if( cveid.equals(match.get(i)) ) {  
-        				//get the searching route of establishing direct links
+        				
         				for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()){
         					if(entryCap.getValue().equals(entryMatch.getValue())){
         						for(Map.Entry<String, String> entryDes : cweIdDescription.entrySet()){

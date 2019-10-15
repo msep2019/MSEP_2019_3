@@ -34,6 +34,7 @@ public class MainView {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setSize(screenSize.width, screenSize.height);
 		frame.setLocationRelativeTo(null);
+		frame.setMinimumSize(new Dimension(800, 600));
 
 		// Create UI elements
 		lblCVE = new JLabel("CVE ID");
