@@ -1,8 +1,13 @@
 package sossec.cve;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.BasicConfigurator;
 
@@ -37,6 +42,34 @@ public class CVEItem {
 	}
 	
 	public ArrayList<CWEItem> getDirectCWEList() {
+		
+		InputStream input;
+		
+		//define database location in a string
+		String[] argsDb = {"xml/Research(1000).xml","xml/Architectural(1008).xml","xml/Development(699).xml"}; 
+		HashMap<String,String> cweIdDescription = new HashMap<String,String>();
+				
+		//Go through 3 CWE and to capture CWE idS connecting CVE and CAPEC id groups
+		for(int i=0; i < argsDb.length; i++){
+			System.out.println("<--Results of matching "+argsDb[i]+" dataset-->");
+		    try {
+				//Initialize SearchDirectlinks
+				SearchDirectlinks dl;				
+				input = new FileInputStream(argsDb[i]);
+				dl = new SearchDirectlinks();
+				cweIdDescription = dl.directLinks(input);
+				
+				for(Map.Entry<String,String> entryDirectcwe : cweIdDescription.entrySet()) {					
+					CWEItem cweItem = new CWEItem(entryDirectcwe.getKey(),entryDirectcwe.getValue());
+					directCWE.add(cweItem);
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+						
 		return directCWE;
 	}
 
