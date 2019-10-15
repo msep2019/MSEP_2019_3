@@ -20,7 +20,7 @@ public class JDialogOutput extends JDialog {
 		super(new MyJFrame(), "SoSSec Output", true);
 		Container container = this.getContentPane();
 		JLabel jl = new JLabel("These are the results.");
-		Container.add(JLabel);
+		//Container.add(JLabel);
 		this.setSize(1280, 720);
 		
 	}
