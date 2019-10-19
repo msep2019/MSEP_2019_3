@@ -91,7 +91,7 @@ public class CWEItem {
 							boolean isExist = false;
 							CAPECItem capecItem= new CAPECItem(capecId,result);
 							for(CAPECItem foundItem : directCAPEC){
-								if(foundItem.id.equals(capecItem)){
+								if(foundItem.id.equals(capecItem.id)){
 									isExist = true;
 								}								
 							}

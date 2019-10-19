@@ -71,7 +71,7 @@ public class CVEItem {
 							boolean isExist = false;
 							CWEItem cweItem = new CWEItem(entryDirectcwe.getValue().split("--")[0],entryDirectcwe.getValue().split("--")[1]);
 							for(CWEItem foundItem : directCWE){
-								if(foundItem.id.equals(cweItem)){
+								if(foundItem.id.equals(cweItem.id)){
 									isExist = true;
 								}								
 							}

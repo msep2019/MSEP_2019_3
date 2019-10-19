@@ -199,7 +199,7 @@ public class Controller {
         		
         		cwe.getDirectCAPECList();
     			
-    			if (cwe.directCAPEC.size() > 0) {
+        		if (cwe.directCAPEC.size() > 0) {
     				for (CAPECItem itemCAPEC : cwe.directCAPEC) {
     					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.DIRECT);
 

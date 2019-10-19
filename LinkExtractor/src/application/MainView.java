@@ -73,7 +73,7 @@ public class MainView {
 		// Create a tree that allows one selection at a time.
 		linkTree = new LinkTree();
 
-		JPanel panelType = new JPanel(new FlowLayout());
+		JPanel panelType = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		selectType = new JComboBox<String>(linkTypes);
 		selectType.setSelectedIndex(0);
 		panelType.add(new JLabel("Link Type"));
@@ -84,9 +84,6 @@ public class MainView {
 		
 		panelLeft.add(panelType, BorderLayout.PAGE_START);
 		panelLeft.add(linkTree, BorderLayout.CENTER);
-		
-		// Listen for when the selection changes.
-		// tree.addTreeSelectionListener(this);
 
 		panelCVE = new CVEOptionPanel();
 		panelCWE = new CWEOptionPanel();

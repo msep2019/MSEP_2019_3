@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -19,8 +20,10 @@ public class CVEOptionPanel extends Panel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JButton btnApply;
+	public JButton btnApply;	
 	public KeywordPanel panelKeyword;
+	
+	public JComboBox<Integer> similarity;
 	
 	public CVEItem cve;
 
@@ -60,6 +63,8 @@ public class CVEOptionPanel extends Panel {
 		panelBody.add(panelKeyword);
 
 		add(panelBody, BorderLayout.PAGE_START);
+		
+		//similarity
 	}
 	
 	public void setCVE(CVEItem cve) {
