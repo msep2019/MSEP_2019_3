@@ -74,12 +74,13 @@ public class Controller {
 		model.nodeStructureChanged(root);
 		view.linkTree.tree.expandPath(new TreePath(root.getPath()));
 
-		loadDirectCWEChildren(model, root);
-		loadIndirectCWEChildren(model, root);
+		loadCWEChildren(model, root);
 		System.out.println(model);
+		
+		view.linkTree.tree.setSelectionPath(new TreePath(root.getPath()));
 	}
 	
-	public void loadIndirectCWEChildren(final DefaultTreeModel model, DefaultMutableTreeNode node) {
+	public void loadCWEChildren(final DefaultTreeModel model, DefaultMutableTreeNode node) {
 		System.out.println("loadIndirectCWEChildren");
 		if (loaded) {
             return;
@@ -88,6 +89,18 @@ public class Controller {
         	@Override
             protected List<CustomTreeNode> doInBackground() throws Exception {
         		List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
+        		
+        		cve.getDirectCWEList();
+        		
+        		System.out.println(cve.directCWE);
+        		
+        		if (cve.directCWE.size() > 0) {
+        			for (CWEItem itemCWE : cve.directCWE) {
+        				CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.DIRECT) ;
+
+        				children.add(child);
+        			}
+        		}
         		
         		cve.getIndirectCWEList();
         		
@@ -109,6 +122,7 @@ public class Controller {
                 try {
                     setChildren(node, get());
                     model.nodeStructureChanged(node);
+                    view.linkTree.tree.setSelectionPath(new TreePath(node.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     // Notify user of error.
@@ -162,9 +176,9 @@ public class Controller {
 				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
 				
 				loadIndirectCAPECChildren(cwe, model, node);
+			} else {
+				view.panelCWE.setCWE(cwe);
 			}
-			
-			view.panelCWE.setCWE(cwe);
 			
 			System.out.println("View: " + view.CWE_OPTION_PANEL);
 			System.out.println(view.detailView);
@@ -209,6 +223,7 @@ public class Controller {
                 try {
                     setChildren(node, get());
                     model.nodeStructureChanged(node);
+                    view.panelCWE.setCWE(cwe);
                 } catch (Exception e) {
                     e.printStackTrace();
                     // Notify user of error.

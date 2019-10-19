@@ -6,6 +6,7 @@ public class CAPECItem {
 	public String id;
 	public String name;
 	public ArrayList<String> keywords = new ArrayList<>();
+	public int matching = -1;
 
 	public CAPECItem(String id) {
 		this.id = id;
@@ -17,6 +18,15 @@ public class CAPECItem {
 	}
 	
 	public String toString() {
-		return "<html> CAPEC <font color=\"green\">" + this.id + "</font> " + this.name + "</html>";
+		String result = "<html>";
+		
+		if (matching >= 1) {
+			result += "[" + matching + "] "; 
+		}
+		
+		result += "CAPEC <font color=\"green\">" + this.id + "</font> " + this.name + "</html>";
+		
+		return result;
+		
 	}
 }

@@ -131,6 +131,7 @@ public class CVEItem {
 			
 			for (Item item : listCWE) {
 				CWEItem cweItem = new CWEItem(item.id, item.name);
+				cweItem.matching = item.matchingCount;
 				this.indirectCWE.add(cweItem);
 			}
 		}

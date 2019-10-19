@@ -24,6 +24,7 @@ public class CWEItem {
 	public ArrayList<String> disabledKeywords = new ArrayList<>();
 	public ArrayList<CAPECItem> directCAPEC = new ArrayList<>();
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
+	public int matching = -1;
 
 	public CWEItem() {
 		
@@ -38,7 +39,16 @@ public class CWEItem {
 	}
 
 	public String toString() {
-		return "<html> CWE <font color=\"green\">" + this.id + "</font> " + this.name + "</html>";
+		String result = "<html>";
+		
+		if (matching >= 1) {
+			result += "[" + matching + "] ";
+		}
+		
+		result += "CWE <font color=\"green\">" + this.id + "</font> " + this.name + "</html>";
+		
+		return result;
+		
 	}
 
 	public ArrayList<CAPECItem> getDirectCAPECList() {
@@ -148,6 +158,7 @@ public class CWEItem {
 			// Add found CAPEC to list
 			for (Item itemCAPEC : listCWE) {
 				CAPECItem capecItem = new CAPECItem(itemCAPEC.id, itemCAPEC.name);
+				capecItem.matching = itemCAPEC.matchingCount;
 				indirectCAPEC.add(capecItem);
 			}
 		}

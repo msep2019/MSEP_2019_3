@@ -1,6 +1,7 @@
 package application;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -117,6 +118,7 @@ public class KeywordPanel extends JPanel {
 		this.add(panelArrows, c);
 
 		JPanel panelAddKeyword = new JPanel();
+		panelAddKeyword.setBackground(Color.white);
 		panelAddKeyword.setLayout(new BoxLayout(panelAddKeyword, BoxLayout.X_AXIS));
 		panelAddKeyword.setAlignmentX(Component.LEFT_ALIGNMENT);
 
