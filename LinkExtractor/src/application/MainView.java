@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;

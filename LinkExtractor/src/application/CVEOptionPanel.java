@@ -15,6 +15,10 @@ import javax.swing.LayoutStyle;
 import sossec.cve.CVEItem;
 
 public class CVEOptionPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public JButton btnApply;
 	public KeywordPanel panelKeyword;
 	

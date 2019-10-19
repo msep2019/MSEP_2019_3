@@ -3,6 +3,10 @@ package application;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class CustomTreeNode extends DefaultMutableTreeNode {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	final static int DIRECT = 0;
 	final static int INDIRECT = 1;
 	

@@ -20,8 +20,6 @@ public class CVEHelper {
 		for (String file : xmlFiles) {
 			Document document = XMLHelper.getSAXParsedDocument(file);
 
-			Element rootNode = document.getRootElement();
-
 			String query = "/cve/item[@name= '" + Id + "']";
 			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
 			

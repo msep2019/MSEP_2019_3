@@ -40,8 +40,6 @@ public class Keyword {
 
 		// Arraylist to store files resources
 		ArrayList<Document> documentResList = new ArrayList<Document>();
-
-		int name = 0;
 		
 		/*
 		// feature map for creating documents

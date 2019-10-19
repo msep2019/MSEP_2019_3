@@ -1,5 +1,4 @@
 package sossec.elements;
-import java.util.HashMap;
 
 public class SoSSecCondition extends SoSSecObject implements SoSSecElement{
 	private String type;

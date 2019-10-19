@@ -26,6 +26,10 @@ public class CWEItem {
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
 	public int matching = -1;
 
+	public CWEItem() {
+		
+	}
+	
 	public CWEItem(String id) {
 		this.id = id;
 	}

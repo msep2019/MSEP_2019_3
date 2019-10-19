@@ -1,11 +1,6 @@
 package sossec.cwe;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -25,8 +20,6 @@ public class CWEHelper {
 
 		for (String file : xmlFiles) {
 			Document document = XMLHelper.getSAXParsedDocument(file);
-
-			Element rootNode = document.getRootElement();
 
 			String query = "/Weakness_Catalog/Weaknesses/Weakness[@ID= '" + Id + "']";
 			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());

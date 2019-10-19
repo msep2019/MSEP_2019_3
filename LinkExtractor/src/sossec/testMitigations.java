@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import sossec.capec.CAPECHelper2;
-import sossec.capec.CAPECMitigation;
-import sossec.cwe.CWEItem;
 import sossec.keyword.Keyword;
 
 public class testMitigations {

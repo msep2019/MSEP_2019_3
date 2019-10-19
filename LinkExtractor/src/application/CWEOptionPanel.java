@@ -15,6 +15,10 @@ import javax.swing.LayoutStyle;
 import sossec.cwe.CWEItem;
 
 public class CWEOptionPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public JButton btnApply;
 	public KeywordPanel panelKeyword;
 	

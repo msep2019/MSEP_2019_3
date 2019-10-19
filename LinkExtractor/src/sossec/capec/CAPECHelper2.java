@@ -20,8 +20,6 @@ public class CAPECHelper2 {
 		for (String file : xmlFiles) {
 			Document document = XMLHelper.getSAXParsedDocument(file);
 
-			Element rootNode = document.getRootElement();
-
 			String query = "/Attack_Pattern_Catalog/Attack_Patterns/Attack_Pattern[@ID= '" + Id + "']";
 			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
 			

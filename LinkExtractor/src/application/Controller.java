@@ -1,7 +1,6 @@
 package application;
 
 import java.awt.CardLayout;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +9,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import application.TestJTree.MyTreeNode;
 import sossec.cve.CVEItem;
 import sossec.cwe.CWEItem;
 import sossec.capec.CAPECItem;
-import sossec.keywordmatching.Item;
 
 public class Controller {
 	private CVEItem cve;
@@ -27,8 +23,7 @@ public class Controller {
 	DefaultTreeModel model;
 	DefaultMutableTreeNode root;
 
-	public Controller(CVEItem m, MainView v) {
-		cve = m;
+	public Controller(MainView v) {
 		view = v;
 		initView();
 	}
@@ -44,6 +39,8 @@ public class Controller {
 	}
 
 	private void searchCWE() {
+		cve = new CVEItem();
+		
 		System.out.println("searchCWE");
 		model = (DefaultTreeModel) view.linkTree.tree.getModel();
 		root = (DefaultMutableTreeNode) model.getRoot();
@@ -157,9 +154,6 @@ public class Controller {
 			
 			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
 			cardLayout.show(view.detailView, view.CVE_OPTION_PANEL);
-			
-
-
 		}
 		
 		if (node.getUserObject() instanceof CWEItem) {
@@ -175,7 +169,7 @@ public class Controller {
 				model.nodeStructureChanged(node);
 				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
 				
-				loadIndirectCAPECChildren(cwe, model, node);
+				loadCAPECChildren(cwe, model, node);
 			} else {
 				view.panelCWE.setCWE(cwe);
 			}
@@ -192,7 +186,7 @@ public class Controller {
 		}
 	}
 	
-	public void loadIndirectCAPECChildren(CWEItem cwe, final DefaultTreeModel model, DefaultMutableTreeNode node) {
+	public void loadCAPECChildren(CWEItem cwe, final DefaultTreeModel model, DefaultMutableTreeNode node) {
 		System.out.println("loadIndirectCWEChildren");
 		if (loaded) {
             return;
@@ -203,6 +197,16 @@ public class Controller {
         		
         		List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
         		
+        		cwe.getDirectCAPECList();
+    			
+    			if (cwe.directCAPEC.size() > 0) {
+    				for (CAPECItem itemCAPEC : cwe.directCAPEC) {
+    					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.DIRECT);
+
+    					children.add(child);
+    				}
+    			}
+    			
         		cwe.getIndirectCAPECList();
     			
     			if (cwe.indirectCAPEC.size() > 0) {
@@ -211,9 +215,9 @@ public class Controller {
 
     					children.add(child);
     				}
-
-    				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
     			}
+    			
+    			view.linkTree.tree.expandPath(new TreePath(node.getPath()));
         		
                 return children;
             }

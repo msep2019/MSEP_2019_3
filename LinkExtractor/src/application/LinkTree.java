@@ -2,7 +2,6 @@ package application;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,10 +21,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
 
-import sossec.cve.CVEItem;
-import sossec.cwe.CWEItem;
-
 public class LinkTree extends JScrollPane implements TreeExpansionListener, TreeWillExpandListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public JTree tree;
 	
 	public DefaultMutableTreeNode root;
@@ -33,8 +34,6 @@ public class LinkTree extends JScrollPane implements TreeExpansionListener, Tree
 	public DefaultMutableTreeNode indirectNode;
 	
 	public TreeNode rootNode;
-	private Controller controller;
-
 	public LinkTree() {
 		rootNode = createNodes();
 		tree = new JTree(rootNode);
@@ -73,7 +72,6 @@ public class LinkTree extends JScrollPane implements TreeExpansionListener, Tree
 	}
 	
 	public void setController(Controller controller) {
-		this.controller = controller;
 	}
 
 	//Required by TreeWillExpandListener interface.

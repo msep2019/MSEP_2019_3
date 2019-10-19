@@ -1,6 +1,5 @@
 package sossec;
 import org.jdom2.Document;
-import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class XMLHelper {

@@ -8,6 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
 public class OptionPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public JButton btnApply;
 	public CVEOptionPanel panelCVEOption;
 	
