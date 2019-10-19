@@ -60,7 +60,7 @@ public class CWEItem {
 		String[] argsDb = {"xml/Research(1000).xml","xml/Development(699).xml","xml/Architectural(1008).xml"};
 		
 		//storage of direct capec id and info
-		HashMap<ArrayList<String>, ArrayList<String>> directCveCapec= new HashMap<ArrayList<String>, ArrayList<String>>();
+		HashMap<String, ArrayList<String>> directCveCapec= new HashMap<String, ArrayList<String>>();
 		
 		//Go through 3 CWE and 2 CAPEC datasets to capture cve and capec ids which have direct links
 		for(int i=0 ; i < argsDb.length ; i++){
@@ -75,35 +75,31 @@ public class CWEItem {
 				directCveCapec = edl.directLinks(inputCwe);
 				
 				//System.out.println(directCveCapec.size());
-				ArrayList<String> directCve;
 				ArrayList<String> directCapec;
 				String result = "";
 				
-				for(Entry<ArrayList<String>, ArrayList<String>> entryCveCapec : directCveCapec.entrySet()) {
-					directCve = new ArrayList<String>();
-					directCve = entryCveCapec.getKey();
+				for(Entry<String, ArrayList<String>> entryCveCapec : directCveCapec.entrySet()) {
 										
-					for(String cveId : directCve){
-						if(cveId.equals(id)){
-							directCapec = new ArrayList<String>();
-							directCapec = entryCveCapec.getValue();
+					if(entryCveCapec.getKey().equals(id)){
+						directCapec = new ArrayList<String>();
+						directCapec = entryCveCapec.getValue();
 							
-							for(String capecId : directCapec){
-								result = helper3.getCapecIdContent(capecId);
-								System.out.println(capecId+"-->"+result);
+						for(String capecId : directCapec){
+							result = helper3.getCapecIdContent(capecId);
+							System.out.println(capecId+"-->"+result);
 								
-								boolean isExist = false;
-								CAPECItem capecItem= new CAPECItem(capecId,result);
-								for(CAPECItem foundItem : directCAPEC){
-									if(foundItem.id.equals(capecItem)){
-										isExist = true;
-									}								
-								}
-								if(!isExist){
-									directCAPEC.add(capecItem);
-								}
+							boolean isExist = false;
+							CAPECItem capecItem= new CAPECItem(capecId,result);
+							for(CAPECItem foundItem : directCAPEC){
+								if(foundItem.id.equals(capecItem)){
+									isExist = true;
+								}								
+							}
+							if(!isExist){
+								directCAPEC.add(capecItem);
 							}
 						}
+
 					}
 				}
 

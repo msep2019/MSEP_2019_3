@@ -14,12 +14,12 @@ import org.jdom2.input.SAXBuilder;
 
 public class EstablishDirectlinks {
 
-    public HashMap<ArrayList<String>, ArrayList<String>> directLinks(InputStream input){
+    public HashMap<String, ArrayList<String>> directLinks(InputStream input){
        
     	SAXBuilder saxBuilder = new SAXBuilder();
     	
     	//the returned HashMap and ArrayList containing direct link ids
-     	HashMap<ArrayList<String>,ArrayList<String>> vpLink = new HashMap<ArrayList<String>,ArrayList<String>>();
+     	HashMap<String,ArrayList<String>> vpLink = new HashMap<String,ArrayList<String>>();
     	
         try {
         	//build SAX parser
@@ -111,7 +111,7 @@ public class EstablishDirectlinks {
             	for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()) {	
             		if(entryVul.getKey().equals(entryCap.getKey())) {
             			//System.out.println("CVE_ID:" + entryVul.getValue() + " --> CAPEC_ID:"+ entryCap.getValue());
-            			vpLink.put(entryVul.getValue(), entryCap.getValue());
+            			vpLink.put(entryVul.getKey(), entryCap.getValue());
             		}
             	}
         	}      	
