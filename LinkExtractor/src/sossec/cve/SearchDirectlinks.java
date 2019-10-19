@@ -14,12 +14,12 @@ import org.jdom2.input.SAXBuilder;
 
 public class SearchDirectlinks {
 
-    public HashMap<String,String> directLinks(InputStream input){
+    public HashMap<ArrayList<String>,String> directLinks(InputStream input){
        
     	SAXBuilder saxBuilder = new SAXBuilder();
     	
-    	//storage of direct cwe id and description
-    	HashMap<String,String> cweIdDescription = new HashMap<String,String>();
+    	//storage of direct cwe id and name
+    	HashMap<ArrayList<String>,String> cveCweName = new HashMap<ArrayList<String>,String>();
     	
         try {
         	//build SAX parser
@@ -29,8 +29,8 @@ public class SearchDirectlinks {
         	Element root = document.getRootElement();
         	List<Element> childList = root.getChildren();
         	
-        	//storage of cwe id and description
-        	HashMap<String,String> cweDescription = new HashMap<String,String>();
+        	//storage of cwe id and name
+        	HashMap<String,String> cweName = new HashMap<String,String>();
         	
         	//storage of founded and repeated CVE id
         	HashMap<String,ArrayList<String>> vul = new HashMap<String,ArrayList<String>>();
@@ -48,11 +48,9 @@ public class SearchDirectlinks {
     				List<Element> wknsList = child.getChildren();
             		for(Element wkns : wknsList) {
             			if(wkns.getName().equals("Weakness")) {   
-            				List<Element> wknList = wkns.getChildren();           				
-            				for(Element wkn : wknList) {
-            					if(wkn.getName().equals("Description")){
-            						cweDescription.put(wkns.getAttributeValue("ID"),wkn.getText());
-            					}            					
+            				List<Element> wknList = wkns.getChildren();
+            				cweName.put(wkns.getAttributeValue("ID"),wkns.getAttributeValue("Name"));
+            				for(Element wkn : wknList) {          					
             					if(wkn.getName().equals("Observed_Examples")) {
             						List<Element> egList = wkn.getChildren();
             						for(Element subList : egList) {
@@ -115,15 +113,14 @@ public class SearchDirectlinks {
     			}
         	}     	
         	
-        	//Associate direct link groups with description
+        	//Associate direct link groups with cwe id
         	for(Map.Entry<String,ArrayList<String>> entryVul : vul.entrySet()) {
             	for(Map.Entry<String,ArrayList<String>> entryCap : pattern.entrySet()) {	
             		if(entryVul.getKey().equals(entryCap.getKey())) {
-            			//System.out.println("CVE_ID:" + entryVul.getValue() + " --> CAPEC_ID:"+ entryCap.getValue());
             			vpLink.put(entryVul.getValue(), entryCap.getValue());
-            			for(Map.Entry<String, String> entryDes : cweDescription.entrySet()){
-            				if(entryDes.getKey().equals(entryVul.getKey())){
-            					cweIdDescription.put(entryDes.getKey(),entryDes.getValue());
+            			for(Map.Entry<String, String> entryDes : cweName.entrySet()){           				
+            				if(entryDes.getKey().equals(entryVul.getKey())){           					
+            					cveCweName.put(entryVul.getValue(),entryDes.getKey()+"--"+entryDes.getValue());
             				}
             			}
             		}
@@ -140,7 +137,7 @@ public class SearchDirectlinks {
         	e.printStackTrace();
         }
         
-    	//save the direct cwe id with description
-        return cweIdDescription;
+    	//save the direct CWE id with name
+        return cveCweName;
     }
 }

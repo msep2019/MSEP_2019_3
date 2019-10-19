@@ -50,7 +50,7 @@ public class CWEItem {
 		
 		//Go through 3 CWE and 2 CAPEC datasets to capture cve and capec ids which have direct links
 		for(int i=0 ; i < argsDb.length ; i++){
-			System.out.println("<--Results of matching "+argsDb[i]+" CWE dataset-->");
+			System.out.println("<--Results of matching direct CAPEC info in "+argsDb[i]+" CWE dataset-->");
 		    try {
 				
 		    	//Initialize SearchDirectlinks and Helper3
@@ -60,20 +60,36 @@ public class CWEItem {
 				inputCwe = new FileInputStream(argsDb[i]);			
 				directCveCapec = edl.directLinks(inputCwe);
 				
-				System.out.println(directCveCapec.size());
+				//System.out.println(directCveCapec.size());
+				ArrayList<String> directCve;
 				ArrayList<String> directCapec;
 				String result = "";
 				
-				for(Entry<ArrayList<String>, ArrayList<String>> entryCapeclist : directCveCapec.entrySet()) {
-					directCapec = new ArrayList<String>();
-					directCapec = entryCapeclist.getValue();
-					
-					for(String capecId : directCapec){
-						result = helper3.getCapecIdContent(capecId);
-						CAPECItem capecItem= new CAPECItem(capecId,result);
-						directCAPEC.add(capecItem);
-						//System.out.println(capecId+"--"+result);
-
+				for(Entry<ArrayList<String>, ArrayList<String>> entryCveCapec : directCveCapec.entrySet()) {
+					directCve = new ArrayList<String>();
+					directCve = entryCveCapec.getKey();
+										
+					for(String cveId : directCve){
+						if(cveId.equals(id)){
+							directCapec = new ArrayList<String>();
+							directCapec = entryCveCapec.getValue();
+							
+							for(String capecId : directCapec){
+								result = helper3.getCapecIdContent(capecId);
+								System.out.println(capecId+"-->"+result);
+								
+								boolean isExist = false;
+								CAPECItem capecItem= new CAPECItem(capecId,result);
+								for(CAPECItem foundItem : directCAPEC){
+									if(foundItem.id.equals(capecItem)){
+										isExist = true;
+									}								
+								}
+								if(!isExist){
+									directCAPEC.add(capecItem);
+								}
+							}
+						}
 					}
 				}
 
