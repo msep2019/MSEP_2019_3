@@ -25,6 +25,9 @@ public class CWEItem {
 	public ArrayList<CAPECItem> directCAPEC = new ArrayList<>();
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
 
+	public CWEItem() {
+		
+	}
 	public CWEItem(String id) {
 		this.id = id;
 	}
