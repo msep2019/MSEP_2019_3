@@ -66,6 +66,8 @@ public class KeywordMatching {
 		// execute sac on corpus
 
 		sac.execute();
+		
+		System.out.println("Found Item");
 
 		for (Iterator<Document> cIterator = corpus.iterator(); cIterator.hasNext();) {
 

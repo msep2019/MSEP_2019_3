@@ -78,7 +78,9 @@ public class CVEItem {
 		ArrayList<Item> listCWE = new ArrayList<>();
 		BasicConfigurator.configure();
 		
-		if (keywords.size() <= 0) {
+		this.indirectCWE = new ArrayList<>();
+		
+		if (keywords.size() <= 0 && disabledKeywords.size() <= 0) {
 			String cveDesc = cveHelper.getItemContent(this.id);
 	
 			if (cveDesc.isEmpty()) {

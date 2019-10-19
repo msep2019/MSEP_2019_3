@@ -22,9 +22,15 @@ public class MainView {
 	public JTextField txtCVE;
 	public JButton btnSearch;
 	
+	JPanel detailView;
+	CardLayout detailViewLayout;
 	public CVEOptionPanel panelCVE;
 	public CWEOptionPanel panelCWE;
 	public CAPECOptionPanel panelCAPEC;
+	
+	final String CVE_OPTION_PANEL = "CVE";
+	final String CWE_OPTION_PANEL = "CWE";
+	final String CAPEC_OPTION_PANEL = "CAPEC";
 
 	public MainView(String title) {
 		frame = new JFrame(title);
@@ -63,16 +69,15 @@ public class MainView {
 		// Listen for when the selection changes.
 		// tree.addTreeSelectionListener(this);
 
-		JPanel detailView;
-		
 		panelCVE = new CVEOptionPanel();
 		panelCWE = new CWEOptionPanel();
 		panelCAPEC = new CAPECOptionPanel();
 		
-		detailView = new JPanel(new CardLayout());
-		detailView.add(panelCVE);
-		detailView.add(panelCWE);
-		detailView.add(panelCAPEC);
+		detailViewLayout = new CardLayout();
+		detailView = new JPanel(detailViewLayout);
+		detailView.add(panelCVE, CVE_OPTION_PANEL);
+		detailView.add(panelCWE, CWE_OPTION_PANEL);
+		detailView.add(panelCAPEC, CAPEC_OPTION_PANEL);
 
 		// Add the scroll panes to a split pane.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
