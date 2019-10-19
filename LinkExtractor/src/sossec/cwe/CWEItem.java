@@ -1,8 +1,13 @@
 package sossec.cwe;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
@@ -34,6 +39,50 @@ public class CWEItem {
 	}
 
 	public ArrayList<CAPECItem> getDirectCAPECList() {
+		
+		InputStream inputCwe;
+		
+		//define database location in a string
+		String[] argsDb = {"xml/Research(1000).xml","xml/Development(699).xml","xml/Architectural(1008).xml"};
+		
+		//storage of direct capec id and info
+		HashMap<ArrayList<String>, ArrayList<String>> directCveCapec= new HashMap<ArrayList<String>, ArrayList<String>>();
+		
+		//Go through 3 CWE and 2 CAPEC datasets to capture cve and capec ids which have direct links
+		for(int i=0 ; i < argsDb.length ; i++){
+			System.out.println("<--Results of matching "+argsDb[i]+" CWE dataset-->");
+		    try {
+				
+		    	//Initialize SearchDirectlinks and Helper3
+		    	EstablishDirectlinks edl = new EstablishDirectlinks();;
+		    	CWEHelper3 helper3 = new CWEHelper3();
+		    	
+				inputCwe = new FileInputStream(argsDb[i]);			
+				directCveCapec = edl.directLinks(inputCwe);
+				
+				System.out.println(directCveCapec.size());
+				ArrayList<String> directCapec;
+				String result = "";
+				
+				for(Entry<ArrayList<String>, ArrayList<String>> entryCapeclist : directCveCapec.entrySet()) {
+					directCapec = new ArrayList<String>();
+					directCapec = entryCapeclist.getValue();
+					
+					for(String capecId : directCapec){
+						result = helper3.getCapecIdContent(capecId);
+						CAPECItem capecItem= new CAPECItem(capecId,result);
+						directCAPEC.add(capecItem);
+						//System.out.println(capecId+"--"+result);
+
+					}
+				}
+
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 		return directCAPEC;
 	}
 

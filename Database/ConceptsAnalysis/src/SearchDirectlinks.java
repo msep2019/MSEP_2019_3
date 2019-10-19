@@ -152,7 +152,7 @@ public class SearchDirectlinks {
             		}
             	}
         	}   
-        	
+
         	//System.out.println("<--End of Print-->");    		
     		//match attack patterns by using capec id
     		InputStream input4;
