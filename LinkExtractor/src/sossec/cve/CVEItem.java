@@ -47,82 +47,65 @@ public class CVEItem {
 		
 		//define database location in a string
 		String[] argsDb = {"xml/Research(1000).xml","xml/Architectural(1008).xml","xml/Development(699).xml"}; 
-		//receive cveCweName
-		HashMap<ArrayList<String>,String> cveCweName = new HashMap<ArrayList<String>,String>();
-		
-		
+		HashMap<String,String> cweIdDescription = new HashMap<String,String>();
+				
 		//Go through 3 CWE and to capture CWE idS connecting CVE and CAPEC id groups
 		for(int i=0; i < argsDb.length; i++){
-			System.out.println("<--Results of matching direct CWE info in "+argsDb[i]+" dataset-->");
+			System.out.println("<--Results of matching "+argsDb[i]+" dataset-->");
 		    try {
 				//Initialize SearchDirectlinks
-				SearchDirectlinks dl = new SearchDirectlinks();;				
+				SearchDirectlinks dl;				
 				input = new FileInputStream(argsDb[i]);
-				cveCweName = dl.directLinks(input);
+				dl = new SearchDirectlinks();
+				cweIdDescription = dl.directLinks(input);
 				
-				ArrayList<String> cveIdList;
-				
-				for(Map.Entry<ArrayList<String>,String> entryDirectcwe : cveCweName.entrySet()) {					
-					cveIdList = new ArrayList<String>();
-					cveIdList = entryDirectcwe.getKey();
-					for(String cveId : cveIdList){
-						if(cveId.equals(id)){
-							System.out.println(entryDirectcwe.getValue().split("--")[0]+"-->"+entryDirectcwe.getValue().split("--")[1]);
-							boolean isExist = false;
-							CWEItem cweItem = new CWEItem(entryDirectcwe.getValue().split("--")[0],entryDirectcwe.getValue().split("--")[1]);
-							for(CWEItem foundItem : directCWE){
-								if(foundItem.id.equals(cweItem)){
-									isExist = true;
-								}								
-							}
-							if(!isExist){
-								directCWE.add(cweItem);
-							}
-							
-						}
-					}
-
+				for(Map.Entry<String,String> entryDirectcwe : cweIdDescription.entrySet()) {					
+					CWEItem cweItem = new CWEItem(entryDirectcwe.getKey(),entryDirectcwe.getValue());
+					directCWE.add(cweItem);
 				}
-			    
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		}			
+		}
+						
 		return directCWE;
 	}
 
 	public ArrayList<CWEItem> getIndirectCWEList() {
 		File fileCVEKeywordDef = null;
-		String cveDesc = cveHelper.getItemContent(this.id);
 		ArrayList<Item> listCWE = new ArrayList<>();
-
-		if (cveDesc.isEmpty()) {
-			return indirectCWE;
-		}
-
 		BasicConfigurator.configure();
-
-		// Get CVE keywords
-		if (!cveDesc.isEmpty()) {
-			try {
-				keywords = Keyword.processDocs(cveDesc);
-			} catch (ResourceInstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		
+		if (keywords.size() <= 0) {
+			String cveDesc = cveHelper.getItemContent(this.id);
+	
+			if (cveDesc.isEmpty()) {
+				return indirectCWE;
+			}
+			
+			// Get CVE keywords
+			if (!cveDesc.isEmpty()) {
+				System.out.println("CVE Desc: " + cveDesc);
+				try {
+					keywords = Keyword.processDocs(cveDesc);
+				} catch (ResourceInstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
 		// Generate CVE keywords Gazetteer list and definition
 		if (keywords.size() > 0) {
-			System.out.println("CVE Desc: " + cveDesc);
+			//System.out.println("CVE Desc: " + cveDesc);
 			System.out.println("CVE Keywords: " + keywords.toString());
 			fileCVEKeywordDef = Keyword.generateGazetteer("CVE", keywords);
 		}
