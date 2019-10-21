@@ -28,7 +28,7 @@ public class CWEItem {
 	public int minMatching = -1;
 	public int maxMatching = -1;
 	public boolean loadedChildren = false;
-	public boolean isChangedKeywords = false;
+	public boolean isChangedKeywords = true;
 
 	public CWEItem() {
 		
@@ -123,7 +123,6 @@ public class CWEItem {
 
 		File fileCWEKeywordDef = null;
 
-		
 		if (keywords.size() <= 0 && disabledKeywords.size() <= 0) {
 
 			String cweDesc = cweHelper.getItemContent(id);
@@ -134,6 +133,7 @@ public class CWEItem {
 			} else {
 				try {
 					keywords = Keyword.processDocs(cweDesc);
+					this.isChangedKeywords = true;
 				} catch (ResourceInstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

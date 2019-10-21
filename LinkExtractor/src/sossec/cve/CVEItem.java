@@ -30,7 +30,7 @@ public class CVEItem {
 	public ArrayList<CWEItem> indirectCWE = new ArrayList<>();
 	public int maxMatching = -1;
 	public int minMatching = -1;
-	public boolean isChangedKeywords = false;
+	public boolean isChangedKeywords = true;
 
 	public CVEItem() {
 
@@ -113,6 +113,7 @@ public class CVEItem {
 				System.out.println("CVE Desc: " + cveDesc);
 				try {
 					keywords = Keyword.processDocs(cveDesc);
+					this.isChangedKeywords = true;
 				} catch (ResourceInstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

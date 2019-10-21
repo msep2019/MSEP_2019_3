@@ -78,6 +78,7 @@ public class CWEOptionPanel extends Panel {
 	public void setCWE(CWEItem cwe) {
 		this.cwe = cwe;
 		updateKeywordLists();
+		this.setSimilarity(cwe.maxMatching, cwe.minMatching);
 	}
 	
 	public void updateKeywordLists() {
@@ -114,6 +115,7 @@ public class CWEOptionPanel extends Panel {
 		Collections.sort(cwe.keywords, String.CASE_INSENSITIVE_ORDER);
 		
 		updateKeywordLists();
+		cwe.isChangedKeywords = true;
 	}
 	
 	public void disableKeywords() {
@@ -135,6 +137,7 @@ public class CWEOptionPanel extends Panel {
 		Collections.sort(cwe.disabledKeywords, String.CASE_INSENSITIVE_ORDER);
 		
 		updateKeywordLists();
+		cwe.isChangedKeywords = true;
 	}
 	
 	public void addKeyword() {
@@ -145,6 +148,7 @@ public class CWEOptionPanel extends Panel {
 		Collections.sort(cwe.keywords, String.CASE_INSENSITIVE_ORDER);
 		
 		updateKeywordLists();
+		cwe.isChangedKeywords = true;
 	}
 	
 	public void setSimilarity(int max, int min) {
