@@ -25,6 +25,8 @@ public class CWEItem {
 	public ArrayList<CAPECItem> directCAPEC = new ArrayList<>();
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
 	public int matching = -1;
+	public int minMatching = -1;
+	public boolean loadedChildren = false;
 
 	public CWEItem() {
 		

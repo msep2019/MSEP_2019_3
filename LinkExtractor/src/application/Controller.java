@@ -35,7 +35,56 @@ public class Controller {
 	public void initController() {
 		view.linkTree.tree.getSelectionModel().addTreeSelectionListener(e -> selectItem(e));
 		view.btnSearch.addActionListener(e -> searchCWE());
-		view.panelCVE.btnApply.addActionListener(e -> searchCWE());
+		view.panelCVE.btnApply.addActionListener(e -> reloadCWEList());
+		view.panelCWE.btnApply.addActionListener(e -> reloadCAPECList());
+		
+	}
+	
+	private void selectItem(TreeSelectionEvent e) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+
+		System.out.println("Object: " + node.getUserObject());
+		if (node.getUserObject() instanceof CVEItem) {
+			CVEItem cve = (CVEItem) node.getUserObject();
+			
+			System.out.println("View: " + view.CVE_OPTION_PANEL);
+			System.out.println(view.detailView);
+			
+			view.panelCVE.setCVE(cve);
+			
+			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
+			cardLayout.show(view.detailView, view.CVE_OPTION_PANEL);
+		}
+		
+		if (node.getUserObject() instanceof CWEItem) {
+			
+			CWEItem cwe = (CWEItem) node.getUserObject();
+			
+			model = (DefaultTreeModel) view.linkTree.tree.getModel();
+			
+			node.add(new DefaultMutableTreeNode("Loading...", false));
+			
+			if (cwe.indirectCAPEC.size() <= 0) {
+				cwe.loadedChildren = false;
+				
+				model.nodeStructureChanged(node);
+				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
+				
+				loadCAPECList();
+			} else {
+				view.panelCWE.setCWE(cwe);
+			}
+			
+			System.out.println("View: " + view.CWE_OPTION_PANEL);
+			System.out.println(view.detailView);
+			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
+			cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
+			
+		} else if (node.getUserObject() instanceof CAPECItem) {
+			System.out.println("View: " + view.CAPEC_OPTION_PANEL);
+			System.out.println(view.detailView);
+			view.detailViewLayout.show(view.detailView, view.CAPEC_OPTION_PANEL);
+		}
 	}
 
 	private void searchCWE() {
@@ -71,17 +120,30 @@ public class Controller {
 		model.nodeStructureChanged(root);
 		view.linkTree.tree.expandPath(new TreePath(root.getPath()));
 
-		loadCWEChildren(model, root);
+		loadCWEList();
 		System.out.println(model);
 		
 		view.linkTree.tree.setSelectionPath(new TreePath(root.getPath()));
 	}
 	
-	public void loadCWEChildren(final DefaultTreeModel model, DefaultMutableTreeNode node) {
-		System.out.println("loadIndirectCWEChildren");
+
+	private void setChildren(DefaultMutableTreeNode node, List<CustomTreeNode> list) {
+		node.removeAllChildren();
+        node.setAllowsChildren(list.size() > 0);
+        for (MutableTreeNode child : list) {
+            node.add(child);
+        }
+    }
+	
+	public void loadCWEList() {
+		System.out.println("loadCWEList");
 		if (loaded) {
             return;
         }
+		
+		model = (DefaultTreeModel) view.linkTree.tree.getModel();
+		root = (DefaultMutableTreeNode) model.getRoot();
+		
         SwingWorker<List<CustomTreeNode>, Void> worker = new SwingWorker<List<CustomTreeNode>, Void>() {
         	@Override
             protected List<CustomTreeNode> doInBackground() throws Exception {
@@ -104,11 +166,30 @@ public class Controller {
         		System.out.println(cve.indirectCWE);
 
         		if (cve.indirectCWE.size() > 0) {
-        			for (CWEItem itemCWE : cve.indirectCWE) {
-        				CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.INDIRECT) ;
-
-        				children.add(child);
+        			int maxMatching = cve.indirectCWE.get(0).matching;
+        			if (cve.maxMatching != maxMatching) {
+	        			if (maxMatching >= 4) {
+	        				cve.minMatching = 4;
+	        			} else {
+	        				cve.minMatching = maxMatching;
+	        			}
         			}
+        			
+        			cve.maxMatching = maxMatching;
+        			
+        			view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
+        			
+        			for (CWEItem itemCWE : cve.indirectCWE) {
+        				if (itemCWE.matching >= cve.minMatching) {
+        					CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.INDIRECT) ;
+                			//view.panelCVE.cboSimilarity
+            				children.add(child);
+        				}
+        			}
+        		} else {
+        			cve.minMatching = 0;
+        			cve.maxMatching = 0;
+        			view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
         		}
         		
                 return children;
@@ -117,9 +198,10 @@ public class Controller {
             @Override
             protected void done() {
                 try {
-                    setChildren(node, get());
-                    model.nodeStructureChanged(node);
-                    view.linkTree.tree.setSelectionPath(new TreePath(node.getPath()));
+                    setChildren(root, get());
+                    loaded = true;
+                    model.nodeStructureChanged(root);
+                    view.linkTree.tree.setSelectionPath(new TreePath(root.getPath()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     // Notify user of error.
@@ -129,73 +211,37 @@ public class Controller {
         };
         worker.execute();
     }
-
-	private void setChildren(DefaultMutableTreeNode node, List<CustomTreeNode> list) {
-		node.removeAllChildren();
-        node.setAllowsChildren(list.size() > 0);
-        for (MutableTreeNode child : list) {
-            node.add(child);
-        }
-        loaded = true;
-        
-    }
 	
-	private void selectItem(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-
-		System.out.println("Object: " + node.getUserObject());
-		if (node.getUserObject() instanceof CVEItem) {
-			CVEItem cve = (CVEItem) node.getUserObject();
-			
-			System.out.println("View: " + view.CVE_OPTION_PANEL);
-			System.out.println(view.detailView);
-			
-			view.panelCVE.setCVE(cve);
-			
-			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
-			cardLayout.show(view.detailView, view.CVE_OPTION_PANEL);
-		}
+	public void reloadCWEList() {
+		model = (DefaultTreeModel) view.linkTree.tree.getModel();
+		root = (DefaultMutableTreeNode) model.getRoot();
 		
-		if (node.getUserObject() instanceof CWEItem) {
-			CWEItem cwe = (CWEItem) node.getUserObject();
-			
-			model = (DefaultTreeModel) view.linkTree.tree.getModel();
-			
-			node.add(new DefaultMutableTreeNode("Loading...", false));
-			
-			if (cwe.indirectCAPEC.size() <= 0) {
-				loaded = false;
-				
-				model.nodeStructureChanged(node);
-				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
-				
-				loadCAPECChildren(cwe, model, node);
-			} else {
-				view.panelCWE.setCWE(cwe);
-			}
-			
-			System.out.println("View: " + view.CWE_OPTION_PANEL);
-			System.out.println(view.detailView);
-			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
-			cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
-			
-		} else if (node.getUserObject() instanceof CAPECItem) {
-			System.out.println("View: " + view.CAPEC_OPTION_PANEL);
-			System.out.println(view.detailView);
-			view.detailViewLayout.show(view.detailView, view.CAPEC_OPTION_PANEL);
-		}
+		loaded = false;
+		cve.indirectCWE = new ArrayList<>();
+		root.removeAllChildren();
+		root.add(new DefaultMutableTreeNode("Loading...", false));
+		model.nodeStructureChanged(root);
+		loadCWEList();
 	}
 	
-	public void loadCAPECChildren(CWEItem cwe, final DefaultTreeModel model, DefaultMutableTreeNode node) {
-		System.out.println("loadIndirectCWEChildren");
-		if (loaded) {
+	public void loadCAPECList() {
+		System.out.println("loadCAPECList");
+		
+		CustomTreeNode node = (CustomTreeNode)view.linkTree.tree.getLastSelectedPathComponent();
+		model = (DefaultTreeModel) view.linkTree.tree.getModel();
+		CWEItem cwe = (CWEItem) node.getUserObject();
+		
+		if (cwe.loadedChildren) {
             return;
         }
+		
         SwingWorker<List<CustomTreeNode>, Void> worker = new SwingWorker<List<CustomTreeNode>, Void>() {
         	@Override
             protected List<CustomTreeNode> doInBackground() throws Exception {
         		
         		List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
+        		
+        		
         		
         		cwe.getDirectCAPECList();
     			
@@ -210,10 +256,24 @@ public class Controller {
         		cwe.getIndirectCAPECList();
     			
     			if (cwe.indirectCAPEC.size() > 0) {
+    				int maxMatching = cwe.indirectCAPEC.get(0).matching;
+    				
+    				if (cwe.minMatching == -1) {
+            			if (maxMatching >= 4) {
+            				cwe.minMatching = 4;
+            			} else {
+            				cwe.minMatching = maxMatching;
+            			}
+    				}
+        			
+    				view.panelCWE.setSimilarity(maxMatching, cwe.minMatching);
+    				
     				for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
-    					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
-
-    					children.add(child);
+    					if (itemCAPEC.matching >= cwe.minMatching) {
+	    					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
+	
+	    					children.add(child);
+    					}
     				}
     			}
     			
@@ -226,6 +286,7 @@ public class Controller {
             protected void done() {
                 try {
                     setChildren(node, get());
+                    cwe.loadedChildren = true;
                     model.nodeStructureChanged(node);
                     view.panelCWE.setCWE(cwe);
                 } catch (Exception e) {
@@ -237,4 +298,12 @@ public class Controller {
         };
         worker.execute();
     }
+	
+	public void reloadCAPECList() {
+		System.out.println("reloadCAPECList");
+		CustomTreeNode node = (CustomTreeNode)view.linkTree.tree.getLastSelectedPathComponent();
+		CWEItem cwe = (CWEItem) node.getUserObject();
+		cwe.loadedChildren = false;
+		loadCAPECList();
+	}
 }

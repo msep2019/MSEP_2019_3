@@ -1,15 +1,19 @@
 package application;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Panel;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -20,17 +24,17 @@ public class CVEOptionPanel extends Panel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JButton btnApply;	
+	public JButton btnApply;
 	public KeywordPanel panelKeyword;
-	
-	public JComboBox<Integer> similarity;
-	
+
+	public JComboBox<Integer> cboSimilarity;
+
 	public CVEItem cve;
 
 	public CVEOptionPanel() {
-		cve = new CVEItem(); 
+		cve = new CVEItem();
 		init();
-		
+
 		panelKeyword.btnEnable.addActionListener(e -> enableKeywords());
 		panelKeyword.btnDisable.addActionListener(e -> disableKeywords());
 		panelKeyword.btnAdd.addActionListener(e -> addKeyword());
@@ -58,30 +62,35 @@ public class CVEOptionPanel extends Panel {
 
 		JPanel panelBody = new JPanel();
 		panelBody.setLayout(new BoxLayout(panelBody, BoxLayout.Y_AXIS));
-		
-		panelKeyword = new KeywordPanel(cve.keywords, cve.disabledKeywords); 
+
+		panelKeyword = new KeywordPanel(cve.keywords, cve.disabledKeywords);
 		panelBody.add(panelKeyword);
 
+		JPanel panelSimilarity = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		cboSimilarity = new JComboBox<Integer>();
+		panelSimilarity.add(new JLabel("Minimun keyword similarity"));
+		panelSimilarity.add(cboSimilarity);
+		panelBody.add(panelSimilarity);
+
 		add(panelBody, BorderLayout.PAGE_START);
-		
-		//similarity
+
 	}
-	
+
 	public void setCVE(CVEItem cve) {
 		this.cve = cve;
 		updateKeywordLists();
 	}
-	
+
 	public void updateKeywordLists() {
 		DefaultListModel<String> modelEnabledKeywords = new DefaultListModel<>();
-		
+
 		for (String item : cve.keywords) {
 			modelEnabledKeywords.addElement(item);
 		}
 		panelKeyword.listEnabledKeywords.setModel(modelEnabledKeywords);
-		
+
 		DefaultListModel<String> modelDisabledKeywords = new DefaultListModel<>();
-		
+
 		for (String item : cve.disabledKeywords) {
 			modelDisabledKeywords.addElement(item);
 		}
@@ -89,53 +98,67 @@ public class CVEOptionPanel extends Panel {
 		panelKeyword.paneEnabledKeywords.revalidate();
 		panelKeyword.paneDisabledKeywords.revalidate();
 	}
-	
+
 	public void enableKeywords() {
 		List<String> selectedItems = panelKeyword.listDisabledKeywords.getSelectedValuesList();
-		
+
 		for (String item : selectedItems) {
 			if (cve.disabledKeywords.contains(item)) {
 				cve.disabledKeywords.remove(item);
 			}
-			
+
 			if (!cve.keywords.contains(item)) {
 				cve.keywords.add(item);
 			}
 		}
-		
+
 		Collections.sort(cve.keywords, String.CASE_INSENSITIVE_ORDER);
-		
+
 		updateKeywordLists();
 	}
-	
+
 	public void disableKeywords() {
 		List<String> selectedItems = panelKeyword.listEnabledKeywords.getSelectedValuesList();
-		
+
 		System.out.println(selectedItems);
 		System.out.println(cve.keywords);
-		
+
 		for (String item : selectedItems) {
 			if (cve.keywords.contains(item)) {
 				cve.keywords.remove(item);
 			}
-			
+
 			if (!cve.disabledKeywords.contains(item)) {
 				cve.disabledKeywords.add(item);
 			}
 		}
-		
+
 		Collections.sort(cve.disabledKeywords, String.CASE_INSENSITIVE_ORDER);
-		
+
 		updateKeywordLists();
 	}
-	
+
 	public void addKeyword() {
 		if (!cve.keywords.contains(panelKeyword.txtKeyword.getText())) {
 			cve.keywords.add(panelKeyword.txtKeyword.getText());
 		}
-			
+
 		Collections.sort(cve.keywords, String.CASE_INSENSITIVE_ORDER);
-		
+
 		updateKeywordLists();
+	}
+
+	public void setSimilarity(int max, int min) {
+		Integer[] numbers = new Integer[max];
+
+		for (int i = 0; i < max; i++) {
+			numbers[i] = max - i;
+		}
+
+		ComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(numbers);
+		cboSimilarity.setModel(model);
+		System.out.println("max: " + max);
+		System.out.println("min: " + min);
+		cboSimilarity.setSelectedIndex(max - min);
 	}
 }

@@ -1,14 +1,19 @@
 package application;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Panel;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -21,6 +26,8 @@ public class CWEOptionPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	public JButton btnApply;
 	public KeywordPanel panelKeyword;
+	
+	public JComboBox<Integer> cboSimilarity;
 	
 	public CWEItem cwe;
 
@@ -58,6 +65,12 @@ public class CWEOptionPanel extends Panel {
 		
 		panelKeyword = new KeywordPanel(cwe.keywords, cwe.disabledKeywords); 
 		panelBody.add(panelKeyword);
+		
+		JPanel panelSimilarity = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		cboSimilarity = new JComboBox<Integer>();
+		panelSimilarity.add(new JLabel("Minimun keyword similarity"));
+		panelSimilarity.add(cboSimilarity);
+		panelBody.add(panelSimilarity);
 
 		add(panelBody, BorderLayout.PAGE_START);
 	}
@@ -132,5 +145,17 @@ public class CWEOptionPanel extends Panel {
 		Collections.sort(cwe.keywords, String.CASE_INSENSITIVE_ORDER);
 		
 		updateKeywordLists();
+	}
+	
+	public void setSimilarity(int max, int min) {
+		Integer[] numbers = new Integer[max];
+
+		for (int i = 0; i < max; i++) {
+			numbers[i] = max - i;
+		}
+
+		ComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(numbers);
+		cboSimilarity.setModel(model);
+		cboSimilarity.setSelectedIndex(max - min);
 	}
 }
