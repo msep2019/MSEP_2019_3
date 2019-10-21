@@ -36,4 +36,24 @@ public class CAPECHelper2 {
 
 		return result;
 	}
+	
+	public List<Element> getMitigations(String Id) {
+		List<Element> result = null;
+		
+		for (String file : xmlFiles) {
+			Document document = XMLHelper.getSAXParsedDocument(file);
+
+			String query = "/Attack_Pattern_Catalog/Attack_Patterns/Attack_Pattern[@ID= '" + Id + "']";
+			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+			
+			List<Element> xPathResult = xpe.evaluate(document);
+	        
+			if (xPathResult.size() > 0) {
+				result = xPathResult.get(0).getChild("Mitigations").getChildren();
+				break;
+			}
+		}
+
+		return result;
+	}
 }
