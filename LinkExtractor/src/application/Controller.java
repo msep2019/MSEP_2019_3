@@ -62,23 +62,25 @@ public class Controller {
 			
 			model = (DefaultTreeModel) view.linkTree.tree.getModel();
 			
-			node.add(new DefaultMutableTreeNode("Loading...", false));
+			if (node.getChildCount() == 0 ||  !((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString().equals("Loading...")) {
+				node.add(new DefaultMutableTreeNode("Loading...", false));
 			
-			if (cwe.indirectCAPEC.size() <= 0) {
-				cwe.loadedChildren = false;
+			
+				if (cwe.indirectCAPEC.size() <= 0) {
+					cwe.loadedChildren = false;
+					
+					model.nodeStructureChanged(node);
+					view.linkTree.tree.expandPath(new TreePath(node.getPath()));
+					loadCAPECList(node);
+				} else {
+					view.panelCWE.setCWE(cwe);
+				}
 				
-				model.nodeStructureChanged(node);
-				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
-				
-				loadCAPECList();
-			} else {
-				view.panelCWE.setCWE(cwe);
+				System.out.println("View: " + view.CWE_OPTION_PANEL);
+				System.out.println(view.detailView);
+				CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
+				cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
 			}
-			
-			System.out.println("View: " + view.CWE_OPTION_PANEL);
-			System.out.println(view.detailView);
-			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
-			cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
 			
 		} else if (node.getUserObject() instanceof CAPECItem) {
 			System.out.println("View: " + view.CAPEC_OPTION_PANEL);
@@ -119,7 +121,7 @@ public class Controller {
 
 		model.nodeStructureChanged(root);
 		view.linkTree.tree.expandPath(new TreePath(root.getPath()));
-
+		
 		loadCWEList();
 		System.out.println(model);
 		
@@ -161,22 +163,40 @@ public class Controller {
         			}
         		}
         		
-        		cve.getIndirectCWEList();
+        		System.out.println("cve.isChangedKeywords" + cve.isChangedKeywords);
+        		if (cve.isChangedKeywords) {
+        			cve.getIndirectCWEList();
+        			cve.isChangedKeywords = false;
+        		}
         		
         		System.out.println(cve.indirectCWE);
 
         		if (cve.indirectCWE.size() > 0) {
         			int maxMatching = cve.indirectCWE.get(0).matching;
+        			int cboMatchingValue;
+        			if (view.panelCVE.cboSimilarity.getSelectedItem() != null) {
+        				cboMatchingValue = Integer.parseInt(view.panelCVE.cboSimilarity.getSelectedItem().toString());
+        			} else {
+        				cboMatchingValue = -1;
+        			}
+        			
+        			if (cboMatchingValue > 0){
+        				cve.minMatching = cboMatchingValue;
+        			}
+        			
         			if (cve.maxMatching != maxMatching) {
-	        			if (maxMatching >= 4) {
-	        				cve.minMatching = 4;
-	        			} else {
-	        				cve.minMatching = maxMatching;
-	        			}
+        				if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
+        					if (maxMatching >= 4) {
+    	        				cve.minMatching = 4;
+    	        			} else {
+    	        				cve.minMatching = maxMatching;
+    	        			}
+        				}
         			}
         			
         			cve.maxMatching = maxMatching;
-        			
+        			System.out.println("cve.maxMatching : " + cve.maxMatching);
+        			System.out.println("cve.minMatching : " + cve.minMatching);
         			view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
         			
         			for (CWEItem itemCWE : cve.indirectCWE) {
@@ -217,17 +237,18 @@ public class Controller {
 		root = (DefaultMutableTreeNode) model.getRoot();
 		
 		loaded = false;
-		cve.indirectCWE = new ArrayList<>();
+		if (cve.isChangedKeywords) {
+			cve.indirectCWE = new ArrayList<>();
+		}
 		root.removeAllChildren();
 		root.add(new DefaultMutableTreeNode("Loading...", false));
 		model.nodeStructureChanged(root);
 		loadCWEList();
 	}
 	
-	public void loadCAPECList() {
+	public void loadCAPECList(DefaultMutableTreeNode node) {
 		System.out.println("loadCAPECList");
 		
-		CustomTreeNode node = (CustomTreeNode)view.linkTree.tree.getLastSelectedPathComponent();
 		model = (DefaultTreeModel) view.linkTree.tree.getModel();
 		CWEItem cwe = (CWEItem) node.getUserObject();
 		
@@ -241,8 +262,6 @@ public class Controller {
         		
         		List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
         		
-        		
-        		
         		cwe.getDirectCAPECList();
     			
         		if (cwe.directCAPEC.size() > 0) {
@@ -253,22 +272,43 @@ public class Controller {
     				}
     			}
     			
-        		cwe.getIndirectCAPECList();
+        		System.out.println("cwe.isChangedKeywords" + cwe.isChangedKeywords);
+        		if (cwe.isChangedKeywords) {
+        			cwe.getIndirectCAPECList();
+        			cwe.isChangedKeywords = false;
+        		}
+        		
     			
     			if (cwe.indirectCAPEC.size() > 0) {
     				int maxMatching = cwe.indirectCAPEC.get(0).matching;
-    				
-    				if (cwe.minMatching == -1) {
-            			if (maxMatching >= 4) {
-            				cwe.minMatching = 4;
-            			} else {
-            				cwe.minMatching = maxMatching;
-            			}
-    				}
+        			int cboMatchingValue;
+        			if (view.panelCWE.cboSimilarity.getSelectedItem() != null) {
+        				cboMatchingValue = Integer.parseInt(view.panelCWE.cboSimilarity.getSelectedItem().toString());
+        			} else {
+        				cboMatchingValue = -1;
+        			}
         			
-    				view.panelCWE.setSimilarity(maxMatching, cwe.minMatching);
+        			if (cboMatchingValue > 0){
+        				cwe.minMatching = cboMatchingValue;
+        			}
+        			
+        			if (cwe.maxMatching != maxMatching) {
+        				if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
+        					if (maxMatching >= 4) {
+        						cwe.minMatching = 4;
+    	        			} else {
+    	        				cwe.minMatching = maxMatching;
+    	        			}
+        				}
+        			}
+        			
+        			cwe.maxMatching = maxMatching;
+        			System.out.println("cwe.maxMatching : " + cwe.maxMatching);
+        			System.out.println("cwe.minMatching : " + cwe.minMatching);
+        			view.panelCWE.setSimilarity(cwe.maxMatching, cwe.minMatching);
     				
     				for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
+    					System.out.println(itemCAPEC.name + " " + itemCAPEC.matching);
     					if (itemCAPEC.matching >= cwe.minMatching) {
 	    					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
 	
@@ -302,8 +342,19 @@ public class Controller {
 	public void reloadCAPECList() {
 		System.out.println("reloadCAPECList");
 		CustomTreeNode node = (CustomTreeNode)view.linkTree.tree.getLastSelectedPathComponent();
-		CWEItem cwe = (CWEItem) node.getUserObject();
-		cwe.loadedChildren = false;
-		loadCAPECList();
+		System.out.println(node.getFirstChild());
+		
+		if (!((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString().equals("Loading...")) {
+			CWEItem cwe = (CWEItem) node.getUserObject();
+			cwe.loadedChildren = false;
+			if (cwe.isChangedKeywords) {
+				cwe.indirectCAPEC = new ArrayList<>();
+			}
+			node.removeAllChildren();
+			node.add(new DefaultMutableTreeNode("Loading...", false));
+			model.nodeStructureChanged(node);
+			
+			loadCAPECList(node);
+		}
 	}
 }

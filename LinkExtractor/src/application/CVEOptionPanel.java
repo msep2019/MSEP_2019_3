@@ -79,6 +79,7 @@ public class CVEOptionPanel extends Panel {
 	public void setCVE(CVEItem cve) {
 		this.cve = cve;
 		updateKeywordLists();
+		this.setSimilarity(cve.maxMatching, cve.minMatching);
 	}
 
 	public void updateKeywordLists() {
@@ -115,6 +116,7 @@ public class CVEOptionPanel extends Panel {
 		Collections.sort(cve.keywords, String.CASE_INSENSITIVE_ORDER);
 
 		updateKeywordLists();
+		cve.isChangedKeywords = true;
 	}
 
 	public void disableKeywords() {
@@ -136,6 +138,7 @@ public class CVEOptionPanel extends Panel {
 		Collections.sort(cve.disabledKeywords, String.CASE_INSENSITIVE_ORDER);
 
 		updateKeywordLists();
+		cve.isChangedKeywords = true;
 	}
 
 	public void addKeyword() {
@@ -146,6 +149,7 @@ public class CVEOptionPanel extends Panel {
 		Collections.sort(cve.keywords, String.CASE_INSENSITIVE_ORDER);
 
 		updateKeywordLists();
+		cve.isChangedKeywords = true;
 	}
 
 	public void setSimilarity(int max, int min) {
@@ -157,8 +161,9 @@ public class CVEOptionPanel extends Panel {
 
 		ComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(numbers);
 		cboSimilarity.setModel(model);
-		System.out.println("max: " + max);
-		System.out.println("min: " + min);
-		cboSimilarity.setSelectedIndex(max - min);
+		
+		if (max != 0 && min != 0 && max >= min) {
+			cboSimilarity.setSelectedIndex(max - min);
+		}
 	}
 }
