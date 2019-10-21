@@ -241,8 +241,6 @@ public class Controller {
         		
         		List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
         		
-        		
-        		
         		cwe.getDirectCAPECList();
     			
         		if (cwe.directCAPEC.size() > 0) {
@@ -257,18 +255,21 @@ public class Controller {
     			
     			if (cwe.indirectCAPEC.size() > 0) {
     				int maxMatching = cwe.indirectCAPEC.get(0).matching;
-    				
-    				if (cwe.minMatching == -1) {
-            			if (maxMatching >= 4) {
-            				cwe.minMatching = 4;
-            			} else {
-            				cwe.minMatching = maxMatching;
-            			}
-    				}
+        			if (cwe.maxMatching != maxMatching) {
+	        			if (maxMatching >= 4) {
+	        				cwe.minMatching = 4;
+	        			} else {
+	        				cwe.minMatching = maxMatching;
+	        			}
+        			}
         			
-    				view.panelCWE.setSimilarity(maxMatching, cwe.minMatching);
+        			cwe.maxMatching = maxMatching;
+        				
+    				view.panelCWE.setSimilarity(cwe.maxMatching, cwe.minMatching);
+    				System.out.println("cwe.minMatching" + cwe.minMatching);
     				
     				for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
+    					System.out.println(itemCAPEC.name + " " + itemCAPEC.matching);
     					if (itemCAPEC.matching >= cwe.minMatching) {
 	    					CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
 	
@@ -304,6 +305,11 @@ public class Controller {
 		CustomTreeNode node = (CustomTreeNode)view.linkTree.tree.getLastSelectedPathComponent();
 		CWEItem cwe = (CWEItem) node.getUserObject();
 		cwe.loadedChildren = false;
+		cwe.indirectCAPEC = new ArrayList<>();
+		node.removeAllChildren();
+		node.add(new DefaultMutableTreeNode("Loading...", false));
+		model.nodeStructureChanged(node);
+		
 		loadCAPECList();
 	}
 }

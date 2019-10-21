@@ -26,7 +26,9 @@ public class CWEItem {
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
 	public int matching = -1;
 	public int minMatching = -1;
+	public int maxMatching = -1;
 	public boolean loadedChildren = false;
+	public boolean isChangedKeywords = false;
 
 	public CWEItem() {
 		
@@ -121,13 +123,15 @@ public class CWEItem {
 
 		File fileCWEKeywordDef = null;
 
-		if (keywords.size() <= 0) {
+		
+		if (keywords.size() <= 0 && disabledKeywords.size() <= 0) {
 
 			String cweDesc = cweHelper.getItemContent(id);
 			System.out.println("CWE Desc: " + cweDesc);
 
-			// Get CWE keywords
-			if (!cweDesc.isEmpty()) {
+			if (cweDesc.isEmpty()) {
+				return indirectCAPEC;
+			} else {
 				try {
 					keywords = Keyword.processDocs(cweDesc);
 				} catch (ResourceInstantiationException e) {

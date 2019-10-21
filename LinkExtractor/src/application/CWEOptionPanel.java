@@ -156,6 +156,9 @@ public class CWEOptionPanel extends Panel {
 
 		ComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(numbers);
 		cboSimilarity.setModel(model);
-		cboSimilarity.setSelectedIndex(max - min);
+		
+		if (max != 0 && min != 0 && max >= min) {
+			cboSimilarity.setSelectedIndex(max - min);
+		}
 	}
 }

@@ -30,6 +30,7 @@ public class CVEItem {
 	public ArrayList<CWEItem> indirectCWE = new ArrayList<>();
 	public int maxMatching = -1;
 	public int minMatching = -1;
+	public boolean isChangedKeywords = false;
 
 	public CVEItem() {
 
@@ -108,10 +109,7 @@ public class CVEItem {
 	
 			if (cveDesc.isEmpty()) {
 				return indirectCWE;
-			}
-			
-			// Get CVE keywords
-			if (!cveDesc.isEmpty()) {
+			} else {
 				System.out.println("CVE Desc: " + cveDesc);
 				try {
 					keywords = Keyword.processDocs(cveDesc);

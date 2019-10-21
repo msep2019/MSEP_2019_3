@@ -97,6 +97,8 @@ public class CVEOptionPanel extends Panel {
 		panelKeyword.listDisabledKeywords.setModel(modelDisabledKeywords);
 		panelKeyword.paneEnabledKeywords.revalidate();
 		panelKeyword.paneDisabledKeywords.revalidate();
+		
+		cve.isChangedKeywords = true;
 	}
 
 	public void enableKeywords() {
@@ -157,8 +159,9 @@ public class CVEOptionPanel extends Panel {
 
 		ComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(numbers);
 		cboSimilarity.setModel(model);
-		System.out.println("max: " + max);
-		System.out.println("min: " + min);
-		cboSimilarity.setSelectedIndex(max - min);
+		
+		if (max != 0 && min != 0 && max >= min) {
+			cboSimilarity.setSelectedIndex(max - min);
+		}
 	}
 }
