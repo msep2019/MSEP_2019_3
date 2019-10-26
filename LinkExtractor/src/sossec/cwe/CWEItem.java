@@ -16,6 +16,7 @@ import sossec.capec.CAPECItem;
 import sossec.keyword.Keyword;
 import sossec.keywordmatching.Item;
 import sossec.keywordmatching.KeywordMatching;
+import sossec.mitigation.Mitigation;
 
 public class CWEItem {
 	public String id;
@@ -24,11 +25,14 @@ public class CWEItem {
 	public ArrayList<String> disabledKeywords = new ArrayList<>();
 	public ArrayList<CAPECItem> directCAPEC = new ArrayList<>();
 	public ArrayList<CAPECItem> indirectCAPEC = new ArrayList<>();
+	public ArrayList<Mitigation> mitigations = null;
+	
 	public int matching = -1;
 	public int minMatching = -1;
 	public int maxMatching = -1;
 	public boolean loadedChildren = false;
 	public boolean isChangedKeywords = true;
+	
 
 	public CWEItem() {
 		
@@ -73,7 +77,7 @@ public class CWEItem {
 				
 		    	//Initialize SearchDirectlinks and Helper3
 		    	EstablishDirectlinks edl = new EstablishDirectlinks();;
-		    	CWEHelper3 helper3 = new CWEHelper3();
+		    	CAPECHelper helper = new CAPECHelper();
 		    	
 				inputCwe = new FileInputStream(argsDb[i]);			
 				directCveCapec = edl.directLinks(inputCwe);
@@ -89,7 +93,7 @@ public class CWEItem {
 						directCapec = entryCveCapec.getValue();
 							
 						for(String capecId : directCapec){
-							result = helper3.getCapecIdContent(capecId);
+							result = helper.getCAPECName(capecId);
 							System.out.println(capecId+"-->"+result);
 								
 							boolean isExist = false;

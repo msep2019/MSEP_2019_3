@@ -13,6 +13,9 @@ import sossec.XMLHelper;
 public class CAPECHelper {
 
 	public String[] xmlFiles = { "src/databases/CAPEC_desc_domains.xml", "src/databases/CAPEC_desc_mechanisms.xml" };
+	public String[] xmlMitigations = { "src/databases/CAPEC_mitigation_domains.xml", "src/databases/CAPEC_mitigation_mechanisms.xml",
+	"src/databases/CWE_mitigation_research.xml" };
+
 
 	public String getItemContent(String Id) {
 		String result = "";
@@ -30,6 +33,49 @@ public class CAPECHelper {
 			}
 
 			if (!result.isEmpty()) {
+				break;
+			}
+		}
+
+		return result;
+	}
+	
+	public String getCAPECName(String Id) {
+		String result = "";
+	
+		for (String file : xmlFiles) {
+			Document document = XMLHelper.getSAXParsedDocument(file);
+		
+			String query = "/Attack_Pattern_Catalog/Attack_Patterns/Attack_Pattern[@ID='" + Id + "']";
+			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+		
+			List<Element> xPathResult = xpe.evaluate(document);
+		
+			if (xPathResult.size() > 0) {
+				result = xPathResult.get(0).getAttribute("Name").getValue();
+			}
+		
+			if (!result.isEmpty()) {
+				break;
+			}
+		}
+	
+		return result;		
+	}
+	
+	public List<Element> getMitigations(String Id) {
+		List<Element> result = null;
+		
+		for (String file : xmlMitigations) {
+			Document document = XMLHelper.getSAXParsedDocument(file);
+
+			String query = "/Attack_Pattern_Catalog/Attack_Patterns/Attack_Pattern[@ID= '" + Id + "']";
+			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+			
+			List<Element> xPathResult = xpe.evaluate(document);
+	        
+			if (xPathResult.size() > 0) {
+				result = xPathResult.get(0).getChild("Mitigations").getChildren();
 				break;
 			}
 		}

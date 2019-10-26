@@ -12,14 +12,15 @@
                     <xsl:attribute name="Name"><xsl:value-of select="@name"/></xsl:attribute>
                     <xsl:attribute name="Abstraction"><xsl:value-of select="@Abstraction"/></xsl:attribute>
                     <xsl:attribute name="Status"><xsl:value-of select="@Status"/></xsl:attribute>             
+                
+                   <Mitigations>
+                       <xsl:for-each select="capec:Mitigations/capec:Mitigation">
+                       <Mitigation>                    
+                               <xsl:value-of select="node()"/>                   
+                       </Mitigation>
+                       </xsl:for-each>
+                   </Mitigations>
                 </Attack_Pattern>
-                <Mitigations>
-                    <xsl:for-each select="capec:Mitigations/capec:Mitigation">
-                    <Mitigation>                    
-                            <xsl:value-of select="node()"/>                   
-                    </Mitigation>
-                    </xsl:for-each>
-                </Mitigations>
             </xsl:for-each>
             </Attack_Patterns>
         </Attack_Pattern_Catalog>

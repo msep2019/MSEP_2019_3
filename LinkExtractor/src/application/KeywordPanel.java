@@ -72,13 +72,12 @@ public class KeywordPanel extends JPanel {
 
 		listEnabledKeywords = new JList<>();
 		listEnabledKeywords.setModel(modelEnabledKeywords);
-		listEnabledKeywords.setPreferredSize(new Dimension(100, 200));
 		listEnabledKeywords.setLayoutOrientation(JList.VERTICAL);
 		listEnabledKeywords.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		paneEnabledKeywords = new JScrollPane(listEnabledKeywords, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		paneEnabledKeywords.setPreferredSize(new Dimension(0, 300));
+		paneEnabledKeywords.setPreferredSize(new Dimension(200, 300));
 
 		c.gridx = 0;
 		c.gridy = 1;
@@ -90,13 +89,12 @@ public class KeywordPanel extends JPanel {
 		}
 
 		listDisabledKeywords = new JList<>();
-		listDisabledKeywords.setPreferredSize(new Dimension(100, 200));
 		listDisabledKeywords.setModel(modelDisabledKeywords);
 		listDisabledKeywords.setLayoutOrientation(JList.VERTICAL);
 		listDisabledKeywords.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		paneDisabledKeywords = new JScrollPane(listDisabledKeywords,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		paneDisabledKeywords.setPreferredSize(new Dimension(0, 300));
+		paneDisabledKeywords.setPreferredSize(new Dimension(200, 300));
 
 		c.gridx = 2;
 		c.gridy = 1;

@@ -13,9 +13,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 
 public class MainView {
@@ -26,6 +29,8 @@ public class MainView {
 	public JTextField txtCVE;
 	public JButton btnSearch;
 	public JComboBox<String> selectType;
+
+	public JList<String> listMitigations;
 
 	JPanel detailView;
 	CardLayout detailViewLayout;
@@ -78,12 +83,25 @@ public class MainView {
 		selectType.setSelectedIndex(0);
 		panelType.add(new JLabel("Link Type"));
 		panelType.add(selectType);
-		
+
 		JPanel panelLeft = new JPanel();
 		panelLeft.setLayout(new BorderLayout());
-		
+
 		panelLeft.add(panelType, BorderLayout.PAGE_START);
 		panelLeft.add(linkTree, BorderLayout.CENTER);
+
+		listMitigations = new JList<>();
+		listMitigations.setLayoutOrientation(JList.VERTICAL);
+		listMitigations.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		JScrollPane panelMitigation = new JScrollPane(listMitigations,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		panelMitigation.setPreferredSize(new Dimension(200, 300));
+		
+		JSplitPane splitPaneLeft = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPaneLeft.setLeftComponent(panelLeft);
+		splitPaneLeft.setRightComponent(panelMitigation);
+		splitPaneLeft.setResizeWeight(0.5);
+		splitPaneLeft.setBorder(null);
 
 		panelCVE = new CVEOptionPanel();
 		panelCWE = new CWEOptionPanel();
@@ -94,13 +112,13 @@ public class MainView {
 		detailView.add(panelCVE, CVE_OPTION_PANEL);
 		detailView.add(panelCWE, CWE_OPTION_PANEL);
 		detailView.add(panelCAPEC, CAPEC_OPTION_PANEL);
-		
+
 		Border padding = BorderFactory.createEmptyBorder(21, 0, 0, 0);
 		detailView.setBorder(padding);
 
 		// Add the scroll panes to a split pane.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPane.setLeftComponent(panelLeft);
+		splitPane.setLeftComponent(splitPaneLeft);
 		splitPane.setRightComponent(detailView);
 		splitPane.setResizeWeight(0.5);
 		splitPane.setBorder(null);

@@ -2,10 +2,13 @@ package sossec.capec;
 
 import java.util.ArrayList;
 
+import sossec.mitigation.Mitigation;
+
 public class CAPECItem {
 	public String id;
 	public String name;
 	public ArrayList<String> keywords = new ArrayList<>();
+	public ArrayList<Mitigation> mitigations = new ArrayList<>();
 	public int matching = -1;
 
 	public CAPECItem(String id) {
