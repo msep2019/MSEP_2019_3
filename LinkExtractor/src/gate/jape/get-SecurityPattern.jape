@@ -1,0 +1,53 @@
+Imports: {
+	import static gate.Utils.*;
+}
+
+Phase:		getMitigation
+Input:  	Security_Pattern
+Options: 	control = brill debug = false
+
+Rule: 		MitigationRules
+Priority: 	10
+(
+	{Security_Pattern}
+): pattern
+-->
+{
+	gate.AnnotationSet patternAS = (gate.AnnotationSet)bindings.get("pattern");
+	gate.Annotation patternAnn = (gate.Annotation)patternAS.iterator().next();
+	
+	// get Xtag info from within Ytag annotation
+  	AnnotationSet lookupAS = inputAS.get("Lookup").getContained(patternAS.firstNode().getOffset(), patternAS.lastNode().getOffset());
+
+  	if (lookupAS != null){
+  		ArrayList<String> keywords = new ArrayList<>();
+
+  		for(Annotation lookupAnn : lookupAS)
+		{
+			/*
+			System.out.println("c");
+			System.out.println(keywords.toString());
+			System.out.println(lookupAnn.getFeatures().toString());
+			System.out.println("c1");
+			*/
+			if (lookupAnn.getFeatures().get("_string") != null && !keywords.contains(lookupAnn.getFeatures().get("_string").toString())) {
+				keywords.add(lookupAnn.getFeatures().get("_string").toString());
+			}
+		} 
+
+	  	if (keywords.size() > 0) {
+	  		/*
+	  		System.out.println(patternAnn.getFeatures().get("ID") + " " + patternAnn.getFeatures().get("Name"));
+	  		System.out.println("Keyword count: " + keywords.size());
+	  		System.out.println();
+	  		*/
+
+	  		gate.FeatureMap features = Factory.newFeatureMap();
+	  		features.put("matchingCount", keywords.size());
+	  		features.put("id", patternAnn.getFeatures().get("id"));
+	  		features.put("name", patternAnn.getFeatures().get("name"));
+	  		
+	  		outputAS.add(patternAS.firstNode(), patternAS.lastNode(), "FoundItem", features);
+	  	}
+  	}
+}

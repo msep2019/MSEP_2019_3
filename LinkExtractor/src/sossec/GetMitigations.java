@@ -49,5 +49,7 @@ public class GetMitigations {
 
 			// System.out.println("CAPEC mitigation: " + keywords);
 		}
+		
+		sc.close();
 	}
 }

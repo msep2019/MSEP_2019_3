@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Security_Patterns>
+   <Security_Pattern id="Application Firewall" name="Application Firewall">
+      <Quick_info>
+         <Content>
+        Intent: To filter calls and responses to/from enterprise applications, based on an institution access control policy. Aliases: Content Firewall
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Audit Interceptor" name="Audit Interceptor">
+      <Quick_info>
+         <Content>
+        Intent: You want to intercept and audit requests and responses to and from the Business tier, in a flexible and modifyable way.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Authentication Enforcer" name="Authentication Enforcer">
+      <Quick_info>
+         <Content>
+        Intent: You need to verify that each service request is from an authenticated entity.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Authorization Enforcer" name="Authorization Enforcer">
+      <Quick_info>
+         <Content>
+        Intent: Verify that requests for services are properly authorized at the method and link level.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Checkpointed System" name="Checkpointed System">
+      <Quick_info>
+         <Content>
+        Intent: Structure a system so that its state can be recovered and restored to a known valid state in case a component fails. Aliases: Snapshot, Undo
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Comparator Checked Fault Tolerant System" name="Comparator Checked Fault Tolerant System">
+      <Quick_info>
+         <Content>
+        Intent: Structure a system so that an independent failure of one component will be detected quickly and so that an independent single-component failure will not cause a system failure.
+        Aliases: Tandem System
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Container Managed Security" name="Container Managed Security">
+      <Quick_info>
+         <Content>
+        Intent: You need a simple, standard way to enforce authentication and authorization in your J2EE applications and don't want to reinvent the wheel or write home-grown security code. Using a Container Managed Security pattern, the container performs user authentication and authorization without requiring the developer to hard-wire security policies in the application code.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Controlled Object Factory" name="Controlled Object Factory">
+      <Quick_info>
+         <Content>
+        Intent: This pattern addresses how to specify the rights of processes with respect to a new object. When a process creates a new object through a factory, the request includes the features of the new object. These features include a list of rights to access the object.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Controlled Object Monitor" name="Controlled Object Monitor">
+      <Quick_info>
+         <Content>
+        Intent: This pattern addresses how to control access by a process to an object. Use a reference monitor to intercept access requests from processes. The reference monitor checks whether the process has the requested type of access to the object.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Controlled Process Creator" name="Controlled Process Creator">
+      <Quick_info>
+         <Content>
+        Intent: This pattern addresses how to define and grant appropriate access rights for a new process, in an operating system in which processes or threads need to be created according to application needs.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Credential Tokenizer" name="Credential Tokenizer">
+      <Quick_info>
+         <Content>
+        Intent: You need a flexible mechanism to encapsulate a security token that can be used by different security infrastructure providers.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Demilitarized Zone" name="Demilitarized Zone">
+      <Quick_info>
+         <Content>
+        Intent: Any organization conducting e-commerce or publishing information over Web technologies must make their service easily accessible to their users. However, any form of Web site or e-commerce system is a potential target for attack, especially those on the Internet. A Demilitarized Zone (DMZ)separates the business functionality and information from the Web servers that deliver it, and places the Web servers in a secure area. This reduces the ``surface area''of the system that is open to attack.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Encrypted Storage" name="Encrypted Storage">
+      <Quick_info>
+         <Content>
+        Intent: The Encrypted Storage pattern ensures that even if data is stolen, the most sensitive data will remain safe from prying eyes.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Firewall" name="Firewall">
+      <Quick_info>
+         <Content>
+        Intent: Control incoming and outgoing network connections, restrict access to certain hosts on the network level.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Full View with Errors" name="Full View with Errors">
+      <Quick_info>
+         <Content>
+        Intent: Prevent users to perform illegal operations by showing an error message when the user tries to perform an illegal operation.
+        Aliases: Full View With Exceptions, Reveal All and Handle Exceptions, Notified View
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Input Guard" name="Input Guard">
+      <Quick_info>
+         <Content>
+        Intent: Protect components from input that does not conform to the system specification.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Replicated System" name="Replicated System">
+      <Quick_info>
+         <Content>
+        Intent: Structure a system which allows provision of service from multiple points of presence, and recovery in case of failure of one or more components or links.
+        Aliases: Redundant Components, Horizontal Scalability
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Reverse Proxy" name="Reverse Proxy">
+      <Quick_info>
+         <Content>
+        Intent: Protect your web server infrastructure on an application protocol level, without hindering accessibility.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Access Layer" name="Secure Access Layer">
+      <Quick_info>
+         <Content>
+        Intent: Application security will be insecure if it is not properly integrated with the security of the external systems it uses. On top of the lower-level security, build a secure access layer for communicating in and out of the program.
+        Aliases: Using Low-level security, Using Non-application security, Only as strong as the weakest link
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Logger" name="Secure Logger">
+      <Quick_info>
+         <Content>
+        Intent: Application events must be logged in a centralized way, and it should be impossible to alter log files.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Message Router" name="Secure Message Router">
+      <Quick_info>
+         <Content>
+        Intent: Securely communicate with multiple partner endpoints using message-level security and identity-federation mechanisms.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Pipe" name="Secure Pipe">
+      <Quick_info>
+         <Content>
+        Intent: You need to provide privacy and prevent eavesdropping and tampering of client transactions caused by man-in-themiddle attacks.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Service Facade" name="Secure Service Facade">
+      <Quick_info>
+         <Content>
+        Intent: You need a secure gateway mandating and governing security on client requests, exposing a uniform, coarse-grained service interface over fine-grained, loosely coupled business services that mediates client requests to the appropriate services.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Secure Session Object" name="Secure Session Object">
+      <Quick_info>
+         <Content>
+        Intent: You need to facilitate distributed access and seamless propagation of security context and client sessions in a platform-independent and location-independent manner.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Security Association" name="Security Association">
+      <Quick_info>
+         <Content>
+        Intent: Define a structure which provides each participant in a secure communication with the information it will use to protect messages to be transmitted to the other party, and with the information which it will use to understand and verify the protection applied to messages received from the other party.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Security Context" name="Security Context">
+      <Quick_info>
+         <Content>
+        Intent: Provide a container for security attributes and data relating to a particular execution context, process, operation, or action.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Server Sandbox" name="Server Sandbox">
+      <Quick_info>
+         <Content>
+        Intent: Many site defacements and major security breaches occur when a new vulnerability is discovered in the Web server software. Yet most Web servers run with far greater privileges than are necessary. The Server Sandbox pattern builds a wall around the Web server in order to contain the damage that could result from an undiscovered bug in the server software.
+        Aliases: Privilege Drop, Untrusted Server, Constrained Execution Environment, Unprivileged/Restricted User Account, Run as Nobody
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Session Failover" name="Session Failover">
+      <Quick_info>
+         <Content>
+        Intent: Avoid inconveniencing users that lose session data in a system restart.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Session" name="Session">
+      <Quick_info>
+         <Content>
+        Intent: Many objects need access to shared values, but the values are not unique throughout the system. Aliases: User's Environment, Namespace, Threaded-based Singleton, Localized Globals
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Session Timeout" name="Session Timeout">
+      <Quick_info>
+         <Content>
+        Intent: Prevent the system from running out of resources because abandoned sessions are not cleaned up.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Single Access Point" name="Single Access Point">
+      <Quick_info>
+         <Content>
+        Intent: Reduce the ``attack surface''by imposing a single access point on the system, providing an ideal place to do access control and policy enforcement.
+        Aliases: Login Window, One Way In, Guard Door, Validation Screen
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+   <Security_Pattern id="Subject Descriptor" name="Subject Descriptor">
+      <Quick_info>
+         <Content>
+        Intent: Provide access to security-relevant attributes of an entity on whose behalf operations are to be performed. Aliases: Subject Attributes. The entity described may be referred to as a subject or principal.
+      </Content>
+      </Quick_info>
+   </Security_Pattern>
+</Security_Patterns>

@@ -21,6 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 
+import sossec.mitigation.Mitigation;
+
 public class MainView {
 	// View uses Swing framework to display UI to user
 	public JFrame frame;
@@ -30,17 +32,19 @@ public class MainView {
 	public JButton btnSearch;
 	public JComboBox<String> selectType;
 
-	public JList<String> listMitigations;
+	public JList<Mitigation> listMitigations;
 
 	JPanel detailView;
 	CardLayout detailViewLayout;
 	public CVEOptionPanel panelCVE;
 	public CWEOptionPanel panelCWE;
 	public CAPECOptionPanel panelCAPEC;
+	public MitigationOptionPanel panelMitigation;
 
 	final String CVE_OPTION_PANEL = "CVE";
 	final String CWE_OPTION_PANEL = "CWE";
 	final String CAPEC_OPTION_PANEL = "CAPEC";
+	final String MITIGATION_OPTION_PANEL = "MITIGATION";
 
 	String[] linkTypes = { "Both", "Direct", "Indirect" };
 
@@ -92,26 +96,28 @@ public class MainView {
 
 		listMitigations = new JList<>();
 		listMitigations.setLayoutOrientation(JList.VERTICAL);
-		listMitigations.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		JScrollPane panelMitigation = new JScrollPane(listMitigations,
+		listMitigations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane panelMitigationList = new JScrollPane(listMitigations,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		panelMitigation.setPreferredSize(new Dimension(200, 300));
+		panelMitigationList.setPreferredSize(new Dimension(200, 300));
 		
 		JSplitPane splitPaneLeft = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPaneLeft.setLeftComponent(panelLeft);
-		splitPaneLeft.setRightComponent(panelMitigation);
+		splitPaneLeft.setRightComponent(panelMitigationList);
 		splitPaneLeft.setResizeWeight(0.5);
 		splitPaneLeft.setBorder(null);
 
 		panelCVE = new CVEOptionPanel();
 		panelCWE = new CWEOptionPanel();
 		panelCAPEC = new CAPECOptionPanel();
+		panelMitigation = new MitigationOptionPanel();
 
 		detailViewLayout = new CardLayout();
 		detailView = new JPanel(detailViewLayout);
 		detailView.add(panelCVE, CVE_OPTION_PANEL);
 		detailView.add(panelCWE, CWE_OPTION_PANEL);
 		detailView.add(panelCAPEC, CAPEC_OPTION_PANEL);
+		detailView.add(panelMitigation, MITIGATION_OPTION_PANEL);
 
 		Border padding = BorderFactory.createEmptyBorder(21, 0, 0, 0);
 		detailView.setBorder(padding);

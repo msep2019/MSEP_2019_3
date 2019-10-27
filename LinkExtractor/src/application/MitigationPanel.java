@@ -7,14 +7,20 @@ import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
+import sossec.mitigation.Mitigation;
+
 public class MitigationPanel extends JPanel {
-	public JList<String> listMitigations;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public JList<Mitigation> listMitigations;
 	
 	public MitigationPanel() {
 		this.setBorder(BorderFactory.createLineBorder(Color.gray));
 		this.setBackground(Color.white);
 	}
-	public void setMitigations(List<String> mitigations) {
+	public void setMitigations(List<Mitigation> mitigations) {
 		
 	}
 }
