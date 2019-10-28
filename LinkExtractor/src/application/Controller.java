@@ -26,7 +26,7 @@ public class Controller {
 
 	DefaultTreeModel model;
 	DefaultMutableTreeNode root;
-	
+
 	final String NO_MITIGATION = "No mitigations found.";
 	final String NO_SECUIRITY_PATTERN = "No security patterns found.";
 	final String LOADING = "Loading...";
@@ -46,10 +46,14 @@ public class Controller {
 		view.panelCVE.btnApply.addActionListener(e -> reloadCWEList());
 		view.panelCWE.btnApply.addActionListener(e -> reloadCAPECList());
 		view.listMitigations.addListSelectionListener(e -> selectMitigation(e));
+		view.selectType.addActionListener(e -> reloadCWEList());
 	}
 
 	private void selectItem(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+
+		view.listMitigations.setModel(new DefaultListModel<>());
+		view.listMitigations.revalidate();
 
 		System.out.println("Object: " + node.getUserObject());
 		if (node.getUserObject() instanceof CVEItem) {
@@ -70,45 +74,43 @@ public class Controller {
 
 			model = (DefaultTreeModel) view.linkTree.tree.getModel();
 
-			if (node.getChildCount() == 0 || !((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString()
-					.equals(LOADING)) {
+			if (node.getChildCount() == 0
+					|| !((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString().equals(LOADING)) {
 				node.add(new DefaultMutableTreeNode(LOADING, false));
-				
+			}
+			
+			if (cwe.directCAPEC.size() <= 0 && cwe.indirectCAPEC.size() <= 0) {
 				DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
-				
+
 				if (modelMitigations.size() == 0) {
 					modelMitigations.addElement(new Mitigation(LOADING));
 				}
-				
+
 				view.listMitigations.setModel(modelMitigations);
 				view.listMitigations.revalidate();
-				
 
-				if (cwe.indirectCAPEC.size() <= 0) {
-					cwe.loadedChildren = false;
-
-					model.nodeStructureChanged(node);
-					view.linkTree.tree.expandPath(new TreePath(node.getPath()));
-					loadCAPECList(node);
-				} else {
-					view.panelCWE.setCWE(cwe);
-				}
-
-				System.out.println("View: " + view.CWE_OPTION_PANEL);
-				System.out.println(view.detailView);
-				CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
-				cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
 			}
+
+			cwe.loadedChildren = false;
+
+			model.nodeStructureChanged(node);
+			view.linkTree.tree.expandPath(new TreePath(node.getPath()));
+			loadCAPECList(node);
+
+			view.panelCWE.setCWE(cwe);
+			System.out.println("View: " + view.CWE_OPTION_PANEL);
+			System.out.println(view.detailView);
+			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
+			cardLayout.show(view.detailView, view.CWE_OPTION_PANEL);
 
 		} else if (node.getUserObject() instanceof CAPECItem) {
 			System.out.println("View: " + view.CAPEC_OPTION_PANEL);
 			System.out.println(view.detailView);
-			
+
 			reloadMitigationList((CAPECItem) node.getUserObject());
 			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
 			cardLayout.show(view.detailView, view.CAPEC_OPTION_PANEL);
-			
-			
+
 		}
 	}
 
@@ -167,79 +169,80 @@ public class Controller {
 
 		model = (DefaultTreeModel) view.linkTree.tree.getModel();
 		root = (DefaultMutableTreeNode) model.getRoot();
-		
-		
 
 		SwingWorker<List<CustomTreeNode>, Void> worker = new SwingWorker<List<CustomTreeNode>, Void>() {
 			@Override
 			protected List<CustomTreeNode> doInBackground() throws Exception {
 				List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
 
-				if (cve.directCWE.size() <= 0) {
-					cve.getDirectCWEList();
-				}
-
-				//System.out.println(cve.directCWE);
-
-				if (cve.directCWE.size() > 0) {
-					for (CWEItem itemCWE : cve.directCWE) {
-						CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.DIRECT);
-
-						children.add(child);
-					}
-				}
-
-				System.out.println("cve.isChangedKeywords" + cve.isChangedKeywords);
-				if (cve.isChangedKeywords) {
-					cve.getIndirectCWEList();
-					cve.isChangedKeywords = false;
-				}
-
-				//System.out.println(cve.indirectCWE);
-
-				if (cve.indirectCWE.size() > 0) {
-					int maxMatching = cve.indirectCWE.get(0).matching;
-					int cboMatchingValue;
-					
-					if (view.panelCVE.cboSimilarity.getSelectedItem() != null) {
-						cboMatchingValue = Integer.parseInt(view.panelCVE.cboSimilarity.getSelectedItem().toString());
-					} else {
-						cboMatchingValue = -1;
+				if (!view.selectType.getSelectedItem().toString().equals("Indirect")) {
+					if (cve.directCWE.size() <= 0) {
+						cve.getDirectCWEList();
 					}
 
-					if (cboMatchingValue > 0) {
-						cve.minMatching = cboMatchingValue;
-					}
+					if (cve.directCWE.size() > 0) {
+						for (CWEItem itemCWE : cve.directCWE) {
+							CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.DIRECT);
 
-					if (cve.maxMatching != maxMatching) {
-						if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
-							if (maxMatching >= 4) {
-								cve.minMatching = 4;
-							} else {
-								cve.minMatching = maxMatching;
-							}
-						}
-						
-						cve.maxMatching = maxMatching;
-						view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
-					}
-
-					
-					System.out.println("cboMatchingValue : " + cboMatchingValue);
-					System.out.println("cve.maxMatching : " + cve.maxMatching);
-					System.out.println("cve.minMatching : " + cve.minMatching);
-
-					for (CWEItem itemCWE : cve.indirectCWE) {
-						if (itemCWE.matching >= cve.minMatching) {
-							CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.INDIRECT);
-							// view.panelCVE.cboSimilarity
 							children.add(child);
 						}
 					}
-				} else {
-					cve.minMatching = 0;
-					cve.maxMatching = 0;
-					view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
+				}
+
+				// System.out.println(cve.directCWE);
+				if (!view.selectType.getSelectedItem().toString().equals("Direct")) {
+					System.out.println("cve.isChangedKeywords" + cve.isChangedKeywords);
+					if (cve.isChangedKeywords) {
+						cve.getIndirectCWEList();
+						cve.isChangedKeywords = false;
+					}
+
+					// System.out.println(cve.indirectCWE);
+
+					if (cve.indirectCWE.size() > 0) {
+						int maxMatching = cve.indirectCWE.get(0).matching;
+						int cboMatchingValue;
+
+						if (view.panelCVE.cboSimilarity.getSelectedItem() != null) {
+							cboMatchingValue = Integer
+									.parseInt(view.panelCVE.cboSimilarity.getSelectedItem().toString());
+						} else {
+							cboMatchingValue = -1;
+						}
+
+						if (cboMatchingValue > 0) {
+							cve.minMatching = cboMatchingValue;
+						}
+
+						if (cve.maxMatching != maxMatching) {
+							if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
+								if (maxMatching >= 4) {
+									cve.minMatching = 4;
+								} else {
+									cve.minMatching = maxMatching;
+								}
+							}
+
+							cve.maxMatching = maxMatching;
+							view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
+						}
+
+						System.out.println("cboMatchingValue : " + cboMatchingValue);
+						System.out.println("cve.maxMatching : " + cve.maxMatching);
+						System.out.println("cve.minMatching : " + cve.minMatching);
+
+						for (CWEItem itemCWE : cve.indirectCWE) {
+							if (itemCWE.matching >= cve.minMatching) {
+								CustomTreeNode child = new CustomTreeNode(itemCWE, CustomTreeNode.INDIRECT);
+								// view.panelCVE.cboSimilarity
+								children.add(child);
+							}
+						}
+					} else {
+						cve.minMatching = 0;
+						cve.maxMatching = 0;
+						view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
+					}
 				}
 
 				return children;
@@ -270,13 +273,13 @@ public class Controller {
 		if (cve.isChangedKeywords) {
 			cve.indirectCWE = new ArrayList<>();
 		}
-		
+
 		root.removeAllChildren();
 		root.add(new DefaultMutableTreeNode(LOADING, false));
-		
-		//model.nodeStructureChanged(root);
+
+		// model.nodeStructureChanged(root);
 		loadCWEList();
-		
+
 	}
 
 	public void loadCAPECList(DefaultMutableTreeNode node) {
@@ -295,13 +298,65 @@ public class Controller {
 
 				List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
 
-				cwe.getDirectCAPECList();
+				if (!view.selectType.getSelectedItem().toString().equals("Indirect")) {
+					if (cwe.directCAPEC.size() <= 0) {
+						cwe.getDirectCAPECList();
+					}
 
-				if (cwe.directCAPEC.size() > 0) {
-					for (CAPECItem itemCAPEC : cwe.directCAPEC) {
-						CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.DIRECT);
+					if (cwe.directCAPEC.size() > 0) {
+						for (CAPECItem itemCAPEC : cwe.directCAPEC) {
+							CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.DIRECT);
 
-						children.add(child);
+							children.add(child);
+						}
+					}
+				}
+
+				if (!view.selectType.getSelectedItem().toString().equals("Direct")) {
+					System.out.println("cwe.isChangedKeywords" + cwe.isChangedKeywords);
+					if (cwe.isChangedKeywords) {
+						cwe.getIndirectCAPECList();
+						cwe.isChangedKeywords = false;
+					}
+
+					if (cwe.indirectCAPEC.size() > 0) {
+						int maxMatching = cwe.indirectCAPEC.get(0).matching;
+						int cboMatchingValue;
+
+						if (view.panelCWE.cboSimilarity.getSelectedItem() != null) {
+							cboMatchingValue = Integer
+									.parseInt(view.panelCWE.cboSimilarity.getSelectedItem().toString());
+						} else {
+							cboMatchingValue = -1;
+						}
+
+						if (cboMatchingValue > 0) {
+							cwe.minMatching = cboMatchingValue;
+						}
+
+						if (cwe.maxMatching != maxMatching) {
+							if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
+								if (maxMatching >= 4) {
+									cwe.minMatching = 4;
+								} else {
+									cwe.minMatching = maxMatching;
+								}
+							}
+						}
+
+						cwe.maxMatching = maxMatching;
+						System.out.println("cwe.maxMatching : " + cwe.maxMatching);
+						System.out.println("cwe.minMatching : " + cwe.minMatching);
+						view.panelCWE.setSimilarity(cwe.maxMatching, cwe.minMatching);
+
+						for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
+							System.out.println(itemCAPEC.name + " " + itemCAPEC.matching);
+							if (itemCAPEC.matching >= cwe.minMatching) {
+								CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
+
+								children.add(child);
+							}
+						}
 					}
 				}
 
@@ -309,45 +364,6 @@ public class Controller {
 				if (cwe.isChangedKeywords) {
 					cwe.getIndirectCAPECList();
 					cwe.isChangedKeywords = false;
-				}
-
-				if (cwe.indirectCAPEC.size() > 0) {
-					int maxMatching = cwe.indirectCAPEC.get(0).matching;
-					int cboMatchingValue;
-					
-					if (view.panelCWE.cboSimilarity.getSelectedItem() != null) {
-						cboMatchingValue = Integer.parseInt(view.panelCWE.cboSimilarity.getSelectedItem().toString());
-					} else {
-						cboMatchingValue = -1;
-					}
-
-					if (cboMatchingValue > 0) {
-						cwe.minMatching = cboMatchingValue;
-					}
-
-					if (cwe.maxMatching != maxMatching) {
-						if (cboMatchingValue < 0 || cboMatchingValue > maxMatching) {
-							if (maxMatching >= 4) {
-								cwe.minMatching = 4;
-							} else {
-								cwe.minMatching = maxMatching;
-							}
-						}
-					}
-
-					cwe.maxMatching = maxMatching;
-					System.out.println("cwe.maxMatching : " + cwe.maxMatching);
-					System.out.println("cwe.minMatching : " + cwe.minMatching);
-					view.panelCWE.setSimilarity(cwe.maxMatching, cwe.minMatching);
-
-					for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
-						System.out.println(itemCAPEC.name + " " + itemCAPEC.matching);
-						if (itemCAPEC.matching >= cwe.minMatching) {
-							CustomTreeNode child = new CustomTreeNode(itemCAPEC, CustomTreeNode.INDIRECT);
-
-							children.add(child);
-						}
-					}
 				}
 
 				view.linkTree.tree.expandPath(new TreePath(node.getPath()));
@@ -400,17 +416,17 @@ public class Controller {
 
 		if (cwe.mitigations == null || cwe.mitigations.size() <= 0) {
 			cwe.getMitigations();
-			
+
 			for (Mitigation mitigation : cwe.mitigations) {
 				modelMitigations.addElement(mitigation);
 			}
 		}
-		
+
 		for (CAPECItem itemCAPEC : cwe.directCAPEC) {
 			if (itemCAPEC.mitigations.size() <= 0) {
 				itemCAPEC.getMitigations();
 			}
-			
+
 			System.out.println("itemCAPEC.matching: " + itemCAPEC.matching);
 			System.out.println("cwe.minMatching " + cwe.minMatching);
 			for (Mitigation mitigation : itemCAPEC.mitigations) {
@@ -422,69 +438,68 @@ public class Controller {
 			if (itemCAPEC.mitigations.size() <= 0) {
 				itemCAPEC.getMitigations();
 			}
-			
+
 			if (itemCAPEC.matching >= cwe.minMatching) {
 				for (Mitigation mitigation : itemCAPEC.mitigations) {
 					modelMitigations.addElement(mitigation);
 				}
 			}
 		}
-		
+
 		if (modelMitigations.size() == 0) {
 			modelMitigations.addElement(new Mitigation(NO_MITIGATION));
 		}
-		
+
 		view.listMitigations.setModel(modelMitigations);
 		view.listMitigations.revalidate();
 	}
-	
+
 	public void reloadMitigationList(CAPECItem capec) {
 		DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
-		
+
 		for (Mitigation mitigation : capec.mitigations) {
 			modelMitigations.addElement(mitigation);
 		}
-		
+
 		if (modelMitigations.size() == 0) {
 			modelMitigations.addElement(new Mitigation(NO_MITIGATION));
 		}
-		
+
 		view.listMitigations.setModel(modelMitigations);
 		view.listMitigations.revalidate();
 	}
-	
+
 	public void selectMitigation(ListSelectionEvent e) {
 		// Return if the changes are still being made
 		if (e.getValueIsAdjusting()) {
 			return;
 		}
-		
+
 		if (view.listMitigations.getSelectedValue().description.equals(NO_MITIGATION))
-		System.out.println("selectMitigation");
-		
+			System.out.println("selectMitigation");
+
 		DefaultListModel<SecurityPattern> modelPatterns = new DefaultListModel<>();
-		
+
 		if (modelPatterns.size() == 0) {
 			modelPatterns.addElement(new SecurityPattern(LOADING));
 		}
-		
+
 		view.panelMitigation.listPatterns.setModel(modelPatterns);
 		view.panelMitigation.listPatterns.revalidate();
-		
+
 		loadSecurityPatterns(view.listMitigations.getSelectedValue());
-		
+
 		CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
 		cardLayout.show(view.detailView, view.MITIGATION_OPTION_PANEL);
 	}
-	
+
 	public void loadSecurityPatterns(Mitigation mitigation) {
 		System.out.println("loadSecurityPatterns");
 //		ArrayList<SecurityPattern> listPattern = mitigation.getSecurityPatterns();
 //		System.out.println(listPattern);
-		
+
 		DefaultListModel<SecurityPattern> modelPatterns = new DefaultListModel<>();
-		
-		
+
 		SwingWorker<ArrayList<SecurityPattern>, Void> worker = new SwingWorker<ArrayList<SecurityPattern>, Void>() {
 			@Override
 			protected ArrayList<SecurityPattern> doInBackground() throws Exception {
@@ -501,7 +516,8 @@ public class Controller {
 					int maxMatching = mitigation.securityPatterns.get(0).matching;
 					int cboMatchingValue;
 					if (view.panelMitigation.cboSimilarity.getSelectedItem() != null) {
-						cboMatchingValue = Integer.parseInt(view.panelMitigation.cboSimilarity.getSelectedItem().toString());
+						cboMatchingValue = Integer
+								.parseInt(view.panelMitigation.cboSimilarity.getSelectedItem().toString());
 					} else {
 						cboMatchingValue = -1;
 					}
@@ -543,11 +559,11 @@ public class Controller {
 					for (SecurityPattern pattern : get()) {
 						modelPatterns.addElement(pattern);
 					}
-					
+
 					if (modelPatterns.size() == 0) {
 						modelPatterns.addElement(new SecurityPattern(NO_SECUIRITY_PATTERN));
 					}
-					
+
 					view.panelMitigation.setMitigation(mitigation);
 					view.panelMitigation.listPatterns.setModel(modelPatterns);
 					view.panelMitigation.listPatterns.revalidate();
@@ -559,6 +575,6 @@ public class Controller {
 			}
 		};
 		worker.execute();
-		
+
 	}
 }

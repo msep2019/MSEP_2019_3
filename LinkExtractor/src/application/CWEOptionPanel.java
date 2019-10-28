@@ -152,6 +152,10 @@ public class CWEOptionPanel extends Panel {
 	}
 	
 	public void setSimilarity(int max, int min) {
+		if (max <= 0 || min <= 0 || max < min) {
+			return;
+		}
+		
 		Integer[] numbers = new Integer[max];
 
 		for (int i = 0; i < max; i++) {
