@@ -9,7 +9,6 @@ import gate.util.GateException;
 
 import sossec.cve.CVEHelper;
 import sossec.cve.CVEItem;
-import sossec.cwe.CWEHelper;
 import sossec.cwe.CWEItem;
 import sossec.capec.CAPECHelper;
 import sossec.capec.CAPECItem;
@@ -25,7 +24,6 @@ public class LinkExtractor {
 		ArrayList<Item> indirectCAPEC = new ArrayList<>();
 		
 		CVEHelper cveHelper = new CVEHelper();
-		CWEHelper cweHelper = new CWEHelper();
 		CAPECHelper capecHelper = new CAPECHelper();
 
 		String cveDesc = cveHelper.getItemContent(args[0]);
@@ -54,24 +52,24 @@ public class LinkExtractor {
 		if (fileCVEKeywordDef != null) {
 			System.out.println("\n===Found CWE for CVE " + cveItem.id + " : ");
 			// Get weaknesses which have high matching
-			indirectCWE = KeywordMatching.processDocs(cweHelper.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
+			indirectCWE = KeywordMatching.processDocs(CWEItem.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
 			
 			for (Item itemCWE : indirectCWE) {
 				CWEItem cweItem = new CWEItem(itemCWE.id);
 				cveItem.indirectCWE.add(cweItem);
 				
-				String cweDesc = cweHelper.getItemContent(cweItem.id);
+				cweItem.getContent();
 				
 				// Get CWE keywords
-				if (!cweDesc.isEmpty()) {
-					cweItem.keywords = Keyword.processDocs(cweDesc);
+				if (!cweItem.description.isEmpty()) {
+					cweItem.keywords = Keyword.processDocs(cweItem.description);
 				}
 				
 				System.out.println("cweItem.keywords: " + cweItem.keywords.toString());
 				
 				// Generate CWE keywords Gazetteer list and definition
 				if (cweItem.keywords.size() > 0) {
-					System.out.println("CWE Desc: " + cweDesc);
+					System.out.println("CWE Desc: " + cweItem.description);
 					System.out.println("CwE Keywords: " + cweItem.keywords.toString());
 					fileCWEKeywordDef = Keyword.generateGazetteer("CWE", cweItem.keywords);
 				}

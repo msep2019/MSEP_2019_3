@@ -368,13 +368,21 @@ public class Controller {
 	public void loadMitigationList(CWEItem cwe) {
 		System.out.println("loadMitigationList");
 
-		CAPECHelper helper = new CAPECHelper();
+		CAPECHelper helperCAPEC = new CAPECHelper();
 		
 		DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
 
+		if (cwe.mitigations == null || cwe.mitigations.size() <= 0) {
+			cwe.getMitigations();
+			
+			for (Mitigation mitigation : cwe.mitigations) {
+				modelMitigations.addElement(mitigation);
+			}
+		}
+		
 		for (CAPECItem itemCAPEC : cwe.directCAPEC) {
 			if (itemCAPEC.mitigations.size() <= 0) {
-				List<Element> mitigations = helper.getMitigations(itemCAPEC.id);
+				List<Element> mitigations = helperCAPEC.getMitigations(itemCAPEC.id);
 				System.out.println(mitigations);
 				for (Element mitigation : mitigations) {
 					if (!mitigation.getValue().trim().isEmpty()) {
@@ -394,7 +402,7 @@ public class Controller {
 
 		for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
 			if (itemCAPEC.mitigations.size() <= 0) {
-				List<Element> mitigations = helper.getMitigations(itemCAPEC.id);
+				List<Element> mitigations = helperCAPEC.getMitigations(itemCAPEC.id);
 				for (Element mitigation : mitigations) {
 					if (!mitigation.getValue().trim().isEmpty()) {
 						Mitigation mitigationItem = new Mitigation();

@@ -31,7 +31,17 @@ public class Mitigation {
 	public boolean isChangedKeywords = true;
 	
 	public String toString() {
-		return description;
+		String result = "";
+		
+		if (capec != null) {
+			result += "[CAPEC " + capec.id + "] ";
+		} else if (cwe != null) {
+			result += "[CWE " + cwe.id + "] ";
+		}
+		
+		result += description;
+		
+		return result;
 	}
 	
 	public ArrayList<SecurityPattern> getSecurityPatterns() {

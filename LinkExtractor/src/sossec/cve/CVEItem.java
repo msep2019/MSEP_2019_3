@@ -13,7 +13,6 @@ import org.apache.log4j.BasicConfigurator;
 
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import sossec.cwe.CWEHelper;
 import sossec.cwe.CWEItem;
 import sossec.keyword.Keyword;
 import sossec.keywordmatching.Item;
@@ -21,7 +20,6 @@ import sossec.keywordmatching.KeywordMatching;
 
 public class CVEItem {
 	CVEHelper cveHelper = new CVEHelper();
-	CWEHelper cweHelper = new CWEHelper();
 
 	public String id;
 	public ArrayList<String> keywords = new ArrayList<>();
@@ -139,7 +137,7 @@ public class CVEItem {
 			System.out.println("\n==Found CWE for CVE " + this.id + " : ");
 			// Get weaknesses which have high matching
 			try {
-				listCWE = KeywordMatching.processDocs(cweHelper.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
+				listCWE = KeywordMatching.processDocs(CWEItem.xmlFiles, fileCVEKeywordDef, "src/gate/jape/get-CWE.jape");
 			} catch (ResourceInstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

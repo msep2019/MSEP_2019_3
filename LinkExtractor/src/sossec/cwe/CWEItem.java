@@ -7,10 +7,18 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.filter.Filters;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import sossec.XMLHelper;
 import sossec.capec.CAPECHelper;
 import sossec.capec.CAPECItem;
 import sossec.keyword.Keyword;
@@ -21,6 +29,7 @@ import sossec.mitigation.Mitigation;
 public class CWEItem {
 	public String id;
 	public String name;
+	public String description = "";
 	public ArrayList<String> keywords = new ArrayList<>();
 	public ArrayList<String> disabledKeywords = new ArrayList<>();
 	public ArrayList<CAPECItem> directCAPEC = new ArrayList<>();
@@ -33,7 +42,12 @@ public class CWEItem {
 	public boolean loadedChildren = false;
 	public boolean isChangedKeywords = true;
 	
+	public static String[] xmlFiles = { "src/databases/CWE_desc_architectural.xml", "src/databases/CWE_desc_development.xml",
+	"src/databases/CWE_desc_research.xml" };
 
+	public static String[] xmlMitigations = { "src/databases/CWE_mitigations_architectural.xml", "src/databases/CWE_mitigations_development.xml",
+	"src/databases/CWE_mitigations_research.xml" };
+	
 	public CWEItem() {
 		
 	}
@@ -58,6 +72,34 @@ public class CWEItem {
 		
 		return result;
 		
+	}
+	
+	public String getContent() {
+		if (this.description.isEmpty()) {
+			this.description = "";
+			for (String file : xmlFiles) {
+				Document document = XMLHelper.getSAXParsedDocument(file);
+
+				String query = "/Weakness_Catalog/Weaknesses/Weakness[@ID= '" + this.id + "']";
+				XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+
+				List<Element> xPathResult = xpe.evaluate(document);
+
+				String result = "";
+				if (xPathResult.size() > 0) {
+					result = xPathResult.get(0).getChild("Description").getValue();
+				}
+
+				if (!result.isEmpty()) {
+					this.description = result;
+					break;
+				}
+			}
+			
+			return this.description;
+		} else {
+			return this.description;
+		}
 	}
 
 	public ArrayList<CAPECItem> getDirectCAPECList() {
@@ -121,22 +163,20 @@ public class CWEItem {
 	}
 
 	public ArrayList<CAPECItem> getIndirectCAPECList() {
-		CWEHelper cweHelper = new CWEHelper();
 		CAPECHelper capecHelper = new CAPECHelper();
 		ArrayList<Item> listCWE = new ArrayList<>();
 
 		File fileCWEKeywordDef = null;
 
 		if (keywords.size() <= 0 && disabledKeywords.size() <= 0) {
+			getContent();
+			System.out.println("CWE Desc: " + this.description);
 
-			String cweDesc = cweHelper.getItemContent(id);
-			System.out.println("CWE Desc: " + cweDesc);
-
-			if (cweDesc.isEmpty()) {
+			if (this.description.isEmpty()) {
 				return indirectCAPEC;
 			} else {
 				try {
-					keywords = Keyword.processDocs(cweDesc);
+					keywords = Keyword.processDocs(this.description);
 					this.isChangedKeywords = true;
 				} catch (ResourceInstantiationException e) {
 					// TODO Auto-generated catch block
@@ -187,5 +227,33 @@ public class CWEItem {
 		}
 
 		return indirectCAPEC;
+	}
+	
+	public List<Mitigation> getMitigations() {
+		List<Mitigation> result = new ArrayList<>();
+		
+		for (String file : xmlMitigations) {
+			Document document = XMLHelper.getSAXParsedDocument(file);
+
+			String query = "/Weakness_Catalog/Weaknesses/Weakness[@ID= '" + this.id + "']";
+			XPathExpression<Element> xpe = XPathFactory.instance().compile(query, Filters.element());
+			
+			List<Element> xPathResult = xpe.evaluate(document);
+	        
+			if (xPathResult.size() > 0) {
+				List<Element> listMitigations = xPathResult.get(0).getChild("Potential_Mitigations").getChildren();
+				
+				for (Element el: listMitigations) {
+					Mitigation mitigation = new Mitigation();
+					mitigation.description = el.getValue();
+					mitigation.cwe = this;
+					result.add(mitigation);
+				}
+				
+				break;
+			}
+		}
+
+		return this.mitigations;
 	}
 }

@@ -14,11 +14,13 @@
                         <xsl:attribute name="Structure"><xsl:value-of select="@Structure"/></xsl:attribute>
                         <xsl:attribute name="Status"><xsl:value-of select="@Status"/></xsl:attribute>
                     <Potential_Mitigations>
+                        <xsl:for-each select="cwe:Potential_Mitigations/cwe:Mitigation">
                         <Mitigation>
                             <Description>
-                                <xsl:value-of select="cwe:Potential_Mitigations/cwe:Mitigation/cwe:Description"/>
+                                <xsl:value-of select="cwe:Description"/>
                             </Description>
                         </Mitigation>
+                        </xsl:for-each>
                     </Potential_Mitigations>
                     </Weakness>
                 </xsl:for-each>      

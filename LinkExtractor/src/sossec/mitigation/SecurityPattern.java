@@ -93,7 +93,7 @@ public class SecurityPattern {
 				
 				result += "</html>";
 				
-				System.out.println(result);
+				//System.out.println(result);
 			}
 
 			if (!result.isEmpty()) {
