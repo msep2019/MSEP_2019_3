@@ -10,7 +10,9 @@ import org.jdom2.Element;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import sossec.capec.CAPECHelper;
+import sossec.capec.CAPECItem;
 import sossec.keyword.Keyword;
+import sossec.mitigation.Mitigation;
 
 public class GetMitigations {
 
@@ -28,27 +30,28 @@ public class GetMitigations {
 		System.out.println("Please input CAPEC_ID(example:100):");
 		String capecID = sc.nextLine();
 		// String capecID = "100";
-		List<Element> mitigations = helper.getMitigations(capecID);
+		CAPECItem capec = new CAPECItem(capecID);
+		List<Mitigation> mitigations = capec.getMitigations();
 		System.out.println("CAPEC_ID:" + capecID + "\n");
-		for (Element mitigation : mitigations) {
-			ArrayList<String> keywords = new ArrayList<>();
-			try {
-				keywords = Keyword.processDocs(mitigation.getValue());
-			} catch (ResourceInstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			System.out.println("\n\nCAPEC mitigations: " + mitigation.getValue() + "\n" + keywords);
-
-			// System.out.println("CAPEC mitigation: " + keywords);
-		}
+//		for (Element mitigation : mitigations) {
+//			ArrayList<String> keywords = new ArrayList<>();
+//			try {
+//				keywords = Keyword.processDocs(mitigation.getValue());
+//			} catch (ResourceInstantiationException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (MalformedURLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			System.out.println("\n\nCAPEC mitigations: " + mitigation.getValue() + "\n" + keywords);
+//
+//			// System.out.println("CAPEC mitigation: " + keywords);
+//		}
 		
 		sc.close();
 	}

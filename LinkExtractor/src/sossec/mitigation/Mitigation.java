@@ -30,16 +30,25 @@ public class Mitigation {
 	
 	public boolean isChangedKeywords = true;
 	
+	public Mitigation() {
+		
+	}
+	
+	public Mitigation(String description) {
+		this.description = description;
+	}
+	
 	public String toString() {
-		String result = "";
+		String result = "<html>";
 		
 		if (capec != null) {
-			result += "[CAPEC " + capec.id + "] ";
+			result += "<font color=\"orange\">[From CAPEC " + capec.id + "]</font> ";
 		} else if (cwe != null) {
-			result += "[CWE " + cwe.id + "] ";
+			result += "<font color=\"orange\">[From CWE " + cwe.id + "]</font> ";
 		}
 		
-		result += description;
+		result += description.trim();
+		result += "</html>";
 		
 		return result;
 	}

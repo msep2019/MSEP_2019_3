@@ -230,7 +230,7 @@ public class CWEItem {
 	}
 	
 	public List<Mitigation> getMitigations() {
-		List<Mitigation> result = new ArrayList<>();
+		this.mitigations = new ArrayList<>();
 		
 		for (String file : xmlMitigations) {
 			Document document = XMLHelper.getSAXParsedDocument(file);
@@ -241,16 +241,18 @@ public class CWEItem {
 			List<Element> xPathResult = xpe.evaluate(document);
 	        
 			if (xPathResult.size() > 0) {
-				List<Element> listMitigations = xPathResult.get(0).getChild("Potential_Mitigations").getChildren();
-				
-				for (Element el: listMitigations) {
-					Mitigation mitigation = new Mitigation();
-					mitigation.description = el.getValue();
-					mitigation.cwe = this;
-					result.add(mitigation);
+				if (xPathResult.get(0).getChild("Potential_Mitigations") != null) {
+					List<Element> listMitigations = xPathResult.get(0).getChild("Potential_Mitigations").getChildren();
+					
+					for (Element el: listMitigations) {
+						Mitigation mitigation = new Mitigation();
+						mitigation.description = el.getValue();
+						mitigation.cwe = this;
+						this.mitigations.add(mitigation);
+					}
+					
+					break;
 				}
-				
-				break;
 			}
 		}
 

@@ -22,6 +22,7 @@ public class CVEItem {
 	CVEHelper cveHelper = new CVEHelper();
 
 	public String id;
+	public String description = "";
 	public ArrayList<String> keywords = new ArrayList<>();
 	public ArrayList<String> disabledKeywords = new ArrayList<>();
 	public ArrayList<CWEItem> directCWE = new ArrayList<>();

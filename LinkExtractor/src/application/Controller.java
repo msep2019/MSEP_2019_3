@@ -12,13 +12,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import org.jdom2.Element;
 
 import sossec.cve.CVEItem;
 import sossec.cwe.CWEItem;
 import sossec.mitigation.Mitigation;
 import sossec.mitigation.SecurityPattern;
-import sossec.capec.CAPECHelper;
 import sossec.capec.CAPECItem;
 
 public class Controller {
@@ -28,6 +26,10 @@ public class Controller {
 
 	DefaultTreeModel model;
 	DefaultMutableTreeNode root;
+	
+	final String NO_MITIGATION = "No mitigations found.";
+	final String NO_SECUIRITY_PATTERN = "No security patterns found.";
+	final String LOADING = "Loading...";
 
 	public Controller(MainView v) {
 		view = v;
@@ -69,8 +71,18 @@ public class Controller {
 			model = (DefaultTreeModel) view.linkTree.tree.getModel();
 
 			if (node.getChildCount() == 0 || !((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString()
-					.equals("Loading...")) {
-				node.add(new DefaultMutableTreeNode("Loading...", false));
+					.equals(LOADING)) {
+				node.add(new DefaultMutableTreeNode(LOADING, false));
+				
+				DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
+				
+				if (modelMitigations.size() == 0) {
+					modelMitigations.addElement(new Mitigation(LOADING));
+				}
+				
+				view.listMitigations.setModel(modelMitigations);
+				view.listMitigations.revalidate();
+				
 
 				if (cwe.indirectCAPEC.size() <= 0) {
 					cwe.loadedChildren = false;
@@ -91,8 +103,12 @@ public class Controller {
 		} else if (node.getUserObject() instanceof CAPECItem) {
 			System.out.println("View: " + view.CAPEC_OPTION_PANEL);
 			System.out.println(view.detailView);
+			
+			reloadMitigationList((CAPECItem) node.getUserObject());
 			CardLayout cardLayout = (CardLayout) view.detailView.getLayout();
 			cardLayout.show(view.detailView, view.CAPEC_OPTION_PANEL);
+			
+			
 		}
 	}
 
@@ -105,7 +121,7 @@ public class Controller {
 
 		cve.id = view.txtCVE.getText().trim();
 
-		DefaultMutableTreeNode loadingNode = new DefaultMutableTreeNode("Loading...");
+		DefaultMutableTreeNode loadingNode = new DefaultMutableTreeNode(LOADING);
 		root.add(loadingNode);
 
 		model.nodeChanged(root);
@@ -124,7 +140,7 @@ public class Controller {
 		model.reload();
 
 		loaded = false;
-		root.add(new DefaultMutableTreeNode("Loading...", false));
+		root.add(new DefaultMutableTreeNode(LOADING, false));
 
 		model.nodeStructureChanged(root);
 		view.linkTree.tree.expandPath(new TreePath(root.getPath()));
@@ -247,7 +263,7 @@ public class Controller {
 			cve.indirectCWE = new ArrayList<>();
 		}
 		root.removeAllChildren();
-		root.add(new DefaultMutableTreeNode("Loading...", false));
+		root.add(new DefaultMutableTreeNode(LOADING, false));
 		model.nodeStructureChanged(root);
 		loadCWEList();
 	}
@@ -351,14 +367,14 @@ public class Controller {
 		CustomTreeNode node = (CustomTreeNode) view.linkTree.tree.getLastSelectedPathComponent();
 		System.out.println(node.getFirstChild());
 
-		if (!((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString().equals("Loading...")) {
+		if (!((DefaultMutableTreeNode) node.getFirstChild()).getUserObject().toString().equals(LOADING)) {
 			CWEItem cwe = (CWEItem) node.getUserObject();
 			cwe.loadedChildren = false;
 			if (cwe.isChangedKeywords) {
 				cwe.indirectCAPEC = new ArrayList<>();
 			}
 			node.removeAllChildren();
-			node.add(new DefaultMutableTreeNode("Loading...", false));
+			node.add(new DefaultMutableTreeNode(LOADING, false));
 			model.nodeStructureChanged(node);
 
 			loadCAPECList(node);
@@ -368,8 +384,6 @@ public class Controller {
 	public void loadMitigationList(CWEItem cwe) {
 		System.out.println("loadMitigationList");
 
-		CAPECHelper helperCAPEC = new CAPECHelper();
-		
 		DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
 
 		if (cwe.mitigations == null || cwe.mitigations.size() <= 0) {
@@ -382,15 +396,7 @@ public class Controller {
 		
 		for (CAPECItem itemCAPEC : cwe.directCAPEC) {
 			if (itemCAPEC.mitigations.size() <= 0) {
-				List<Element> mitigations = helperCAPEC.getMitigations(itemCAPEC.id);
-				System.out.println(mitigations);
-				for (Element mitigation : mitigations) {
-					if (!mitigation.getValue().trim().isEmpty()) {
-						Mitigation mitigationItem = new Mitigation();
-						mitigationItem.description = mitigation.getValue();
-						itemCAPEC.mitigations.add(mitigationItem);
-					}
-				}
+				itemCAPEC.getMitigations();
 			}
 			
 			System.out.println("itemCAPEC.matching: " + itemCAPEC.matching);
@@ -402,14 +408,7 @@ public class Controller {
 
 		for (CAPECItem itemCAPEC : cwe.indirectCAPEC) {
 			if (itemCAPEC.mitigations.size() <= 0) {
-				List<Element> mitigations = helperCAPEC.getMitigations(itemCAPEC.id);
-				for (Element mitigation : mitigations) {
-					if (!mitigation.getValue().trim().isEmpty()) {
-						Mitigation mitigationItem = new Mitigation();
-						mitigationItem.description = mitigation.getValue();
-						itemCAPEC.mitigations.add(mitigationItem);
-					}
-				}
+				itemCAPEC.getMitigations();
 			}
 			
 			if (itemCAPEC.matching >= cwe.minMatching) {
@@ -417,6 +416,25 @@ public class Controller {
 					modelMitigations.addElement(mitigation);
 				}
 			}
+		}
+		
+		if (modelMitigations.size() == 0) {
+			modelMitigations.addElement(new Mitigation(NO_MITIGATION));
+		}
+		
+		view.listMitigations.setModel(modelMitigations);
+		view.listMitigations.revalidate();
+	}
+	
+	public void reloadMitigationList(CAPECItem capec) {
+		DefaultListModel<Mitigation> modelMitigations = new DefaultListModel<>();
+		
+		for (Mitigation mitigation : capec.mitigations) {
+			modelMitigations.addElement(mitigation);
+		}
+		
+		if (modelMitigations.size() == 0) {
+			modelMitigations.addElement(new Mitigation(NO_MITIGATION));
 		}
 		
 		view.listMitigations.setModel(modelMitigations);
@@ -429,7 +447,17 @@ public class Controller {
 			return;
 		}
 		
+		if (view.listMitigations.getSelectedValue().description.equals(NO_MITIGATION))
 		System.out.println("selectMitigation");
+		
+		DefaultListModel<SecurityPattern> modelPatterns = new DefaultListModel<>();
+		
+		if (modelPatterns.size() == 0) {
+			modelPatterns.addElement(new SecurityPattern(LOADING));
+		}
+		
+		view.panelMitigation.listPatterns.setModel(modelPatterns);
+		view.panelMitigation.listPatterns.revalidate();
 		
 		loadSecurityPatterns(view.listMitigations.getSelectedValue());
 		
@@ -502,6 +530,10 @@ public class Controller {
 				try {
 					for (SecurityPattern pattern : get()) {
 						modelPatterns.addElement(pattern);
+					}
+					
+					if (modelPatterns.size() == 0) {
+						modelPatterns.addElement(new SecurityPattern(NO_SECUIRITY_PATTERN));
 					}
 					
 					view.panelMitigation.setMitigation(mitigation);
