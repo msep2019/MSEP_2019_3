@@ -167,15 +167,19 @@ public class Controller {
 
 		model = (DefaultTreeModel) view.linkTree.tree.getModel();
 		root = (DefaultMutableTreeNode) model.getRoot();
+		
+		
 
 		SwingWorker<List<CustomTreeNode>, Void> worker = new SwingWorker<List<CustomTreeNode>, Void>() {
 			@Override
 			protected List<CustomTreeNode> doInBackground() throws Exception {
 				List<CustomTreeNode> children = new ArrayList<CustomTreeNode>();
 
-				cve.getDirectCWEList();
+				if (cve.directCWE.size() <= 0) {
+					cve.getDirectCWEList();
+				}
 
-				System.out.println(cve.directCWE);
+				//System.out.println(cve.directCWE);
 
 				if (cve.directCWE.size() > 0) {
 					for (CWEItem itemCWE : cve.directCWE) {
@@ -191,11 +195,12 @@ public class Controller {
 					cve.isChangedKeywords = false;
 				}
 
-				System.out.println(cve.indirectCWE);
+				//System.out.println(cve.indirectCWE);
 
 				if (cve.indirectCWE.size() > 0) {
 					int maxMatching = cve.indirectCWE.get(0).matching;
 					int cboMatchingValue;
+					
 					if (view.panelCVE.cboSimilarity.getSelectedItem() != null) {
 						cboMatchingValue = Integer.parseInt(view.panelCVE.cboSimilarity.getSelectedItem().toString());
 					} else {
@@ -214,12 +219,15 @@ public class Controller {
 								cve.minMatching = maxMatching;
 							}
 						}
+						
+						cve.maxMatching = maxMatching;
+						view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
 					}
 
-					cve.maxMatching = maxMatching;
+					
+					System.out.println("cboMatchingValue : " + cboMatchingValue);
 					System.out.println("cve.maxMatching : " + cve.maxMatching);
 					System.out.println("cve.minMatching : " + cve.minMatching);
-					view.panelCVE.setSimilarity(cve.maxMatching, cve.minMatching);
 
 					for (CWEItem itemCWE : cve.indirectCWE) {
 						if (itemCWE.matching >= cve.minMatching) {
@@ -262,10 +270,13 @@ public class Controller {
 		if (cve.isChangedKeywords) {
 			cve.indirectCWE = new ArrayList<>();
 		}
+		
 		root.removeAllChildren();
 		root.add(new DefaultMutableTreeNode(LOADING, false));
-		model.nodeStructureChanged(root);
+		
+		//model.nodeStructureChanged(root);
 		loadCWEList();
+		
 	}
 
 	public void loadCAPECList(DefaultMutableTreeNode node) {
@@ -303,6 +314,7 @@ public class Controller {
 				if (cwe.indirectCAPEC.size() > 0) {
 					int maxMatching = cwe.indirectCAPEC.get(0).matching;
 					int cboMatchingValue;
+					
 					if (view.panelCWE.cboSimilarity.getSelectedItem() != null) {
 						cboMatchingValue = Integer.parseInt(view.panelCWE.cboSimilarity.getSelectedItem().toString());
 					} else {
