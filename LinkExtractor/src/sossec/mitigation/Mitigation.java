@@ -3,6 +3,7 @@ package sossec.mitigation;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.log4j.BasicConfigurator;
 
@@ -22,6 +23,7 @@ public class Mitigation {
 	public ArrayList<String> keywords = new ArrayList<>();
 	public ArrayList<String> disabledKeywords = new ArrayList<>();
 	public ArrayList<SecurityPattern> securityPatterns = new ArrayList<>();
+	public HashMap<String, String> metadata = new HashMap<String, String>();
 	
 	public CWEItem cwe;
 	public CAPECItem capec;

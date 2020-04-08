@@ -1,5 +1,6 @@
 package sossec.mitigation;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -15,6 +16,7 @@ public class SecurityPattern {
 	public String name;
 	
 	public int matching;
+	public HashMap<String, String> metadata = new HashMap<String, String>();
 	
 	public String[] xmlFiles = { "src/databases/securitypatterns/security_patterns.xml" };
 	

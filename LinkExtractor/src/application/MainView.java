@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -14,16 +16,25 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 
 import sossec.mitigation.Mitigation;
 
 public class MainView {
+	
+	public JMenuBar menuBar;
+	public JMenu menu;
+	public JMenuItem menuReport;
+	
 	// View uses Swing framework to display UI to user
 	public JFrame frame;
 	public LinkTree linkTree;
@@ -49,6 +60,14 @@ public class MainView {
 	String[] linkTypes = { "Both", "Direct", "Indirect" };
 
 	public MainView(String title) {
+		menuBar = new JMenuBar();
+		menu = new JMenu("Help");
+		menu.setMnemonic(KeyEvent.VK_H);
+		menuBar.add(menu);
+		
+		menuReport = new JMenuItem("Print report", KeyEvent.VK_R);
+		menu.add(menuReport);
+		
 		frame = new JFrame(title);
 		Container pane = frame.getContentPane();
 		pane.setLayout(new BorderLayout());
@@ -58,6 +77,8 @@ public class MainView {
 		frame.setLocationRelativeTo(null);
 		frame.setMinimumSize(new Dimension(1000, 800));
 
+		frame.setJMenuBar(menuBar);
+		
 		// Create UI elements
 		lblCVE = new JLabel("CVE ID");
 		txtCVE = new JTextField();

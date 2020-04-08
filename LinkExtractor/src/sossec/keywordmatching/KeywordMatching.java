@@ -39,8 +39,7 @@ public class KeywordMatching {
 		// Arraylist to store files resources
 		ArrayList<Document> documentResList = new ArrayList<Document>();
 
-		// feature map for creating documents
-				
+		// Feature map for creating documents
 		for (String fileName : docs) {
 			File file = new File(fileName);
 			
@@ -51,18 +50,18 @@ public class KeywordMatching {
 			FeatureMap features = Factory.newFeatureMap();
 
 			
-			// creating document
+			// Creating document
 			Document doc = (Document) Factory.createResource("gate.corpora.DocumentImpl", params, features,
 					file.getName());
 
-			// add document in corpus
+			// Add document in corpus
 			corpus.add(doc);
 		}
 		
-		// add corpus to sac
+		// Add corpus to sac
 		sac.setCorpus(corpus);
+		
 		// execute sac on corpus
-
 		sac.execute();
 		
 		System.out.println("Found Item");

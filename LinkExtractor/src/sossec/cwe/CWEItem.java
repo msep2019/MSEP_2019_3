@@ -41,6 +41,7 @@ public class CWEItem {
 	public int maxMatching = -1;
 	public boolean loadedChildren = false;
 	public boolean isChangedKeywords = true;
+	public HashMap<String, String> metadata = new HashMap<String, String>();
 	
 	public static String[] xmlFiles = { "src/databases/CWE_desc_architectural.xml", "src/databases/CWE_desc_development.xml",
 	"src/databases/CWE_desc_research.xml" };

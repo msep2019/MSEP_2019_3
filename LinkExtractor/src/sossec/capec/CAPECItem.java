@@ -1,6 +1,7 @@
 package sossec.capec;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -19,7 +20,8 @@ public class CAPECItem {
 	public ArrayList<String> keywords = new ArrayList<>();
 	public ArrayList<Mitigation> mitigations = new ArrayList<>();
 	public int matching = -1;
-
+	public HashMap<String, String> metadata = new HashMap<String, String>();
+	
 	public static String[] xmlMitigations = { "src/databases/CAPEC_mitigation_domains.xml",
 			"src/databases/CAPEC_mitigation_mechanisms.xml", "src/databases/CWE_mitigation_research.xml" };
 

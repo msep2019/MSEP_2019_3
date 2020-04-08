@@ -30,6 +30,7 @@ public class CVEItem {
 	public int maxMatching = -1;
 	public int minMatching = -1;
 	public boolean isChangedKeywords = true;
+	public HashMap<String, String> metadata = new HashMap<String, String>();
 
 	public CVEItem() {
 
