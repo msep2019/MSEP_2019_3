@@ -513,8 +513,12 @@ public class Controller {
 			return;
 		}
 
-		if (view.listMitigations.getSelectedValue().description.equals(NO_MITIGATION))
+		/*
+		if (view.listMitigations != null && view.listMitigations.getSelectedValue().description.equals(NO_MITIGATION)) {
 			System.out.println("selectMitigation");
+		}
+		*/
+			
 
 		DefaultListModel<SecurityPattern> modelPatterns = new DefaultListModel<>();
 
