@@ -110,6 +110,7 @@ public class CVEItem {
 			if (cveDesc.isEmpty()) {
 				return indirectCWE;
 			} else {
+				this.description = cveDesc;
 				System.out.println("CVE Desc: " + cveDesc);
 				try {
 					keywords = Keyword.processDocs(cveDesc);

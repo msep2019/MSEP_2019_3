@@ -176,6 +176,7 @@ public class CWEItem {
 			if (this.description.isEmpty()) {
 				return indirectCAPEC;
 			} else {
+				
 				try {
 					keywords = Keyword.processDocs(this.description);
 					this.isChangedKeywords = true;

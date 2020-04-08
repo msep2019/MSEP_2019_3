@@ -1,12 +1,6 @@
 package application;
 
 import java.awt.CardLayout;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import report.Report;
 import sossec.cve.CVEItem;
 import sossec.cwe.CWEItem;
 import sossec.mitigation.Mitigation;
@@ -62,7 +57,7 @@ public class Controller {
 		view.panelCWE.btnApply.addActionListener(e -> reloadCAPECList());
 		view.listMitigations.addListSelectionListener(e -> selectMitigation(e));
 		view.selectType.addActionListener(e -> reloadCWEList());
-		view.menuReport.addActionListener(e -> printReport());
+		view.menuReport.addActionListener(e -> (new Report()).printCVEReport(cve));
 	}
 
 	private void selectItem(TreeSelectionEvent e) {
@@ -72,6 +67,7 @@ public class Controller {
 		view.listMitigations.revalidate();
 
 		System.out.println("Object: " + node.getUserObject());
+		
 		if (node.getUserObject() instanceof CVEItem) {
 			CVEItem cve = (CVEItem) node.getUserObject();
 
@@ -451,7 +447,9 @@ public class Controller {
 
 		if (cwe.mitigations == null || cwe.mitigations.size() <= 0) {
 			cwe.getMitigations();
-
+		} 
+		
+		if (cwe.mitigations.size() > 0) {
 			for (Mitigation mitigation : cwe.mitigations) {
 				modelMitigations.addElement(mitigation);
 			}
@@ -621,193 +619,5 @@ public class Controller {
 		};
 		worker.execute();
 
-	}
-	
-	private void printReport() {
-		if (cve.id.isEmpty()) {
-			return;
-		}
-		
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		
-		String reportDirectory = "report";
-		File directory = new File(reportDirectory);
-		String fileName = cve.id + " " + sdf.format(timestamp) + ".txt";
-		
-		if (!directory.exists()){
-	        directory.mkdir();
-	    }
-		
-		File file = new File(reportDirectory + "/" + fileName);
-	    try{
-	        FileWriter fw = new FileWriter(file.getAbsoluteFile());
-	        BufferedWriter bw = new BufferedWriter(fw);
-	        bw.write(cve.id + " (" + cve.metadata.get("processing-time") +  "ms)\n");
-	        
-	        printCWE(cve.directCWE, bw);
-	        printCWE(cve.indirectCWE, bw);
-	        
-	        bw.close();
-	    }
-	    catch (IOException e){
-	        e.printStackTrace();
-	        System.exit(-1);
-	    }
-		
-		return;
 	}	
-	
-	private void printCWE(ArrayList<CWEItem> listCWE, BufferedWriter bw) {
-		int cweCount = 0;
-		
-		try{
-			for (CWEItem cwe : listCWE) {
-				// Print CWE has CAPEC first
-				if (cwe.directCAPEC.size() + cwe.indirectCAPEC.size() > 0) {
-					
-					cweCount++;
-	        	
-					if (cwe.matching > 0) {
-						bw.write("    [" + cwe.matching + "] CWE " + rightPadding(cwe.id, 4) + " - " + cwe.name + " (" + cwe.metadata.get("processing-time") +  "ms)\n");
-					} else {
-						bw.write("    [→] CWE " + rightPadding(cwe.id, 4) + " - " + cwe.name + " (" + cwe.metadata.get("processing-time") +  "ms)\n");
-					}
-		        	
-					if (cwe.directCAPEC.size() > 0) {
-						printCAPEC(cwe.directCAPEC, bw);
-		        	}
-		        	
-		        	if (cwe.indirectCAPEC.size() > 0) {
-		        		printCAPEC(cwe.indirectCAPEC, bw);
-		        	}
-		        	
-		        	if (cwe.mitigations != null && cwe.mitigations.size() > 0) {
-		        		bw.write("        CWE MITIGATIONS\n");
-		        		printMitigation(cwe.mitigations, bw);
-		        	}
-				}
-			}
-			
-			// If CWE count less than 5, the print CWE has no CAPEC
-			if (cweCount < 5) {
-				for (CWEItem cwe : listCWE) {
-					// Print CWE has CAPEC first
-					if (cwe.directCAPEC.size() + cwe.indirectCAPEC.size() <= 0) {
-						
-						cweCount++;
-		        	
-						if (cwe.matching > 0) {
-							bw.write("    [" + cwe.matching + "] CWE " + rightPadding(cwe.id, 4) + " - " + cwe.name + "\n");
-						} else {
-							bw.write("    [→] CWE " + rightPadding(cwe.id, 4) + " - " + cwe.name + "\n");
-						}
-						
-						if (cwe.mitigations != null && cwe.mitigations.size() > 0) {
-							bw.write("        CWE MITIGATIONS\n");
-							printMitigation(cwe.mitigations, bw);
-						}
-			        	
-			        	if (cweCount == 5) {
-			        		break;
-			        	}
-					}
-				}
-			}
-		}
-    	catch (IOException e){
-	        e.printStackTrace();
-	        System.exit(-1);
-	    }
-	}
-	
-	private void printCAPEC(ArrayList<CAPECItem> listCAPEC, BufferedWriter bw) {
-		int capecCount = 0;
-		
-		try{
-	    	for (CAPECItem capec : listCAPEC) {
-	    		capecCount++;
-	    		
-	    		if (capec.matching > 0) {
-	    			bw.write("        [" + capec.matching + "] CAPEC " + rightPadding(capec.id, 4) + " - " + capec.name +"\n");
-	    		} else {
-	    			bw.write("        [→] CAPEC " + rightPadding(capec.id, 4) + " - " + capec.name +"\n");
-	    		}
-        		
-	    		if (capec.mitigations != null && capec.mitigations.size() > 0) {
-	    			printMitigation(capec.mitigations, bw);
-	    		}
-	    		
-        		if (capecCount == 5) {
-	        		break;
-	        	}
-        	}	       
-		}
-    	catch (IOException e){
-	        e.printStackTrace();
-	        System.exit(-1);
-	    }
-	}
-	
-	private void printMitigation(ArrayList<Mitigation> mitigations, BufferedWriter bw) {
-		int mitigationCount = 0;
-		
-		try{
-	    	for (Mitigation mitigation : mitigations) {
-	    		mitigationCount++;
-	    		
-    			bw.write("            ");
-    			if (mitigation.capec != null) {
-    				bw.write("Mitigation [From CAPEC " + mitigation.capec.id + "]"); 
-    				
-    			} else if (mitigation.cwe != null) {
-    				bw.write("Mitigation [From CWE " + mitigation.cwe.id + "]");
-    			}
-    			
-    			if (mitigation.securityPatterns != null && mitigation.securityPatterns.size() > 0) {
-					bw.write(" (" + mitigation.metadata.get("processing-time") +  "ms)");
-				}
-    			
-    			bw.write(" " + mitigation.description +"\n");
-    		
-    			if (mitigation.securityPatterns != null && mitigation.securityPatterns.size() > 0) {
-    				printSecurityPattern(mitigation.securityPatterns, bw);
-    			}
-	    		
-        		if (mitigationCount == 5) {
-	        		break;
-	        	}
-        	}	       
-		}
-    	catch (IOException e){
-	        e.printStackTrace();
-	        System.exit(-1);
-	    }
-	}
-	
-	private void printSecurityPattern(ArrayList<SecurityPattern> patterns, BufferedWriter bw) {
-		int patternCount = 0;
-		
-		try{
-	    	for (SecurityPattern pattern : patterns) {
-	    		patternCount++;
-	    		
-    			bw.write("                ");
-    			
-    			bw.write("Security Pattern: " + pattern.name +"\n");
-	    			
-	    		
-        		if (patternCount == 5) {
-	        		break;
-	        	}
-        	}	       
-		}
-    	catch (IOException e){
-	        e.printStackTrace();
-	        System.exit(-1);
-	    }
-	}
-	private static String rightPadding(String str, int num) {
-	    return String.format("%1$-" + num + "s", str);
-	}
 }
